@@ -33,7 +33,7 @@ Ideas today:
 | Bera | Ability | 
 |---|---|
 | ![Frame 3](https://github.com/user-attachments/assets/d3ca6ecf-e7bc-40c6-92b6-6d3401805865)  |  Saw its mouth and thought it looked like diamond. This one’s definitely +4 Mult for the Diamond suit 💎🐻 |
-|![Frame 4](https://github.com/user-attachments/assets/634b88cd-3bc0-4650-9bb7-4668e2049012) | This shy little kid is gonna give you +1.5 Mult for every face-down card in your hand. Cooool!!!  | 
+|![Frame 4](https://github.com/user-attachments/assets/634b88cd-3bc0-4650-9bb7-4668e2049012) | This shy little kid is gonna give you x1.5 Mult for every face-down card in your hand. Cooool!!!  | 
 
 Notice the star on the card? Balatro doesn’t have this, huh? What’s it for? Stay tuned for the reveal! 🌟🃏
 
