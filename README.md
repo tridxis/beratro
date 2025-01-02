@@ -24,17 +24,17 @@ I’ll write down every experience I go through, from ideas to execution. Inspir
 
 Keeping the gameplay of Balatro would be easy, but I’m going to tweak it a bit—making it more defi and chaotic.
 
-Some ideas today:
+Ideas today:
 
-- I will change game's signature from Joker to the Bera Bera. Guess where I’m getting the art for these bears? I’ll **snap** any bear I come across and turn it into lore and functionality for the game. 🐻📸
+1. I will change game's signature from Joker to the Bera Bera. Guess where I’m getting the art for these bears? I’ll **snap** any bear I come across and turn it into lore and functionality for the game. 🐻📸
 
-**Examples**:
+**Some Examples I snapshot from my child's books**:
 
 | Bera | Ability | 
 |---|---|
 | ![Frame 3](https://github.com/user-attachments/assets/d3ca6ecf-e7bc-40c6-92b6-6d3401805865)  |  Saw its mouth and thought it looked like diamond. This one’s definitely +4 Mult for the Diamond suit 💎🐻 |
 |![Frame 4](https://github.com/user-attachments/assets/634b88cd-3bc0-4650-9bb7-4668e2049012) | This shy little kid is gonna give you +1.5 Mult for every face-down card in your hand. Cooool!!!  | 
 
-Notice the star on the card? Balatro doesn’t have this, huh? What’s it for? Stay tuned for tomorrow’s reveal! 🌟🃏
+Notice the star on the card? Balatro doesn’t have this, huh? What’s it for? Stay tuned for the reveal! 🌟🃏
 
 
