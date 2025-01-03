@@ -37,4 +37,45 @@ Ideas today:
 
 Notice the star on the card? Balatro doesn’t have this, huh? What’s it for? Stay tuned for the reveal! 🌟🃏
 
+## Day 2
+
+Okay, some changes from Balatro
+
+### Joker -> Bera
+Information | Beratro | Balatro | 
+|---|---|---|
+| Unique Card Per Game | 10 | Up to 150 |
+| Cards Per Game | 16 x 10 | Up to 150 |
+| Combinable \* | Yes | No |
+| How to get? | Mint or Random \*\* | Unlock | 
+
+(\*) The Bera card will start with 1-Star (When bought). Can combine 2 Cards 1-Star to 2-Star, and 2 Cards 2-Star to 3-Star to power up card effect
+
+(\*\*) Use ETH to mint Bera Card. It will start with very-small amount (mainly used to cover random-generation fees from ChainLink). And increasing every epoch like Bitcoin-halving (The mechanism will be decide later)
+
+(\*\*\*) You can start easily without a Bera Card or few Bera Cards (but it may feel like a local game). The system will automatically randomize the missing cards for you to make a total of 10 cards to start the game, but this will come with a penalty on rewards.
+
+Cards | Penalty |
+|---|---|
+| 1 | -90% |
+| 2 | -80% |
+| 3 | -70% |
+| 4 | -50% |
+| 5 | -20% |
+| 5+ | None |
+
+### Tarots -> Memes 
+
+Mostly keep the functional, but change the feeling 🌝
+
+### Planets -> Flowers 🌹 🌸 🌻
+
+You can't buy them now, even mega-rich! When finished Ante 8, you will be able to mint a random flower. It will permanently increase Chips & Mult of a Hand. Non-tradable (Soulbound Token)
+
+### Spectrals -> Emoji Stickers 🧩 🏵️ 🎟️
+
+Place a sticker on selected card to add an effect to it (x1.5 Mult when the card is in hand, on play, burn all cards in hand, on play, etc...)
+
+Okay, will come back tomorrow! Have a nice day 🍀
+
 
