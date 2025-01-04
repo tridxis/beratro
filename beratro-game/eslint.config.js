@@ -11,7 +11,7 @@ export default tseslint.config(
     extends: [
       js.configs.recommended,
       ...tseslint.configs.recommendedTypeChecked,
-      ...tseslint.configs.stylisticTypeChecked,
+      // ...tseslint.configs.stylisticTypeChecked,
     ],
     files: ["**/*.{ts,tsx}"],
     languageOptions: {
@@ -36,6 +36,7 @@ export default tseslint.config(
       ],
       ...react.configs.recommended.rules,
       ...react.configs["jsx-runtime"].rules,
+      "@typescript-eslint/no-unsafe-assignment": "off",
     },
   }
 );

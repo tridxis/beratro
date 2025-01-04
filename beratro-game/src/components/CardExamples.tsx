@@ -1,65 +1,38 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { AnimatePresence, motion, Reorder } from "framer-motion";
-import { useState, useEffect } from "react";
-
-interface CardPosition {
-  id: number;
-  suit: string;
-  rank: string;
-}
-
-const cardRanks = {
-  Ace: 14,
-  King: 13,
-  Queen: 12,
-  Jack: 11,
-  "10": 10,
-  "9": 9,
-  "8": 8,
-  "7": 7,
-  "6": 6,
-  "5": 5,
-  "4": 4,
-  "3": 3,
-  "2": 2,
-} as const;
-
-const suitOrder = {
-  Hearts: 1,
-  Diamonds: 2,
-  Clubs: 3,
-  Spades: 4,
-} as const;
+import { useEffect, useRef } from "react";
+import { useCardStore } from "@/store/cardStore";
+import { CardPosition } from "@/types/cards";
+import { SUIT_SYMBOLS } from "@/utils/constants";
+import { Calculator } from "@/utils/calculator";
 
 const DraggableCard = ({
-  id,
-  suit,
-  rank,
+  card: { id, suit, rank },
   isSelected,
   onSelect,
-}: CardPosition & {
+}: {
+  card: CardPosition;
   isSelected: boolean;
   onSelect: (id: number) => void;
 }) => {
-  const suitSymbol = {
-    Hearts: "♥️",
-    Spades: "♠️",
-    Diamonds: "♦️",
-    Clubs: "♣️",
-  }[suit];
+  const isDragging = useRef(false);
 
   const handleCardClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onSelect(id);
+    if (!isDragging.current) {
+      onSelect(id);
+    }
   };
 
   return (
     <Reorder.Item
       value={id}
       id={id.toString()}
+      onDragStart={() => {
+        isDragging.current = true;
+      }}
+      onDragEnd={() => {
+        isDragging.current = false;
+      }}
       initial={{ x: 300, opacity: 0 }}
       animate={{
         x: 0,
@@ -104,27 +77,35 @@ const DraggableCard = ({
       }}
     >
       <div>{rank}</div>
-      <div style={{ fontSize: "32px" }}>{suitSymbol}</div>
+      <div style={{ fontSize: "32px" }}>{SUIT_SYMBOLS[suit]}</div>
     </Reorder.Item>
   );
 };
 
 export const CardExamples = () => {
-  const [cards, setCards] = useState<CardPosition[]>([
-    { id: 1, suit: "Hearts", rank: "Ace" },
-    { id: 2, suit: "Spades", rank: "King" },
-    { id: 3, suit: "Diamonds", rank: "Queen" },
-    { id: 4, suit: "Clubs", rank: "Jack" },
-    { id: 5, suit: "Hearts", rank: "10" },
-  ]);
-  const [selectedCards, setSelectedCards] = useState<number[]>([]);
+  const {
+    cards,
+    selectedCards,
+    sortByValue,
+    sortBySuit,
+    reorderCards,
+    toggleSelectedCard,
+    setSelectedCards,
+  } = useCardStore();
+
+  if (cards.length > 0) {
+    console.log(cards);
+    const score = Calculator.calculateScore(cards);
+    console.log(score);
+  }
 
   useEffect(() => {
     const handleClickOutside = () => {
-      // Close any open card actions
       const cards = document.querySelectorAll(".card");
       cards.forEach((card) => {
-        const instance = card as any;
+        const instance = card as unknown as {
+          setIsSelected?: (isSelected: boolean) => void;
+        };
         if (instance.setIsSelected) {
           instance.setIsSelected(false);
         }
@@ -134,49 +115,6 @@ export const CardExamples = () => {
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
-
-  const sortByValue = () => {
-    setCards((prevCards) => {
-      const sortedCards = [...prevCards].sort((a, b) => {
-        return (
-          (cardRanks[b.rank as keyof typeof cardRanks] || 0) -
-          (cardRanks[a.rank as keyof typeof cardRanks] || 0)
-        );
-      });
-      return sortedCards;
-    });
-  };
-
-  const sortBySuit = () => {
-    setCards((prevCards) => {
-      const sortedCards = [...prevCards].sort((a, b) => {
-        const suitCompare =
-          (suitOrder[a.suit as keyof typeof suitOrder] || 0) -
-          (suitOrder[b.suit as keyof typeof suitOrder] || 0);
-        if (suitCompare === 0) {
-          return (
-            (cardRanks[b.rank as keyof typeof cardRanks] || 0) -
-            (cardRanks[a.rank as keyof typeof cardRanks] || 0)
-          );
-        }
-        return suitCompare;
-      });
-      return sortedCards;
-    });
-  };
-
-  const handleReorder = (newOrder: number[]) => {
-    const reorderedCards = newOrder.map(
-      (id) => cards.find((card) => card.id === id)!
-    );
-    setCards(reorderedCards);
-  };
-
-  const handleSelect = (id: number) => {
-    setSelectedCards((prev) =>
-      prev.includes(id) ? prev.filter((cardId) => cardId !== id) : [...prev, id]
-    );
-  };
 
   const handleAction = (action: "play" | "discard") => {
     console.log(
@@ -269,9 +207,8 @@ export const CardExamples = () => {
 
       <Reorder.Group
         axis="x"
-        as="ul"
         values={cards.map((card) => card.id)}
-        onReorder={handleReorder}
+        onReorder={reorderCards}
         style={{
           display: "flex",
           padding: "20px",
@@ -290,9 +227,9 @@ export const CardExamples = () => {
           {cards.map((card) => (
             <DraggableCard
               key={card.id}
-              {...card}
+              card={card}
               isSelected={selectedCards.includes(card.id)}
-              onSelect={handleSelect}
+              onSelect={toggleSelectedCard}
             />
           ))}
         </AnimatePresence>
