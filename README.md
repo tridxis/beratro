@@ -78,4 +78,19 @@ Place a sticker on selected card to add an effect to it (x1.5 Mult when the card
 
 Okay, will come back tomorrow! Have a nice day 🍀
 
+## Day 3
+
+After consider, I think 10 Beras 1 game is too boring. So I will increase to 20 Beras / game. In addition, there is a bonus of x1.5 points for users with 10 Bera Cards and x2 points for users with 20 Bera Cards.
+
+Today I finished some basic logics:
+
+- Store game state to zustand, and init games with hand cards (8) and deck cards
+- Handle basic score calculation by hand and cards
+- Make up the project with constants
+
+I’m thinking about a mechanism where every hand has its own strength. Perhaps the Bera Cards needs to be redesigned to be more balanced.
+
+Okay, will come back tomorrow! Have a nice day 🍀
+
+
 
