@@ -7,12 +7,17 @@ export interface CardPosition {
 }
 
 export interface CardStore {
-  cards: CardPosition[];
+  handCards: CardPosition[];
+  deckCards: CardPosition[];
   selectedCards: number[];
-  setCards: (cards: CardPosition[]) => void;
+
+  reset: () => void;
+  setHandCards: (cards: CardPosition[]) => void;
+  setDeckCards: (cards: CardPosition[]) => void;
   setSelectedCards: (selectedCards: number[]) => void;
   toggleSelectedCard: (id: number) => void;
   sortByValue: () => void;
   sortBySuit: () => void;
   reorderCards: (newOrder: number[]) => void;
+  dealCards: (count?: number) => void;
 }

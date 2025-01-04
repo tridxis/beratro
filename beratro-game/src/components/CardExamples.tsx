@@ -2,7 +2,7 @@ import { AnimatePresence, motion, Reorder } from "framer-motion";
 import { useEffect, useRef } from "react";
 import { useCardStore } from "@/store/cardStore";
 import { CardPosition } from "@/types/cards";
-import { SUIT_SYMBOLS } from "@/utils/constants";
+import { CardSuit, SUIT_SYMBOLS } from "@/utils/constants";
 import { Calculator } from "@/utils/calculator";
 
 const DraggableCard = ({
@@ -13,6 +13,7 @@ const DraggableCard = ({
   card: CardPosition;
   isSelected: boolean;
   onSelect: (id: number) => void;
+  className: string;
 }) => {
   const isDragging = useRef(false);
 
@@ -60,7 +61,9 @@ const DraggableCard = ({
         justifyContent: "space-between",
         alignItems: "center",
         fontSize: "24px",
-        color: ["Hearts", "Diamonds"].includes(suit) ? "red" : "black",
+        color: [CardSuit.HEARTS, CardSuit.DIAMONDS].includes(suit)
+          ? "red"
+          : "black",
         userSelect: "none",
         position: "relative",
         zIndex: isSelected ? 4 : "auto",
@@ -84,25 +87,33 @@ const DraggableCard = ({
 
 export const CardExamples = () => {
   const {
-    cards,
+    handCards,
     selectedCards,
     sortByValue,
     sortBySuit,
     reorderCards,
     toggleSelectedCard,
     setSelectedCards,
+    reset,
+    dealCards,
   } = useCardStore();
 
-  if (cards.length > 0) {
-    console.log(cards);
-    const score = Calculator.calculateScore(cards);
+  useEffect(() => {
+    if (handCards.length === 0) {
+      dealCards();
+    }
+  }, []);
+
+  if (handCards.length > 0) {
+    console.log(handCards);
+    const score = Calculator.calculateScore(handCards);
     console.log(score);
   }
 
   useEffect(() => {
     const handleClickOutside = () => {
-      const cards = document.querySelectorAll(".card");
-      cards.forEach((card) => {
+      const handCards = document.querySelectorAll(".hand-card");
+      handCards.forEach((card) => {
         const instance = card as unknown as {
           setIsSelected?: (isSelected: boolean) => void;
         };
@@ -118,8 +129,8 @@ export const CardExamples = () => {
 
   const handleAction = (action: "play" | "discard") => {
     console.log(
-      `${action} cards:`,
-      cards.filter((card) => selectedCards.includes(card.id))
+      `${action} handCards:`,
+      handCards.filter((card) => selectedCards.includes(card.id))
     );
     setSelectedCards([]);
   };
@@ -159,6 +170,23 @@ export const CardExamples = () => {
           }}
         >
           Sort by Suit
+        </button>
+
+        <button
+          onClick={() => {
+            reset();
+            dealCards();
+          }}
+          style={{
+            padding: "8px 16px",
+            cursor: "pointer",
+            backgroundColor: "#9e9e9e",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+          }}
+        >
+          Reset
         </button>
 
         {selectedCards.length > 0 && (
@@ -207,7 +235,7 @@ export const CardExamples = () => {
 
       <Reorder.Group
         axis="x"
-        values={cards.map((card) => card.id)}
+        values={handCards.map((card) => card.id)}
         onReorder={reorderCards}
         style={{
           display: "flex",
@@ -224,8 +252,9 @@ export const CardExamples = () => {
         }}
       >
         <AnimatePresence mode="popLayout" initial={true}>
-          {cards.map((card) => (
+          {handCards.map((card) => (
             <DraggableCard
+              className="hand-card"
               key={card.id}
               card={card}
               isSelected={selectedCards.includes(card.id)}

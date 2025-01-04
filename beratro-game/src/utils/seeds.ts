@@ -1,10 +1,30 @@
 import { CardPosition } from "@/types/cards";
 import { CardRank, CardSuit } from "./constants";
 
-export const initialCards: CardPosition[] = [
-  { id: 1, suit: CardSuit.HEARTS, rank: CardRank.ACE },
-  { id: 2, suit: CardSuit.SPADES, rank: CardRank.KING },
-  { id: 3, suit: CardSuit.DIAMONDS, rank: CardRank.QUEEN },
-  { id: 4, suit: CardSuit.CLUBS, rank: CardRank.JACK },
-  { id: 5, suit: CardSuit.HEARTS, rank: CardRank.TEN },
-];
+function generateSequentialIds(): number[] {
+  // Create array of numbers from 1 to 52
+  const ids = Array.from({ length: 52 }, (_, i) => i + 1);
+
+  // Fisher-Yates shuffle algorithm
+  for (let i = ids.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [ids[i], ids[j]] = [ids[j], ids[i]];
+  }
+
+  return ids;
+}
+
+export const initialCards: CardPosition[] = (() => {
+  const shuffledIds = generateSequentialIds();
+  let idIndex = 0;
+
+  return Object.values(CardSuit)
+    .flatMap((suit) =>
+      Object.values(CardRank).map((rank) => ({
+        id: shuffledIds[idIndex++],
+        suit,
+        rank,
+      }))
+    )
+    .sort((a, b) => a.id - b.id);
+})();

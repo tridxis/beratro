@@ -7,10 +7,19 @@ import { initialCards } from "@/utils/seeds";
 export const useCardStore = create<CardStore>()(
   persist(
     (set) => ({
-      cards: initialCards,
+      handCards: [],
+      deckCards: initialCards,
       selectedCards: [] as number[],
 
-      setCards: (cards: CardPosition[]) => set({ cards }),
+      reset: () =>
+        set(() => ({
+          handCards: [],
+          deckCards: initialCards,
+          selectedCards: [],
+        })),
+
+      setHandCards: (handCards: CardPosition[]) => set({ handCards }),
+      setDeckCards: (deckCards: CardPosition[]) => set({ deckCards }),
       setSelectedCards: (selectedCards: number[]) => set({ selectedCards }),
 
       toggleSelectedCard: (id: number) =>
@@ -22,14 +31,14 @@ export const useCardStore = create<CardStore>()(
 
       sortByValue: () =>
         set((state) => ({
-          cards: [...state.cards].sort((a, b) => {
+          handCards: [...state.handCards].sort((a, b) => {
             return (CARD_RANKS[b.rank] || 0) - (CARD_RANKS[a.rank] || 0);
           }),
         })),
 
       sortBySuit: () =>
         set((state) => ({
-          cards: [...state.cards].sort((a, b) => {
+          handCards: [...state.handCards].sort((a, b) => {
             const suitCompare =
               (SUIT_ORDER[a.suit] || 0) - (SUIT_ORDER[b.suit] || 0);
             if (suitCompare === 0) {
@@ -41,12 +50,26 @@ export const useCardStore = create<CardStore>()(
 
       reorderCards: (newOrder: number[]) =>
         set((state: CardStore) => ({
-          cards: newOrder.map((id) => {
-            const card = state.cards.find((card) => card.id === id);
+          handCards: newOrder.map((id) => {
+            const card = state.handCards.find((card) => card.id === id);
             if (!card) throw new Error(`Card with id ${id} not found`);
             return card;
           }),
         })),
+
+      dealCards: (count?: number) =>
+        set((state) => {
+          const availableSpace = 8 - state.handCards.length;
+          const cardsToDeal = count ?? availableSpace;
+
+          const dealtCards = state.deckCards.slice(0, cardsToDeal);
+          const remainingDeck = state.deckCards.slice(cardsToDeal);
+
+          return {
+            handCards: [...state.handCards, ...dealtCards],
+            deckCards: remainingDeck,
+          };
+        }),
     }),
     {
       name: "card-storage",
