@@ -92,5 +92,14 @@ I’m thinking about a mechanism where every hand has its own strength. Perhaps 
 
 Okay, will come back tomorrow! Have a nice day 🍀
 
+## Day 4
+
+I think the mechanics of Bera cards will be similar to heroes in MOBA games, with core cards and support cards (possibly even economy cards). So I’ll probably build in this direction. For example, a very imba Bera card could remove a random Bera card when activated, which would require a support Bera card that shields the card on its right / left.
+
+In addition, Bera Cards can be equipped with weapons to  +Chips, +Mult, or xMult. These weapons will appear randomly in the shop when a blind ends.
+
+Today, I finished the logic for playing and discarding cards. Tomorrow, after adding calculations and hanle some states, I’ll be able to play my game. Hooray!
+
+See yaa 🍀
 
 
