@@ -1,21 +1,33 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { type CardStore, CardPosition } from "@/types/cards";
-import { SUIT_ORDER, CARD_RANKS } from "@/utils/constants";
-import { initialCards } from "@/utils/seeds";
+import { type CardPosition } from "@/types/cards";
+import { type GameStore } from "@/types/games";
+import {
+  SUIT_ORDER,
+  CARD_RANKS,
+  DEFAULT_MAX_HANDS,
+  DEFAULT_MAX_DISCARDS,
+} from "@/utils/constants";
+import { initCards } from "@/utils/seeds";
 
-export const useCardStore = create<CardStore>()(
+export const useGameStore = create<GameStore>()(
   persist(
     (set) => ({
       handCards: [],
-      deckCards: initialCards,
+      deckCards: initCards(),
       selectedCards: [] as number[],
+      playedHands: [] as CardPosition[][],
+      discards: [] as CardPosition[][],
+      maxHands: DEFAULT_MAX_HANDS,
+      maxDiscards: DEFAULT_MAX_DISCARDS,
 
       reset: () =>
         set(() => ({
           handCards: [],
-          deckCards: initialCards,
+          deckCards: initCards(),
           selectedCards: [],
+          playedHands: [],
+          discards: [],
         })),
 
       setHandCards: (handCards: CardPosition[]) => set({ handCards }),
@@ -23,7 +35,7 @@ export const useCardStore = create<CardStore>()(
       setSelectedCards: (selectedCards: number[]) => set({ selectedCards }),
 
       toggleSelectedCard: (id: number) =>
-        set((state: CardStore) => ({
+        set((state: GameStore) => ({
           selectedCards: state.selectedCards.includes(id)
             ? state.selectedCards.filter((cardId) => cardId !== id)
             : [...state.selectedCards, id],
@@ -49,7 +61,7 @@ export const useCardStore = create<CardStore>()(
         })),
 
       reorderCards: (newOrder: number[]) =>
-        set((state: CardStore) => ({
+        set((state: GameStore) => ({
           handCards: newOrder.map((id) => {
             const card = state.handCards.find((card) => card.id === id);
             if (!card) throw new Error(`Card with id ${id} not found`);
@@ -70,6 +82,46 @@ export const useCardStore = create<CardStore>()(
             deckCards: remainingDeck,
           };
         }),
+
+      playSelectedCards: () =>
+        set((state) => {
+          const selectedHandCards = state.handCards.filter((card) =>
+            state.selectedCards.includes(card.id)
+          );
+
+          if (selectedHandCards.length === 0) return state;
+
+          const remainingHandCards = state.handCards.filter(
+            (card) => !state.selectedCards.includes(card.id)
+          );
+
+          return {
+            handCards: remainingHandCards,
+            selectedCards: [],
+            playedHands: [...state.playedHands, selectedHandCards],
+          };
+        }),
+
+      discardSelectedCards: () =>
+        set((state) => {
+          const selectedHandCards = state.handCards.filter((card) =>
+            state.selectedCards.includes(card.id)
+          );
+
+          if (selectedHandCards.length === 0) return state;
+
+          const remainingHandCards = state.handCards.filter(
+            (card) => !state.selectedCards.includes(card.id)
+          );
+
+          return {
+            handCards: remainingHandCards,
+            selectedCards: [],
+            discards: [...state.discards, selectedHandCards],
+          };
+        }),
+      setMaxHands: (value) => set({ maxHands: value }),
+      setMaxDiscards: (value) => set({ maxDiscards: value }),
     }),
     {
       name: "card-storage",

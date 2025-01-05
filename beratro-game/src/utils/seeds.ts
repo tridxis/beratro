@@ -14,7 +14,7 @@ function generateSequentialIds(): number[] {
   return ids;
 }
 
-export const initialCards: CardPosition[] = (() => {
+export const initCards = (): CardPosition[] => {
   const shuffledIds = generateSequentialIds();
   let idIndex = 0;
 
@@ -27,4 +27,4 @@ export const initialCards: CardPosition[] = (() => {
       }))
     )
     .sort((a, b) => a.id - b.id);
-})();
+};

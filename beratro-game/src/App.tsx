@@ -1,8 +1,8 @@
 import "./App.css";
-import { CardExamples } from "./components/CardExamples";
+import { Game } from "./components/Game";
 
 function App() {
-  return <CardExamples />;
+  return <Game />;
 }
 
 export default App;

@@ -89,3 +89,6 @@ export const HAND_NAMES: Record<HandType, string> = {
   [HandType.Pair]: "Pair",
   [HandType.HighCard]: "High Card",
 };
+
+export const DEFAULT_MAX_HANDS = 4;
+export const DEFAULT_MAX_DISCARDS = 3;
