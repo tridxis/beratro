@@ -8,6 +8,7 @@ export interface GameStore {
   discards: CardPosition[][];
   maxHands: number;
   maxDiscards: number;
+  score: number;
 
   reset: () => void;
   setHandCards: (cards: CardPosition[]) => void;
@@ -22,4 +23,5 @@ export interface GameStore {
   discardSelectedCards: () => void;
   setMaxHands: (value: number) => void;
   setMaxDiscards: (value: number) => void;
+  addScore: (points: number) => void;
 }

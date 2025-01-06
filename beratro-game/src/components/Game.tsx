@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useGameStore } from "@/store/gameStore";
 import DisplayCard from "./cards/DisplayCard";
 import DraggableCard from "./cards/DraggableCard";
+import { Calculator } from "@/utils/calculator";
 // import { Calculator } from "@/utils/calculator";
 
 export const Game = () => {
@@ -18,12 +19,15 @@ export const Game = () => {
     dealCards,
     playSelectedCards,
     discardSelectedCards,
+    score,
+    addScore,
     discards,
     maxHands,
     maxDiscards,
   } = useGameStore();
 
   const [lastPlayedIndex, setLastPlayedIndex] = useState<number | null>(null);
+  const [currentScore, setCurrentScore] = useState<number | null>(null);
 
   useEffect(() => {
     if (handCards.length === 0) {
@@ -58,9 +62,23 @@ export const Game = () => {
         return;
       }
       playSelectedCards();
+
+      // Calculate score for the played hand
+      const playedHand = selectedCards.map(
+        (id) => handCards.find((card) => card.id === id)!
+      );
+
+      const score = Calculator.calculateScore(playedHand); // You'll need to implement this function
+
+      // Update states
       setLastPlayedIndex(playedHands.length);
+      setCurrentScore(score);
+      addScore(score);
+
+      // Reset visual indicators after delay
       setTimeout(() => {
         setLastPlayedIndex(null);
+        setCurrentScore(null);
       }, 5000);
     } else {
       if (discards.length >= maxDiscards) {
@@ -79,6 +97,8 @@ export const Game = () => {
           display: "flex",
           justifyContent: "center",
           marginBottom: "20px",
+          gap: "20px",
+          alignItems: "center",
         }}
       >
         <button
@@ -97,6 +117,18 @@ export const Game = () => {
         >
           Reset
         </button>
+        <div
+          style={{
+            fontSize: "1.2em",
+            fontWeight: "bold",
+            padding: "8px 16px",
+            backgroundColor: "#ffd700",
+            color: "#000",
+            borderRadius: "4px",
+          }}
+        >
+          Score: {score}
+        </div>
       </div>
 
       <div style={{ marginTop: "20px" }}>
@@ -112,22 +144,41 @@ export const Game = () => {
           }}
         >
           {lastPlayedIndex !== null && playedHands[lastPlayedIndex] && (
-            <div
-              style={{
-                padding: "10px",
-                border: "1px solid #ffd700",
-                borderRadius: "8px",
-                display: "flex",
-                gap: "10px",
-                transition: "all 0.3s ease",
-                boxShadow: "0 0 15px rgba(255, 215, 0, 0.5)",
-                transform: "scale(1.05)",
-                animation: "fadeIn 0.3s ease-in",
-              }}
-            >
-              {playedHands[lastPlayedIndex].map((card) => (
-                <DisplayCard key={card.id} card={card} />
-              ))}
+            <div style={{ position: "relative" }}>
+              <div
+                style={{
+                  padding: "10px",
+                  border: "1px solid #ffd700",
+                  borderRadius: "8px",
+                  display: "flex",
+                  gap: "10px",
+                  transition: "all 0.3s ease",
+                  boxShadow: "0 0 15px rgba(255, 215, 0, 0.5)",
+                  transform: "scale(1.05)",
+                  animation: "fadeIn 0.3s ease-in",
+                }}
+              >
+                {playedHands[lastPlayedIndex].map((card) => (
+                  <DisplayCard key={card.id} card={card} />
+                ))}
+              </div>
+              {currentScore !== null && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "-25px",
+                    right: "-10px",
+                    background: "#ffd700",
+                    padding: "5px 10px",
+                    borderRadius: "15px",
+                    color: "#000",
+                    fontWeight: "bold",
+                    animation: "fadeIn 0.3s ease-in",
+                  }}
+                >
+                  +{currentScore} points
+                </div>
+              )}
             </div>
           )}
         </div>

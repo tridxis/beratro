@@ -20,6 +20,7 @@ export const useGameStore = create<GameStore>()(
       discards: [] as CardPosition[][],
       maxHands: DEFAULT_MAX_HANDS,
       maxDiscards: DEFAULT_MAX_DISCARDS,
+      score: 0,
 
       reset: () =>
         set(() => ({
@@ -28,6 +29,7 @@ export const useGameStore = create<GameStore>()(
           selectedCards: [],
           playedHands: [],
           discards: [],
+          score: 0,
         })),
 
       setHandCards: (handCards: CardPosition[]) => set({ handCards }),
@@ -122,6 +124,10 @@ export const useGameStore = create<GameStore>()(
         }),
       setMaxHands: (value) => set({ maxHands: value }),
       setMaxDiscards: (value) => set({ maxDiscards: value }),
+      addScore: (points: number) =>
+        set((state) => ({
+          score: state.score + points,
+        })),
     }),
     {
       name: "card-storage",
