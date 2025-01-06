@@ -6,7 +6,7 @@ export class Calculator {
   static calculateScore(cards: CardPosition[]): {
     score: number;
     scoredCards: (CardPosition & { chips: number[]; mults: number[] })[];
-    handType: HandType;
+    pokerHand: PokerHand;
   } {
     const pokerHand = this.identifyPokerHand(cards);
     const { baseChips, scoredCards } = this.calculateBaseChips(
@@ -16,7 +16,7 @@ export class Calculator {
     return {
       score: (baseChips + pokerHand.chips) * pokerHand.mult,
       scoredCards,
-      handType: pokerHand.handType,
+      pokerHand: pokerHand,
     };
   }
 
@@ -73,9 +73,9 @@ export class Calculator {
     }
 
     // For high card, just take the highest value card
-    const highestCard = [...cards].sort(
-      (a, b) => CARD_RANKS[b.rank] - CARD_RANKS[a.rank]
-    )[0];
+    const highestCard =
+      cards.find((card) => CARD_RANKS[card.rank] === 1) ??
+      [...cards].sort((a, b) => CARD_RANKS[b.rank] - CARD_RANKS[a.rank])[0];
     const { mult, chips } = HAND_VALUES[HandType.HighCard];
     return {
       handType: HandType.HighCard,

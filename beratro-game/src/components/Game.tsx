@@ -1,9 +1,11 @@
 import { AnimatePresence, motion, Reorder } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGameStore } from "@/store/gameStore";
 import DisplayCard from "./cards/DisplayCard";
 import DraggableCard from "./cards/DraggableCard";
 import { Calculator } from "@/utils/calculator";
+import { HandType } from "@/utils/constants";
+import { PokerHand } from "@/types/hands";
 // import { Calculator } from "@/utils/calculator";
 
 export const Game = () => {
@@ -35,14 +37,13 @@ export const Game = () => {
     };
   }>({});
 
+  const pokerHandRef = useRef<PokerHand | null>(null);
+
   useEffect(() => {
     if (handCards.length === 0) {
       dealCards();
     }
   }, []);
-
-  console.log(playedHands);
-  console.log(handCards);
 
   useEffect(() => {
     const handleClickOutside = () => {
@@ -73,9 +74,8 @@ export const Game = () => {
       const playedCards = selectedCards.map(
         (id) => handCards.find((card) => card.id === id)!
       );
-      const { score, scoredCards } = Calculator.calculateScore(playedCards);
-
-      console.log("scoredCards", scoredCards);
+      const { score, scoredCards, pokerHand } =
+        Calculator.calculateScore(playedCards);
 
       // Animate individual card scores
       playedCards.forEach((card, index) => {
@@ -83,7 +83,7 @@ export const Game = () => {
           setTimeout(() => {
             setCardScores((prev) => ({
               ...prev,
-              [card.id]: {
+              [scoredCards[index].id]: {
                 chips: scoredCards[index].chips,
                 mults: scoredCards[index].mults,
               },
@@ -92,16 +92,19 @@ export const Game = () => {
         }
       });
 
+      pokerHandRef.current = pokerHand;
+
       // Update total score after all individual scores are shown
       setTimeout(() => {
         setCurrentScore(score);
         addScore(score);
 
+        setCardScores({});
         // Clear individual scores and reset display after 5s
         setTimeout(() => {
-          setCardScores({});
           setCurrentScore(null);
           setLastPlayedIndex(null);
+          pokerHandRef.current = null;
         }, playedCards.length * (scoredCards[0].chips.length + scoredCards[0].mults.length) * 200 + 2000);
       }, playedCards.length * 200 + 200); // Wait for all card scores to show
 
@@ -115,6 +118,9 @@ export const Game = () => {
     }
     dealCards();
   };
+
+  console.log(playedHands);
+  console.log(cardScores);
 
   return (
     <div style={{ padding: "20px" }}>
@@ -191,7 +197,7 @@ export const Game = () => {
                       <div
                         style={{
                           position: "absolute",
-                          top: "-20px",
+                          bottom: "0",
                           left: "50%",
                           transform: "translateX(-50%)",
                           display: "flex",
@@ -250,22 +256,82 @@ export const Game = () => {
                   </div>
                 ))}
               </div>
-              {currentScore !== null && (
+              {!!pokerHandRef.current && (
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    delay:
+                      playedHands[lastPlayedIndex].length *
+                      (Object.values(cardScores)[0]?.chips.length +
+                        Object.values(cardScores)[0]?.mults.length) *
+                      0.2,
+                  }}
                   style={{
                     position: "absolute",
-                    top: "-25px",
+                    top: "-50px",
                     right: "-10px",
-                    background: "#ffd700",
+                    background: "#4a148c",
                     padding: "5px 10px",
                     borderRadius: "15px",
-                    color: "#000",
+                    color: "#fff",
                     fontWeight: "bold",
+                    display: "flex",
+                    gap: "8px",
+                    alignItems: "center",
                   }}
                 >
-                  +{currentScore} points
+                  <span>{pokerHandRef.current?.handType}</span>
+                  {pokerHandRef.current?.chips &&
+                    pokerHandRef.current?.chips > 0 && (
+                      <span
+                        style={{
+                          background: "#ffd700",
+                          padding: "2px 6px",
+                          borderRadius: "10px",
+                          color: "#000",
+                        }}
+                      >
+                        +{pokerHandRef.current?.chips}
+                      </span>
+                    )}
+                  {pokerHandRef.current?.mult &&
+                    pokerHandRef.current?.mult > 0 && (
+                      <span
+                        style={{
+                          background: "#ff4081",
+                          padding: "2px 6px",
+                          borderRadius: "10px",
+                          color: "#fff",
+                        }}
+                      >
+                        ×{pokerHandRef.current?.mult}
+                      </span>
+                    )}
+                  {currentScore !== null && (
+                    <motion.span
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{
+                        delay:
+                          playedHands[lastPlayedIndex].length *
+                            (Object.values(cardScores)[0]?.chips.length +
+                              Object.values(cardScores)[0]?.mults.length) *
+                            0.2 +
+                          0.2, // Add slight additional delay
+                        duration: 0.3,
+                      }}
+                      style={{
+                        background: "#ffd700",
+                        padding: "2px 6px",
+                        borderRadius: "10px",
+                        color: "#000",
+                        marginLeft: "4px",
+                      }}
+                    >
+                      +{currentScore} points
+                    </motion.span>
+                  )}
                 </motion.div>
               )}
             </div>
