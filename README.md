@@ -102,4 +102,15 @@ Today, I finished the logic for playing and discarding cards. Tomorrow, after ad
 
 See yaa 🍀
 
+## Day 5
+
+Yes yes, today I finished the score calculation and display them to the screen with a little animation.
+
+I know that I'm too far from the best graphic & fx of Balatro, but save the best for last, I will implement them at the end. And will spend almost time to do it, for sure 📌
+
+Tomorrow, I will test around the score calculation, fix some bugs if having and continue to make a game state. And re-arrange the UIs too. Currently it's too mess.
+
+Tomorrow! See yaa 🍀
+
+
 
