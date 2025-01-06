@@ -28,6 +28,12 @@ export const Game = () => {
 
   const [lastPlayedIndex, setLastPlayedIndex] = useState<number | null>(null);
   const [currentScore, setCurrentScore] = useState<number | null>(null);
+  const [cardScores, setCardScores] = useState<{
+    [key: number]: {
+      chips: number[];
+      mults: number[];
+    };
+  }>({});
 
   useEffect(() => {
     if (handCards.length === 0) {
@@ -64,22 +70,42 @@ export const Game = () => {
       playSelectedCards();
 
       // Calculate score for the played hand
-      const playedHand = selectedCards.map(
+      const playedCards = selectedCards.map(
         (id) => handCards.find((card) => card.id === id)!
       );
+      const { score, scoredCards } = Calculator.calculateScore(playedCards);
 
-      const score = Calculator.calculateScore(playedHand); // You'll need to implement this function
+      console.log("scoredCards", scoredCards);
 
-      // Update states
-      setLastPlayedIndex(playedHands.length);
-      setCurrentScore(score);
-      addScore(score);
+      // Animate individual card scores
+      playedCards.forEach((card, index) => {
+        if (scoredCards[index]) {
+          setTimeout(() => {
+            setCardScores((prev) => ({
+              ...prev,
+              [card.id]: {
+                chips: scoredCards[index].chips,
+                mults: scoredCards[index].mults,
+              },
+            }));
+          }, index * 200); // Show each card's score 200ms apart
+        }
+      });
 
-      // Reset visual indicators after delay
+      // Update total score after all individual scores are shown
       setTimeout(() => {
-        setLastPlayedIndex(null);
-        setCurrentScore(null);
-      }, 5000);
+        setCurrentScore(score);
+        addScore(score);
+
+        // Clear individual scores and reset display after 5s
+        setTimeout(() => {
+          setCardScores({});
+          setCurrentScore(null);
+          setLastPlayedIndex(null);
+        }, playedCards.length * (scoredCards[0].chips.length + scoredCards[0].mults.length) * 200 + 2000);
+      }, playedCards.length * 200 + 200); // Wait for all card scores to show
+
+      setLastPlayedIndex(playedHands.length);
     } else {
       if (discards.length >= maxDiscards) {
         alert(`Maximum of ${maxDiscards} discards reached!`);
@@ -159,11 +185,75 @@ export const Game = () => {
                 }}
               >
                 {playedHands[lastPlayedIndex].map((card) => (
-                  <DisplayCard key={card.id} card={card} />
+                  <div key={card.id} style={{ position: "relative" }}>
+                    <DisplayCard card={card} />
+                    {cardScores[card.id] !== undefined && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: "-20px",
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          gap: "4px",
+                          pointerEvents: "none",
+                        }}
+                      >
+                        {/* Show chips first */}
+                        {cardScores[card.id].chips.map((chip, index) => (
+                          <motion.div
+                            key={`chip-${index}`}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.2 }}
+                            style={{
+                              background: "#ffd700",
+                              padding: "2px 6px",
+                              borderRadius: "10px",
+                              fontSize: "0.8em",
+                              fontWeight: "bold",
+                              color: "#000",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            +{chip}
+                          </motion.div>
+                        ))}
+                        {/* Show multipliers after chips */}
+                        {cardScores[card.id].mults.map((mult, index) => (
+                          <motion.div
+                            key={`mult-${index}`}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{
+                              delay:
+                                (cardScores[card.id].chips.length + index) *
+                                0.2,
+                            }}
+                            style={{
+                              background: "#ff4081",
+                              padding: "2px 6px",
+                              borderRadius: "10px",
+                              fontSize: "0.8em",
+                              fontWeight: "bold",
+                              color: "#fff",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            ×{mult}
+                          </motion.div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 ))}
               </div>
               {currentScore !== null && (
-                <div
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
                   style={{
                     position: "absolute",
                     top: "-25px",
@@ -173,11 +263,10 @@ export const Game = () => {
                     borderRadius: "15px",
                     color: "#000",
                     fontWeight: "bold",
-                    animation: "fadeIn 0.3s ease-in",
                   }}
                 >
                   +{currentScore} points
-                </div>
+                </motion.div>
               )}
             </div>
           )}
