@@ -2,7 +2,7 @@ import { CardPosition } from "@/types/cards";
 import { CardSuit, SUIT_SYMBOLS } from "@/utils/constants";
 import { Reorder } from "framer-motion";
 import { useRef } from "react";
-import { cardStyle } from "./styles";
+import { CARD_STYLES } from "@/utils/cardStyles";
 
 const DraggableCard = ({
   card: { id, suit, rank },
@@ -47,13 +47,16 @@ const DraggableCard = ({
       }}
       exit={{ x: -300, opacity: 0 }}
       style={{
-        ...cardStyle,
-        border: `2px solid ${isSelected ? "#4CAF50" : "black"}`,
+        ...CARD_STYLES.container,
+        border: isSelected ? "2px solid #4CAF50" : "1px solid #ccc",
         color: [CardSuit.HEARTS, CardSuit.DIAMONDS].includes(suit)
           ? "red"
           : "black",
         cursor: "grab",
-        zIndex: isSelected ? 4 : "auto",
+        // zIndex: 100,
+      }}
+      whileHover={{
+        boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
       }}
       whileDrag={{
         cursor: "grabbing",
@@ -66,8 +69,9 @@ const DraggableCard = ({
         duration: 0.1,
       }}
     >
-      <div>{rank}</div>
-      <div style={{ fontSize: "32px" }}>{SUIT_SYMBOLS[suit]}</div>
+      <div style={CARD_STYLES.topRank}>{rank}</div>
+      <div style={CARD_STYLES.suit}>{SUIT_SYMBOLS[suit]}</div>
+      <div style={CARD_STYLES.bottomRank}>{rank}</div>
     </Reorder.Item>
   );
 };

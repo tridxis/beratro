@@ -1,7 +1,7 @@
 import { AnimatePresence, motion, Reorder } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { useGameStore } from "@/store/gameStore";
-import DisplayCard from "./cards/DisplayCard";
+import { DisplayCard } from "./cards/DisplayCard";
 import DraggableCard from "./cards/DraggableCard";
 import { Calculator } from "@/utils/calculator";
 import { HandType } from "@/utils/constants";
@@ -88,7 +88,7 @@ export const Game = () => {
                 mults: scoredCards[index].mults,
               },
             }));
-          }, index * 200); // Show each card's score 200ms apart
+          }, index * 360); // Show each card's score 200ms apart
         }
       });
 
@@ -105,8 +105,8 @@ export const Game = () => {
           setCurrentScore(null);
           setLastPlayedIndex(null);
           pokerHandRef.current = null;
-        }, playedCards.length * (scoredCards[0].chips.length + scoredCards[0].mults.length) * 200 + 2000);
-      }, playedCards.length * 200 + 200); // Wait for all card scores to show
+        }, playedCards.length * (scoredCards[0].chips.length + scoredCards[0].mults.length) * 360 + 360);
+      }, playedCards.length * 360 + 360); // Wait for all card scores to show
 
       setLastPlayedIndex(playedHands.length);
     } else {
@@ -123,340 +123,418 @@ export const Game = () => {
   console.log(cardScores);
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div
+      style={{
+        backgroundColor: "#1a472a",
+        minHeight: "100vh",
+        width: "100vw",
+        display: "flex",
+      }}
+    >
+      {/* Left Panel */}
       <div
         style={{
-          display: "flex",
-          justifyContent: "center",
-          marginBottom: "20px",
-          gap: "20px",
-          alignItems: "center",
+          width: "300px",
+          background: "rgba(0,0,0,0.8)",
+          padding: "20px",
         }}
       >
+        {/* Reset Button */}
         <button
           onClick={() => {
             reset();
             dealCards();
           }}
           style={{
-            padding: "8px 16px",
-            cursor: "pointer",
+            width: "100%",
+            padding: "10px",
+            marginBottom: "10px",
             backgroundColor: "#9e9e9e",
             color: "white",
             border: "none",
-            borderRadius: "4px",
+            borderRadius: "8px",
+            cursor: "pointer",
+            fontWeight: "bold",
+            transition: "background-color 0.2s",
           }}
+          onMouseOver={(e) =>
+            (e.currentTarget.style.backgroundColor = "#858585")
+          }
+          onMouseOut={(e) =>
+            (e.currentTarget.style.backgroundColor = "#9e9e9e")
+          }
         >
           Reset
         </button>
+
+        {/* Big Blind Box */}
         <div
           style={{
-            fontSize: "1.2em",
-            fontWeight: "bold",
-            padding: "8px 16px",
-            backgroundColor: "#ffd700",
-            color: "#000",
-            borderRadius: "4px",
+            backgroundColor: "#8B4513",
+            borderRadius: "8px",
+            marginBottom: "10px",
           }}
         >
-          Score: {score}
+          <div
+            style={{
+              padding: "10px",
+              borderTopLeftRadius: "8px",
+              borderTopRightRadius: "8px",
+              backgroundColor: "#704214",
+              color: "white",
+              fontWeight: "bold",
+            }}
+          >
+            Big Blind
+          </div>
+          <div
+            style={{
+              padding: "10px",
+              backgroundColor: "#2C3E50",
+              borderBottomLeftRadius: "8px",
+              borderBottomRightRadius: "8px",
+            }}
+          >
+            <div style={{ color: "white" }}>Score at least</div>
+            <div style={{ fontSize: "32px", color: "#FF4444" }}>1,200</div>
+            <div style={{ color: "#FFD700" }}>to earn $$$$</div>
+          </div>
+        </div>
+
+        {/* Round Score */}
+        <div
+          style={{
+            backgroundColor: "#2C3E50",
+            padding: "10px",
+            borderRadius: "8px",
+            marginBottom: "10px",
+          }}
+        >
+          <div style={{ color: "white" }}>Round score</div>
+          <div style={{ fontSize: "32px", color: "white" }}>{score}</div>
+        </div>
+
+        {/* Two Pair Info */}
+        <div
+          style={{
+            backgroundColor: "#2C3E50",
+            padding: "10px",
+            borderRadius: "8px",
+            marginBottom: "10px",
+          }}
+        >
+          <div style={{ color: "white", marginBottom: "5px" }}>
+            {pokerHandRef.current?.handType}
+          </div>
+          <div
+            style={{
+              display: "flex",
+              gap: "5px",
+              fontWeight: "bold",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <span
+              style={{
+                backgroundColor: "#3498db",
+                padding: "5px 10px",
+                borderRadius: "4px",
+                color: "white",
+              }}
+            >
+              {(pokerHandRef.current?.chips || 0) +
+                Object.keys(cardScores).reduce(
+                  (sum: number, card: string) =>
+                    sum +
+                    cardScores[Number(card)].chips.reduce(
+                      (sum: number, chip: number) => sum + chip,
+                      0
+                    ),
+                  0
+                )}
+            </span>
+            ×
+            <span
+              style={{
+                backgroundColor: "#e74c3c",
+                padding: "5px 10px",
+                borderRadius: "4px",
+                color: "white",
+              }}
+            >
+              {pokerHandRef.current?.mult || 0}
+            </span>
+          </div>
+        </div>
+
+        {/* Stats Grid */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "10px",
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "#2C3E50",
+              padding: "10px",
+              borderRadius: "8px",
+              textAlign: "center",
+            }}
+          >
+            <div style={{ color: "white" }}>Hands</div>
+            <div
+              style={{ color: "#3498db", fontSize: "24px", fontWeight: "bold" }}
+            >
+              {maxHands - playedHands.length}
+            </div>
+          </div>
+          <div
+            style={{
+              backgroundColor: "#2C3E50",
+              padding: "10px",
+              borderRadius: "8px",
+              textAlign: "center",
+            }}
+          >
+            <div style={{ color: "white" }}>Discards</div>
+            <div
+              style={{ color: "#e74c3c", fontSize: "24px", fontWeight: "bold" }}
+            >
+              {maxDiscards - discards.length}
+            </div>
+          </div>
         </div>
       </div>
 
-      <div style={{ marginTop: "20px" }}>
-        <h3>
-          Played Hands: ({playedHands.length}/{maxHands})
-        </h3>
+      {/* Main Game Area */}
+      <div style={{ flex: 1, padding: "20px" }}>
+        {/* Deck Area - Top Right */}
         <div
           style={{
             display: "flex",
-            flexWrap: "wrap",
-            gap: "20px",
+            justifyContent: "flex-end",
+            height: "180px",
+          }}
+        ></div>
+
+        {/* Played Hand Area */}
+        <div
+          style={{
             minHeight: "180px",
+            marginBottom: "20px",
+            position: "relative",
           }}
         >
-          {lastPlayedIndex !== null && playedHands[lastPlayedIndex] && (
-            <div style={{ position: "relative" }}>
+          {playedHands.map((hand, handIndex) => (
+            <div
+              key={handIndex}
+              style={{
+                position: "relative",
+                opacity: handIndex === lastPlayedIndex ? 1 : 0,
+                display: handIndex === lastPlayedIndex ? "block" : "none",
+              }}
+            >
               <div
                 style={{
-                  padding: "10px",
-                  border: "1px solid #ffd700",
-                  borderRadius: "8px",
+                  padding: "4px",
                   display: "flex",
-                  gap: "10px",
+                  justifyContent: "center",
                   transition: "all 0.3s ease",
-                  boxShadow: "0 0 15px rgba(255, 215, 0, 0.5)",
-                  transform: "scale(1.05)",
-                  animation: "fadeIn 0.3s ease-in",
+                  transform:
+                    handIndex === lastPlayedIndex ? "scale(1.05)" : "scale(1)",
                 }}
               >
-                {playedHands[lastPlayedIndex].map((card) => (
-                  <div key={card.id} style={{ position: "relative" }}>
+                {hand.map((card, index) => (
+                  <div
+                    key={card.id}
+                    style={{
+                      marginLeft: index > 0 ? "20px" : "0",
+                      position: "relative",
+                      zIndex: index,
+                    }}
+                  >
                     <DisplayCard card={card} />
-                    {cardScores[card.id] !== undefined && (
-                      <div
+                    {cardScores[card.id] && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
                         style={{
                           position: "absolute",
-                          bottom: "0",
+                          top: "-40px",
                           left: "50%",
+                          width: "fit-content",
                           transform: "translateX(-50%)",
                           display: "flex",
                           flexDirection: "column",
                           alignItems: "center",
                           gap: "4px",
-                          pointerEvents: "none",
                         }}
                       >
-                        {/* Show chips first */}
-                        {cardScores[card.id].chips.map((chip, index) => (
-                          <motion.div
-                            key={`chip-${index}`}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.2 }}
+                        {cardScores[card.id].chips.map((chip, i) => (
+                          <div
+                            key={i}
                             style={{
-                              background: "#ffd700",
-                              padding: "2px 6px",
-                              borderRadius: "10px",
-                              fontSize: "0.8em",
+                              background: "#0092ff",
+                              padding: "10px",
+                              color: "#fff",
+                              fontSize: "20px",
                               fontWeight: "bold",
-                              color: "#000",
-                              whiteSpace: "nowrap",
                             }}
                           >
                             +{chip}
-                          </motion.div>
+                          </div>
                         ))}
-                        {/* Show multipliers after chips */}
-                        {cardScores[card.id].mults.map((mult, index) => (
-                          <motion.div
-                            key={`mult-${index}`}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{
-                              delay:
-                                (cardScores[card.id].chips.length + index) *
-                                0.2,
-                            }}
+                        {cardScores[card.id].mults.map((mult, i) => (
+                          <div
+                            key={i}
                             style={{
-                              background: "#ff4081",
-                              padding: "2px 6px",
-                              borderRadius: "10px",
-                              fontSize: "0.8em",
-                              fontWeight: "bold",
+                              background: "#0092ff",
+                              padding: "10px",
                               color: "#fff",
-                              whiteSpace: "nowrap",
+                              fontSize: "12px",
                             }}
                           >
                             ×{mult}
-                          </motion.div>
+                          </div>
                         ))}
-                      </div>
+                      </motion.div>
                     )}
                   </div>
                 ))}
               </div>
-              {!!pokerHandRef.current && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    delay:
-                      playedHands[lastPlayedIndex].length *
-                      (Object.values(cardScores)[0]?.chips.length +
-                        Object.values(cardScores)[0]?.mults.length) *
-                      0.2,
-                  }}
-                  style={{
-                    position: "absolute",
-                    top: "-50px",
-                    right: "-10px",
-                    background: "#4a148c",
-                    padding: "5px 10px",
-                    borderRadius: "15px",
-                    color: "#fff",
-                    fontWeight: "bold",
-                    display: "flex",
-                    gap: "8px",
-                    alignItems: "center",
-                  }}
-                >
-                  <span>{pokerHandRef.current?.handType}</span>
-                  {pokerHandRef.current?.chips &&
-                    pokerHandRef.current?.chips > 0 && (
-                      <span
-                        style={{
-                          background: "#ffd700",
-                          padding: "2px 6px",
-                          borderRadius: "10px",
-                          color: "#000",
-                        }}
-                      >
-                        +{pokerHandRef.current?.chips}
-                      </span>
-                    )}
-                  {pokerHandRef.current?.mult &&
-                    pokerHandRef.current?.mult > 0 && (
-                      <span
-                        style={{
-                          background: "#ff4081",
-                          padding: "2px 6px",
-                          borderRadius: "10px",
-                          color: "#fff",
-                        }}
-                      >
-                        ×{pokerHandRef.current?.mult}
-                      </span>
-                    )}
-                  {currentScore !== null && (
-                    <motion.span
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{
-                        delay:
-                          playedHands[lastPlayedIndex].length *
-                            (Object.values(cardScores)[0]?.chips.length +
-                              Object.values(cardScores)[0]?.mults.length) *
-                            0.2 +
-                          0.2, // Add slight additional delay
-                        duration: 0.3,
-                      }}
-                      style={{
-                        background: "#ffd700",
-                        padding: "2px 6px",
-                        borderRadius: "10px",
-                        color: "#000",
-                        marginLeft: "4px",
-                      }}
-                    >
-                      +{currentScore} points
-                    </motion.span>
-                  )}
-                </motion.div>
-              )}
             </div>
-          )}
+          ))}
         </div>
 
-        <h3>
-          Discards: ({discards.length}/{maxDiscards})
-        </h3>
-        {/* ... existing discards code ... */}
-      </div>
-
-      <Reorder.Group
-        axis="x"
-        values={handCards.map((card) => card.id)}
-        onReorder={reorderCards}
-        style={{
-          display: "flex",
-          padding: "20px",
-          width: "100%",
-          listStyle: "none",
-          gap: "10px",
-          overflowX: "auto",
-          alignItems: "center",
-          minHeight: "300px",
-          background: "#f0f0f0",
-          borderRadius: "8px",
-          position: "relative",
-        }}
-      >
-        <AnimatePresence mode="popLayout" initial={true}>
-          {handCards.map((card) => (
-            <DraggableCard
-              className="hand-card"
-              key={card.id}
-              card={card}
-              isSelected={selectedCards.includes(card.id)}
-              onSelect={toggleSelectedCard}
-            />
-          ))}
-        </AnimatePresence>
-      </Reorder.Group>
-      <div
-        style={{
-          marginBottom: "20px",
-          display: "flex",
-          gap: "10px",
-          alignItems: "center",
-        }}
-      >
-        <button
-          onClick={sortByValue}
+        {/* Hand Cards Area */}
+        <div
           style={{
-            padding: "8px 16px",
-            cursor: "pointer",
-            backgroundColor: "#4CAF50",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
+            backgroundColor: "rgba(0,0,0,0.2)",
+            padding: "10px",
+            marginTop: "auto",
           }}
         >
-          Rank Sort
-        </button>
-        <button
-          onClick={sortBySuit}
-          style={{
-            padding: "8px 16px",
-            cursor: "pointer",
-            backgroundColor: "#2196F3",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-          }}
-        >
-          Suit Sort
-        </button>
-
-        {selectedCards.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
+          <Reorder.Group
+            axis="x"
+            values={handCards.map((card) => card.id)}
+            onReorder={reorderCards}
             style={{
               display: "flex",
-              gap: "10px",
+              justifyContent: "center",
+              position: "relative",
+              minHeight: "100px",
+              listStyle: "none",
+              margin: "0 auto",
+              width: "fit-content",
             }}
           >
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => handleAction("play")}
-              disabled={playedHands.length >= maxHands}
-              style={{
-                padding: "8px 16px",
-                backgroundColor:
-                  playedHands.length >= maxHands ? "#cccccc" : "#4CAF50",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-                cursor:
-                  playedHands.length >= maxHands ? "not-allowed" : "pointer",
-              }}
+            <AnimatePresence mode="popLayout" initial={true}>
+              {handCards.map((card, index) => (
+                <div
+                  key={card.id}
+                  style={{
+                    marginLeft:
+                      index > 0
+                        ? `-${Math.min(10 + handCards.length, 10)}px`
+                        : "0", // Adaptive negative margin
+                    position: "relative",
+                    // zIndex: selectedCards.includes(card.id) ? 100 : index, // Selected cards appear on top
+                  }}
+                >
+                  <DraggableCard
+                    className="hand-card"
+                    card={card}
+                    isSelected={selectedCards.includes(card.id)}
+                    onSelect={toggleSelectedCard}
+                  />
+                </div>
+              ))}
+            </AnimatePresence>
+          </Reorder.Group>
+        </div>
+
+        {/* Action Buttons */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "10px",
+            marginTop: "20px",
+          }}
+        >
+          <button
+            onClick={sortByValue}
+            style={{
+              padding: "8px 16px",
+              backgroundColor: "#3498db",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+            }}
+          >
+            Sort Value
+          </button>
+          <button
+            onClick={sortBySuit}
+            style={{
+              padding: "8px 16px",
+              backgroundColor: "#2ecc71",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+            }}
+          >
+            Sort Suit
+          </button>
+          {selectedCards.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              style={{ display: "flex", gap: "10px" }}
             >
-              Play Selected ({selectedCards.length})
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => handleAction("discard")}
-              disabled={discards.length >= maxDiscards}
-              style={{
-                padding: "8px 16px",
-                backgroundColor:
-                  discards.length >= maxDiscards ? "#cccccc" : "#f44336",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-                cursor:
-                  discards.length >= maxDiscards ? "not-allowed" : "pointer",
-              }}
-            >
-              Discard Selected ({selectedCards.length})
-            </motion.button>
-          </motion.div>
-        )}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => handleAction("play")}
+                disabled={playedHands.length >= maxHands}
+                style={{
+                  padding: "8px 16px",
+                  backgroundColor:
+                    playedHands.length >= maxHands ? "#95a5a6" : "#e67e22",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor:
+                    playedHands.length >= maxHands ? "not-allowed" : "pointer",
+                }}
+              >
+                Play
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => handleAction("discard")}
+                disabled={discards.length >= maxDiscards}
+                style={{
+                  padding: "8px 16px",
+                  backgroundColor:
+                    discards.length >= maxDiscards ? "#95a5a6" : "#e74c3c",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor:
+                    discards.length >= maxDiscards ? "not-allowed" : "pointer",
+                }}
+              >
+                Discard
+              </motion.button>
+            </motion.div>
+          )}
+        </div>
       </div>
     </div>
   );
