@@ -112,5 +112,14 @@ Tomorrow, I will test around the score calculation, fix some bugs if having and 
 
 Tomorrow! See yaa 🍀
 
+## Day 6
+
+Rearranging the layout took more time than I expected.
+
+Today, I also reworked the card design, added responsiveness, and created an animation for scoring.
+
+I couldn't start working on the game state today.
+
+See you all tomorrow! 🍀
 
 
