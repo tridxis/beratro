@@ -6,6 +6,7 @@ import DraggableCard from "./cards/DraggableCard";
 import { Calculator } from "@/utils/calculator";
 import { HandType } from "@/utils/constants";
 import { PokerHand } from "@/types/hands";
+import { useMotionValue, useTransform, animate } from "framer-motion";
 // import { Calculator } from "@/utils/calculator";
 
 export const Game = () => {
@@ -119,8 +120,22 @@ export const Game = () => {
     dealCards();
   };
 
-  console.log(playedHands);
-  console.log(cardScores);
+  const useAnimatedCounter = (value: number) => {
+    const count = useMotionValue(0);
+    const rounded = useTransform(count, (latest) => Math.round(latest));
+
+    useEffect(() => {
+      const controls = animate(count, value, {
+        type: "tween",
+        duration: 0.1,
+        ease: "easeOut",
+      });
+
+      return controls.stop;
+    }, [value]);
+
+    return rounded;
+  };
 
   return (
     <div
@@ -235,25 +250,28 @@ export const Game = () => {
               justifyContent: "center",
             }}
           >
-            <span
+            <motion.div
               style={{
                 backgroundColor: "#3498db",
                 padding: "5px 10px",
                 borderRadius: "4px",
                 color: "white",
+                display: "inline-block",
               }}
             >
-              {(pokerHandRef.current?.chips || 0) +
-                Object.keys(cardScores).reduce(
-                  (sum: number, card: string) =>
-                    sum +
-                    cardScores[Number(card)].chips.reduce(
-                      (sum: number, chip: number) => sum + chip,
-                      0
-                    ),
-                  0
-                )}
-            </span>
+              {useAnimatedCounter(
+                (pokerHandRef.current?.chips || 0) +
+                  Object.keys(cardScores).reduce(
+                    (sum: number, card: string) =>
+                      sum +
+                      cardScores[Number(card)].chips.reduce(
+                        (sum: number, chip: number) => sum + chip,
+                        0
+                      ),
+                    0
+                  )
+              )}
+            </motion.div>
             ×
             <span
               style={{
