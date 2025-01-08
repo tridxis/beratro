@@ -122,4 +122,18 @@ I couldn't start working on the game state today.
 
 See you all tomorrow! 🍀
 
+## Day 7
+
+Today I add some state to the game. The flow is:
+
+- Check all the Beras using in this game
+- Playing
+- Round ended -> Checkout
+- Shopping -> Next Round
+- ...
+
+Tomorrow I will spend more time for the UI. Currently files is too mess & too long. In the beginning, I planned to write plain CSS, but I might need to use a library to speed up the styling process. I’m thinking of using @emotion
+
+See yaa tmr 🍀
+
 
