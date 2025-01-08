@@ -1,5 +1,13 @@
 import { CardPosition } from "./cards";
 
+export enum GameState {
+  BERAS_PICKING = "BERAS_PICKING",
+  PLAYING = "PLAYING",
+  ROUND_ENDED = "ROUND_ENDED",
+  SHOPPING = "SHOPPING",
+  GAME_ENDED = "GAME_ENDED",
+}
+
 export interface GameStore {
   handCards: CardPosition[];
   deckCards: CardPosition[];
@@ -9,7 +17,8 @@ export interface GameStore {
   maxHands: number;
   maxDiscards: number;
   score: number;
-
+  currentState: GameState;
+  setCurrentState: (state: GameState) => void;
   reset: () => void;
   setHandCards: (cards: CardPosition[]) => void;
   setDeckCards: (cards: CardPosition[]) => void;

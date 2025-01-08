@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { type CardPosition } from "@/types/cards";
-import { type GameStore } from "@/types/games";
+import { GameState, type GameStore } from "@/types/games";
 import {
   SUIT_ORDER,
   CARD_RANKS,
@@ -21,7 +21,8 @@ export const useGameStore = create<GameStore>()(
       maxHands: DEFAULT_MAX_HANDS,
       maxDiscards: DEFAULT_MAX_DISCARDS,
       score: 0,
-
+      currentState: GameState.BERAS_PICKING,
+      setCurrentState: (state: GameState) => set({ currentState: state }),
       reset: () =>
         set(() => ({
           handCards: [],
@@ -30,6 +31,7 @@ export const useGameStore = create<GameStore>()(
           playedHands: [],
           discards: [],
           score: 0,
+          currentState: GameState.BERAS_PICKING,
         })),
 
       setHandCards: (handCards: CardPosition[]) => set({ handCards }),
