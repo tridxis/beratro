@@ -7,6 +7,7 @@ import { Calculator } from "@/utils/calculator";
 import { HandType } from "@/utils/constants";
 import { PokerHand } from "@/types/hands";
 import { useMotionValue, useTransform, animate } from "framer-motion";
+import { GameState } from "@/types/games";
 // import { Calculator } from "@/utils/calculator";
 
 export const Game = () => {
@@ -27,6 +28,8 @@ export const Game = () => {
     discards,
     maxHands,
     maxDiscards,
+    currentState,
+    setCurrentState,
   } = useGameStore();
 
   const [lastPlayedIndex, setLastPlayedIndex] = useState<number | null>(null);
@@ -106,6 +109,9 @@ export const Game = () => {
           setCurrentScore(null);
           setLastPlayedIndex(null);
           pokerHandRef.current = null;
+          if (score >= 1) {
+            setCurrentState(GameState.ROUND_ENDED);
+          }
         }, playedCards.length * (scoredCards[0].chips.length + scoredCards[0].mults.length) * 360 + 360);
       }, playedCards.length * 360 + 360); // Wait for all card scores to show
 
@@ -211,7 +217,7 @@ export const Game = () => {
             }}
           >
             <div style={{ color: "white" }}>Score at least</div>
-            <div style={{ fontSize: "32px", color: "#FF4444" }}>1,200</div>
+            <div style={{ fontSize: "32px", color: "#FF4444" }}>450</div>
             <div style={{ color: "#FFD700" }}>to earn $$$$</div>
           </div>
         </div>
@@ -328,231 +334,498 @@ export const Game = () => {
       </div>
 
       {/* Main Game Area */}
-      <div style={{ flex: 1, padding: "20px" }}>
-        {/* Deck Area - Top Right */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            height: "180px",
-          }}
-        ></div>
 
-        {/* Played Hand Area */}
-        <div
-          style={{
-            minHeight: "180px",
-            marginBottom: "20px",
-            position: "relative",
-          }}
-        >
-          {playedHands.map((hand, handIndex) => (
+      <div style={{ flex: 1, padding: "1vw" }}>
+        {/* Deck Area - Top Right */}
+        <div style={{ display: "flex", gap: "2vw" }}>
+          <div
+            style={{
+              flex: 2,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "180px",
+              background: "rgba(0,0,0,0.2)",
+            }}
+          >
+            Beras Here!
+          </div>
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "180px",
+              background: "rgba(0,0,0,0.2)",
+            }}
+          >
+            Memes Here!
+          </div>
+        </div>
+
+        {currentState === GameState.SHOPPING && (
+          <div
+            style={{
+              padding: "20px",
+              backgroundColor: "#1E2A38",
+              borderRadius: "8px",
+              marginTop: "20px",
+            }}
+          >
             <div
-              key={handIndex}
               style={{
-                position: "relative",
-                opacity: handIndex === lastPlayedIndex ? 1 : 0,
-                display: handIndex === lastPlayedIndex ? "block" : "none",
+                display: "grid",
+                gridTemplateColumns: "repeat(2, 1fr)",
+                gap: "20px",
+                marginBottom: "20px",
+              }}
+            >
+              {/* Action Buttons */}
+              <button
+                onClick={() => setCurrentState(GameState.PLAYING)}
+                style={{
+                  padding: "15px",
+                  backgroundColor: "#E74C3C",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "8px",
+                  fontSize: "18px",
+                  cursor: "pointer",
+                }}
+              >
+                Next Round
+              </button>
+              <button
+                style={{
+                  padding: "15px",
+                  backgroundColor: "#2ECC71",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "8px",
+                  fontSize: "18px",
+                  cursor: "pointer",
+                }}
+              >
+                Reroll $5
+              </button>
+            </div>
+
+            {/* Shop Items Grid */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(5, 1fr)",
+                gap: "15px",
+              }}
+            >
+              {/* Shop Items */}
+              {[
+                { name: "Joker #1", price: "$3" },
+                { name: "Joker #8", price: "$7" },
+                { name: "Joker #12", price: "$10" },
+                { name: "Memes Pack", price: "$4" },
+                { name: "Super Memes Pack", price: "$8" },
+              ].map((item, index) => (
+                <div
+                  key={index}
+                  style={{
+                    backgroundColor: "#2C3E50",
+                    borderRadius: "8px",
+                    padding: "10px",
+                    position: "relative",
+                  }}
+                >
+                  {/* Price Tag */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "-10px",
+                      right: "-10px",
+                      backgroundColor: "#F1C40F",
+                      padding: "4px 8px",
+                      borderRadius: "12px",
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {item.price}
+                  </div>
+
+                  {/* Item Container */}
+                  <div
+                    style={{
+                      aspectRatio: "3/4",
+                      backgroundColor: "#34495E",
+                      borderRadius: "4px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "white",
+                      fontSize: "14px",
+                    }}
+                  >
+                    {item.name}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {currentState === GameState.ROUND_ENDED && (
+          <div
+            style={{
+              padding: "20px",
+              backgroundColor: "#1E2A38",
+              borderRadius: "8px",
+              marginTop: "20px",
+              color: "white",
+            }}
+          >
+            {/* Cash Out Header */}
+            <button
+              onClick={() => setCurrentState(GameState.SHOPPING)}
+              style={{
+                backgroundColor: "#8B4513",
+                padding: "8px 16px",
+                borderRadius: "8px",
+                display: "inline-block",
+                marginBottom: "20px",
+              }}
+            >
+              <span style={{ fontSize: "20px", fontWeight: "bold" }}>
+                Cash Out: $42
+              </span>
+            </button>
+
+            {/* Score Target */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                marginBottom: "15px",
               }}
             >
               <div
                 style={{
-                  padding: "4px",
+                  backgroundColor: "#3498db",
+                  width: "24px",
+                  height: "24px",
+                  borderRadius: "50%",
                   display: "flex",
+                  alignItems: "center",
                   justifyContent: "center",
-                  transition: "all 0.3s ease",
-                  transform:
-                    handIndex === lastPlayedIndex ? "scale(1.05)" : "scale(1)",
                 }}
               >
-                {hand.map((card, index) => (
-                  <div
-                    key={card.id}
-                    style={{
-                      marginLeft: index > 0 ? "20px" : "0",
-                      position: "relative",
-                      zIndex: index,
-                    }}
-                  >
-                    <DisplayCard card={card} />
-                    {cardScores[card.id] && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        style={{
-                          position: "absolute",
-                          top: "-40px",
-                          left: "50%",
-                          width: "fit-content",
-                          transform: "translateX(-50%)",
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          gap: "4px",
-                        }}
-                      >
-                        {cardScores[card.id].chips.map((chip, i) => (
-                          <div
-                            key={i}
-                            style={{
-                              background: "#0092ff",
-                              padding: "10px",
-                              color: "#fff",
-                              fontSize: "20px",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            +{chip}
-                          </div>
-                        ))}
-                        {cardScores[card.id].mults.map((mult, i) => (
-                          <div
-                            key={i}
-                            style={{
-                              background: "#0092ff",
-                              padding: "10px",
-                              color: "#fff",
-                              fontSize: "12px",
-                            }}
-                          >
-                            ×{mult}
-                          </div>
-                        ))}
-                      </motion.div>
-                    )}
-                  </div>
-                ))}
+                A
               </div>
+              <span
+                style={{
+                  color: "#e74c3c",
+                  fontSize: "20px",
+                  fontWeight: "bold",
+                }}
+              >
+                12,000
+              </span>
+              <span style={{ color: "#f1c40f", marginLeft: "auto" }}>
+                $$$$$
+              </span>
             </div>
-          ))}
-        </div>
 
-        {/* Hand Cards Area */}
-        <div
-          style={{
-            backgroundColor: "rgba(0,0,0,0.2)",
-            padding: "10px",
-            marginTop: "auto",
-          }}
-        >
-          <Reorder.Group
-            axis="x"
-            values={handCards.map((card) => card.id)}
-            onReorder={reorderCards}
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              position: "relative",
-              minHeight: "100px",
-              listStyle: "none",
-              margin: "0 auto",
-              width: "fit-content",
-            }}
-          >
-            <AnimatePresence mode="popLayout" initial={true}>
-              {handCards.map((card, index) => (
+            <hr
+              style={{
+                border: "1px dotted #34495e",
+                margin: "15px 0",
+              }}
+            />
+
+            {/* Remaining Hands */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginBottom: "10px",
+              }}
+            >
+              <span style={{ marginRight: "10px" }}>3</span>
+              <span>Remaining Hands ($1 each)</span>
+              <span style={{ marginLeft: "auto", color: "#f1c40f" }}>$$$</span>
+            </div>
+
+            {/* Boss Blind Rows */}
+            {[1, 2].map((_, index) => (
+              <div
+                key={index}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginBottom: "10px",
+                }}
+              >
                 <div
-                  key={card.id}
                   style={{
-                    marginLeft:
-                      index > 0
-                        ? `-${Math.min(10 + handCards.length, 10)}px`
-                        : "0", // Adaptive negative margin
-                    position: "relative",
-                    // zIndex: selectedCards.includes(card.id) ? 100 : index, // Selected cards appear on top
+                    backgroundColor: "#f1c40f",
+                    width: "24px",
+                    height: "24px",
+                    borderRadius: "4px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: "10px",
                   }}
                 >
-                  <DraggableCard
-                    className="hand-card"
-                    card={card}
-                    isSelected={selectedCards.includes(card.id)}
-                    onSelect={toggleSelectedCard}
-                  />
+                  S
+                </div>
+                <span>Defeat the Boss Blind</span>
+                <span style={{ marginLeft: "auto", color: "#f1c40f" }}>
+                  $$$$$$$$$$$$$$$
+                </span>
+              </div>
+            ))}
+
+            {/* Interest Row */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginBottom: "10px",
+              }}
+            >
+              <span style={{ marginRight: "10px" }}>4</span>
+              <span>1 Interest per $5 (5 max)</span>
+              <span style={{ marginLeft: "auto", color: "#f1c40f" }}>$$$$</span>
+            </div>
+          </div>
+        )}
+
+        {currentState === GameState.PLAYING && (
+          <>
+            {/* Played Hand Area */}
+            <div
+              style={{
+                minHeight: "180px",
+                marginBottom: "20px",
+                position: "relative",
+              }}
+            >
+              {playedHands.map((hand, handIndex) => (
+                <div
+                  key={handIndex}
+                  style={{
+                    position: "relative",
+                    opacity: handIndex === lastPlayedIndex ? 1 : 0,
+                    display: handIndex === lastPlayedIndex ? "block" : "none",
+                  }}
+                >
+                  <div
+                    style={{
+                      padding: "4px",
+                      display: "flex",
+                      justifyContent: "center",
+                      transition: "all 0.3s ease",
+                      transform:
+                        handIndex === lastPlayedIndex
+                          ? "scale(1.05)"
+                          : "scale(1)",
+                    }}
+                  >
+                    {hand.map((card, index) => (
+                      <div
+                        key={card.id}
+                        style={{
+                          marginLeft: index > 0 ? "20px" : "0",
+                          position: "relative",
+                          zIndex: index,
+                        }}
+                      >
+                        <DisplayCard card={card} />
+                        {cardScores[card.id] && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            style={{
+                              position: "absolute",
+                              top: "-40px",
+                              left: "50%",
+                              width: "fit-content",
+                              transform: "translateX(-50%)",
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "center",
+                              gap: "4px",
+                            }}
+                          >
+                            {cardScores[card.id].chips.map((chip, i) => (
+                              <div
+                                key={i}
+                                style={{
+                                  background: "#0092ff",
+                                  padding: "10px",
+                                  color: "#fff",
+                                  fontSize: "20px",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                +{chip}
+                              </div>
+                            ))}
+                            {cardScores[card.id].mults.map((mult, i) => (
+                              <div
+                                key={i}
+                                style={{
+                                  background: "#0092ff",
+                                  padding: "10px",
+                                  color: "#fff",
+                                  fontSize: "12px",
+                                }}
+                              >
+                                ×{mult}
+                              </div>
+                            ))}
+                          </motion.div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               ))}
-            </AnimatePresence>
-          </Reorder.Group>
-        </div>
+            </div>
 
-        {/* Action Buttons */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "10px",
-            marginTop: "20px",
-          }}
-        >
-          <button
-            onClick={sortByValue}
-            style={{
-              padding: "8px 16px",
-              backgroundColor: "#3498db",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-            }}
-          >
-            Sort Value
-          </button>
-          <button
-            onClick={sortBySuit}
-            style={{
-              padding: "8px 16px",
-              backgroundColor: "#2ecc71",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-            }}
-          >
-            Sort Suit
-          </button>
-          {selectedCards.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              style={{ display: "flex", gap: "10px" }}
+            {/* Hand Cards Area */}
+            <div
+              style={{
+                backgroundColor: "rgba(0,0,0,0.2)",
+                padding: "10px",
+                marginTop: "auto",
+              }}
             >
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => handleAction("play")}
-                disabled={playedHands.length >= maxHands}
+              <Reorder.Group
+                axis="x"
+                values={handCards.map((card) => card.id)}
+                onReorder={reorderCards}
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  position: "relative",
+                  minHeight: "100px",
+                  listStyle: "none",
+                  margin: "0 auto",
+                  width: "fit-content",
+                }}
+              >
+                <AnimatePresence mode="popLayout" initial={true}>
+                  {handCards.map((card, index) => (
+                    <div
+                      key={card.id}
+                      style={{
+                        marginLeft:
+                          index > 0
+                            ? `-${Math.min(10 + handCards.length, 10)}px`
+                            : "0", // Adaptive negative margin
+                        position: "relative",
+                        // zIndex: selectedCards.includes(card.id) ? 100 : index, // Selected cards appear on top
+                      }}
+                    >
+                      <DraggableCard
+                        className="hand-card"
+                        card={card}
+                        isSelected={selectedCards.includes(card.id)}
+                        onSelect={toggleSelectedCard}
+                      />
+                    </div>
+                  ))}
+                </AnimatePresence>
+              </Reorder.Group>
+            </div>
+
+            {/* Action Buttons */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                gap: "10px",
+                marginTop: "20px",
+              }}
+            >
+              <button
+                onClick={sortByValue}
                 style={{
                   padding: "8px 16px",
-                  backgroundColor:
-                    playedHands.length >= maxHands ? "#95a5a6" : "#e67e22",
+                  backgroundColor: "#3498db",
                   color: "white",
                   border: "none",
                   borderRadius: "4px",
-                  cursor:
-                    playedHands.length >= maxHands ? "not-allowed" : "pointer",
                 }}
               >
-                Play
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => handleAction("discard")}
-                disabled={discards.length >= maxDiscards}
+                Sort Value
+              </button>
+              <button
+                onClick={sortBySuit}
                 style={{
                   padding: "8px 16px",
-                  backgroundColor:
-                    discards.length >= maxDiscards ? "#95a5a6" : "#e74c3c",
+                  backgroundColor: "#2ecc71",
                   color: "white",
                   border: "none",
                   borderRadius: "4px",
-                  cursor:
-                    discards.length >= maxDiscards ? "not-allowed" : "pointer",
                 }}
               >
-                Discard
-              </motion.button>
-            </motion.div>
-          )}
-        </div>
+                Sort Suit
+              </button>
+              {selectedCards.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  style={{ display: "flex", gap: "10px" }}
+                >
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => handleAction("play")}
+                    disabled={playedHands.length >= maxHands}
+                    style={{
+                      padding: "8px 16px",
+                      backgroundColor:
+                        playedHands.length >= maxHands ? "#95a5a6" : "#e67e22",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor:
+                        playedHands.length >= maxHands
+                          ? "not-allowed"
+                          : "pointer",
+                    }}
+                  >
+                    Play
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => handleAction("discard")}
+                    disabled={discards.length >= maxDiscards}
+                    style={{
+                      padding: "8px 16px",
+                      backgroundColor:
+                        discards.length >= maxDiscards ? "#95a5a6" : "#e74c3c",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor:
+                        discards.length >= maxDiscards
+                          ? "not-allowed"
+                          : "pointer",
+                    }}
+                  >
+                    Discard
+                  </motion.button>
+                </motion.div>
+              )}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

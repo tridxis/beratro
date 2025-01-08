@@ -1,6 +1,5 @@
 import { useGameStore } from "@/store/gameStore";
 import { GameState } from "@/types/games";
-import React from "react";
 
 const Beras = () => {
   const { setCurrentState } = useGameStore();
@@ -26,31 +25,38 @@ const Beras = () => {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(10, calc(5vw + 32px))",
-          gridTemplateRows: "repeat(2, calc(8vw + 32px))",
+          gridTemplateColumns: "repeat(8, calc(5vw + 32px))",
+          gridTemplateRows: "repeat(3, calc(8vw + 40px))",
           gap: "16px",
           marginBottom: "16px",
           overflowX: "auto",
         }}
       >
-        {[...Array(20)].map((_, index) => (
-          <div
-            key={index}
-            style={{
-              width: "5vw",
-              height: "8vw",
-              padding: "16px",
-              border: "1px solid #ddd",
-              borderRadius: "8px",
-              boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-              backgroundColor: "white",
-            }}
-          >
-            <p style={{ fontSize: "18px", fontWeight: "500", color: "#000" }}>
-              Bera #{index + 1}
-            </p>
-          </div>
-        ))}
+        {[...Array(24)].map((_, index) =>
+          index === 0 || index === 23 ? (
+            <div key={index} style={{ width: "5vw", height: "8vw" }}></div>
+          ) : (
+            <div
+              key={index}
+              style={{
+                width: "5vw",
+                height: "8vw",
+                padding: "16px",
+                border: "1px solid #ddd",
+                borderRadius: "8px",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                backgroundColor: "white",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <p style={{ fontSize: "18px", fontWeight: "500", color: "#000" }}>
+                Bera #{index}
+              </p>
+            </div>
+          )
+        )}
       </div>
       <button
         onClick={() => {
