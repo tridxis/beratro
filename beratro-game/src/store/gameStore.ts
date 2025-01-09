@@ -47,30 +47,39 @@ export const useGameStore = create<GameStore>()(
 
       sortByValue: () =>
         set((state) => ({
-          handCards: [...state.handCards].sort((a, b) => {
-            return (CARD_RANKS[b.rank] || 0) - (CARD_RANKS[a.rank] || 0);
-          }),
+          handCards: [...state.handCards]
+            .sort((a, b) => {
+              return (CARD_RANKS[b.rank] || 0) - (CARD_RANKS[a.rank] || 0);
+            })
+            .map((card, index) => ({
+              ...card,
+              index: index,
+            })),
         })),
 
       sortBySuit: () =>
         set((state) => ({
-          handCards: [...state.handCards].sort((a, b) => {
-            const suitCompare =
-              (SUIT_ORDER[a.suit] || 0) - (SUIT_ORDER[b.suit] || 0);
-            if (suitCompare === 0) {
-              return (CARD_RANKS[b.rank] || 0) - (CARD_RANKS[a.rank] || 0);
-            }
-            return suitCompare;
-          }),
+          handCards: [...state.handCards]
+            .sort((a, b) => {
+              const suitCompare =
+                (SUIT_ORDER[a.suit] || 0) - (SUIT_ORDER[b.suit] || 0);
+              if (suitCompare === 0) {
+                return (CARD_RANKS[b.rank] || 0) - (CARD_RANKS[a.rank] || 0);
+              }
+              return suitCompare;
+            })
+            .map((card, index) => ({
+              ...card,
+              index: index,
+            })),
         })),
 
       reorderCards: (newOrder: number[]) =>
         set((state: GameStore) => ({
-          handCards: newOrder.map((id) => {
-            const card = state.handCards.find((card) => card.id === id);
-            if (!card) throw new Error(`Card with id ${id} not found`);
-            return card;
-          }),
+          handCards: state.handCards.map((card) => ({
+            ...card,
+            index: newOrder.indexOf(card.id),
+          })),
         })),
 
       dealCards: (count?: number) =>
@@ -78,7 +87,12 @@ export const useGameStore = create<GameStore>()(
           const availableSpace = 8 - state.handCards.length;
           const cardsToDeal = count ?? availableSpace;
 
-          const dealtCards = state.deckCards.slice(0, cardsToDeal);
+          const dealtCards = state.deckCards
+            .slice(0, cardsToDeal)
+            .map((card, index) => ({
+              ...card,
+              index: index + state.handCards.length,
+            }));
           const remainingDeck = state.deckCards.slice(cardsToDeal);
 
           return {

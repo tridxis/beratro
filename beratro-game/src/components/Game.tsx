@@ -8,7 +8,58 @@ import { HandType } from "@/utils/constants";
 import { PokerHand } from "@/types/hands";
 import { useMotionValue, useTransform, animate } from "framer-motion";
 import { GameState } from "@/types/games";
-// import { Calculator } from "@/utils/calculator";
+import {
+  RoundEndContainer,
+  CashOutButton,
+  FlexRow,
+  CircleIcon,
+  SquareIcon,
+  Separator,
+  RewardText,
+  ScoreText,
+  GameContainer,
+  LeftPanel,
+  ResetButton,
+  BigBlindBox,
+  BigBlindHeader,
+  BigBlindContent,
+  BigBlindTarget,
+  ScoreBox,
+  ScoreValue,
+  StatsGrid,
+  StatBox,
+  StatValue,
+  MainGameArea,
+  DeckAreaContainer,
+  DeckSection,
+  MemesSection,
+  ShopContainer,
+  ShopButtonGrid,
+  ShopButton,
+  ShopItemsGrid,
+  ShopItem,
+  PriceTag,
+  ItemContainer,
+  PlayedHandArea,
+  PlayedHandContainer,
+  CardRow,
+  CardWrapper,
+  ScorePopup,
+  ChipScore,
+  MultScore,
+  HandCardsArea,
+  ReorderGroup,
+  CardSlot,
+  ActionButtonsContainer,
+  SortButton,
+  ActionButtonGroup,
+  ActionButton,
+  HandScoreContainer,
+  HandTypeText,
+  ScoreDisplay,
+  ChipsDisplay,
+  MultiplierDisplay,
+} from "./Game.styles";
 
 export const Game = () => {
   const {
@@ -75,9 +126,12 @@ export const Game = () => {
       playSelectedCards();
 
       // Calculate score for the played hand
-      const playedCards = selectedCards.map(
-        (id) => handCards.find((card) => card.id === id)!
-      );
+      const playedCards = selectedCards
+        .map((id) => handCards.find((card) => card.id === id)!)
+        .sort((a, b) => a.index - b.index);
+
+      console.log(playedCards);
+
       const { score, scoredCards, pokerHand } =
         Calculator.calculateScore(playedCards);
 
@@ -144,127 +198,35 @@ export const Game = () => {
   };
 
   return (
-    <div
-      style={{
-        backgroundColor: "#1a472a",
-        minHeight: "100vh",
-        width: "100vw",
-        display: "flex",
-      }}
-    >
-      {/* Left Panel */}
-      <div
-        style={{
-          width: "300px",
-          background: "rgba(0,0,0,0.8)",
-          padding: "20px",
-        }}
-      >
-        {/* Reset Button */}
-        <button
+    <GameContainer>
+      <LeftPanel>
+        <ResetButton
           onClick={() => {
             reset();
             dealCards();
           }}
-          style={{
-            width: "100%",
-            padding: "10px",
-            marginBottom: "10px",
-            backgroundColor: "#9e9e9e",
-            color: "white",
-            border: "none",
-            borderRadius: "8px",
-            cursor: "pointer",
-            fontWeight: "bold",
-            transition: "background-color 0.2s",
-          }}
-          onMouseOver={(e) =>
-            (e.currentTarget.style.backgroundColor = "#858585")
-          }
-          onMouseOut={(e) =>
-            (e.currentTarget.style.backgroundColor = "#9e9e9e")
-          }
         >
           Reset
-        </button>
+        </ResetButton>
 
-        {/* Big Blind Box */}
-        <div
-          style={{
-            backgroundColor: "#8B4513",
-            borderRadius: "8px",
-            marginBottom: "10px",
-          }}
-        >
-          <div
-            style={{
-              padding: "10px",
-              borderTopLeftRadius: "8px",
-              borderTopRightRadius: "8px",
-              backgroundColor: "#704214",
-              color: "white",
-              fontWeight: "bold",
-            }}
-          >
-            Big Blind
-          </div>
-          <div
-            style={{
-              padding: "10px",
-              backgroundColor: "#2C3E50",
-              borderBottomLeftRadius: "8px",
-              borderBottomRightRadius: "8px",
-            }}
-          >
+        <BigBlindBox>
+          <BigBlindHeader>Big Blind</BigBlindHeader>
+          <BigBlindContent>
             <div style={{ color: "white" }}>Score at least</div>
-            <div style={{ fontSize: "32px", color: "#FF4444" }}>450</div>
+            <BigBlindTarget>450</BigBlindTarget>
             <div style={{ color: "#FFD700" }}>to earn $$$$</div>
-          </div>
-        </div>
+          </BigBlindContent>
+        </BigBlindBox>
 
-        {/* Round Score */}
-        <div
-          style={{
-            backgroundColor: "#2C3E50",
-            padding: "10px",
-            borderRadius: "8px",
-            marginBottom: "10px",
-          }}
-        >
+        <ScoreBox>
           <div style={{ color: "white" }}>Round score</div>
-          <div style={{ fontSize: "32px", color: "white" }}>{score}</div>
-        </div>
+          <ScoreValue>{score}</ScoreValue>
+        </ScoreBox>
 
-        {/* Two Pair Info */}
-        <div
-          style={{
-            backgroundColor: "#2C3E50",
-            padding: "10px",
-            borderRadius: "8px",
-            marginBottom: "10px",
-          }}
-        >
-          <div style={{ color: "white", marginBottom: "5px" }}>
-            {pokerHandRef.current?.handType}
-          </div>
-          <div
-            style={{
-              display: "flex",
-              gap: "5px",
-              fontWeight: "bold",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <motion.div
-              style={{
-                backgroundColor: "#3498db",
-                padding: "5px 10px",
-                borderRadius: "4px",
-                color: "white",
-                display: "inline-block",
-              }}
-            >
+        <HandScoreContainer>
+          <HandTypeText>{pokerHandRef.current?.handType}</HandTypeText>
+          <ScoreDisplay>
+            <ChipsDisplay>
               {useAnimatedCounter(
                 (pokerHandRef.current?.chips || 0) +
                   Object.keys(cardScores).reduce(
@@ -277,149 +239,49 @@ export const Game = () => {
                     0
                   )
               )}
-            </motion.div>
+            </ChipsDisplay>
             ×
-            <span
-              style={{
-                backgroundColor: "#e74c3c",
-                padding: "5px 10px",
-                borderRadius: "4px",
-                color: "white",
-              }}
-            >
+            <MultiplierDisplay>
               {pokerHandRef.current?.mult || 0}
-            </span>
-          </div>
-        </div>
+            </MultiplierDisplay>
+          </ScoreDisplay>
+        </HandScoreContainer>
 
-        {/* Stats Grid */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "10px",
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: "#2C3E50",
-              padding: "10px",
-              borderRadius: "8px",
-              textAlign: "center",
-            }}
-          >
+        <StatsGrid>
+          <StatBox>
             <div style={{ color: "white" }}>Hands</div>
-            <div
-              style={{ color: "#3498db", fontSize: "24px", fontWeight: "bold" }}
-            >
+            <StatValue color="#3498db">
               {maxHands - playedHands.length}
-            </div>
-          </div>
-          <div
-            style={{
-              backgroundColor: "#2C3E50",
-              padding: "10px",
-              borderRadius: "8px",
-              textAlign: "center",
-            }}
-          >
+            </StatValue>
+          </StatBox>
+          <StatBox>
             <div style={{ color: "white" }}>Discards</div>
-            <div
-              style={{ color: "#e74c3c", fontSize: "24px", fontWeight: "bold" }}
-            >
+            <StatValue color="#e74c3c">
               {maxDiscards - discards.length}
-            </div>
-          </div>
-        </div>
-      </div>
+            </StatValue>
+          </StatBox>
+        </StatsGrid>
+      </LeftPanel>
 
-      {/* Main Game Area */}
-
-      <div style={{ flex: 1, padding: "1vw" }}>
-        {/* Deck Area - Top Right */}
-        <div style={{ display: "flex", gap: "2vw" }}>
-          <div
-            style={{
-              flex: 2,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "180px",
-              background: "rgba(0,0,0,0.2)",
-            }}
-          >
-            Beras Here!
-          </div>
-          <div
-            style={{
-              flex: 1,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "180px",
-              background: "rgba(0,0,0,0.2)",
-            }}
-          >
-            Memes Here!
-          </div>
-        </div>
+      <MainGameArea>
+        <DeckAreaContainer>
+          <DeckSection>Beras Here!</DeckSection>
+          <MemesSection>Memes Here!</MemesSection>
+        </DeckAreaContainer>
 
         {currentState === GameState.SHOPPING && (
-          <div
-            style={{
-              padding: "20px",
-              backgroundColor: "#1E2A38",
-              borderRadius: "8px",
-              marginTop: "20px",
-            }}
-          >
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(2, 1fr)",
-                gap: "20px",
-                marginBottom: "20px",
-              }}
-            >
-              {/* Action Buttons */}
-              <button
+          <ShopContainer>
+            <ShopButtonGrid>
+              <ShopButton
+                variant="primary"
                 onClick={() => setCurrentState(GameState.PLAYING)}
-                style={{
-                  padding: "15px",
-                  backgroundColor: "#E74C3C",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "8px",
-                  fontSize: "18px",
-                  cursor: "pointer",
-                }}
               >
                 Next Round
-              </button>
-              <button
-                style={{
-                  padding: "15px",
-                  backgroundColor: "#2ECC71",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "8px",
-                  fontSize: "18px",
-                  cursor: "pointer",
-                }}
-              >
-                Reroll $5
-              </button>
-            </div>
+              </ShopButton>
+              <ShopButton variant="secondary">Reroll $5</ShopButton>
+            </ShopButtonGrid>
 
-            {/* Shop Items Grid */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(5, 1fr)",
-                gap: "15px",
-              }}
-            >
-              {/* Shop Items */}
+            <ShopItemsGrid>
               {[
                 { name: "Joker #1", price: "$3" },
                 { name: "Joker #8", price: "$7" },
@@ -427,307 +289,95 @@ export const Game = () => {
                 { name: "Memes Pack", price: "$4" },
                 { name: "Super Memes Pack", price: "$8" },
               ].map((item, index) => (
-                <div
-                  key={index}
-                  style={{
-                    backgroundColor: "#2C3E50",
-                    borderRadius: "8px",
-                    padding: "10px",
-                    position: "relative",
-                  }}
-                >
-                  {/* Price Tag */}
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "-10px",
-                      right: "-10px",
-                      backgroundColor: "#F1C40F",
-                      padding: "4px 8px",
-                      borderRadius: "12px",
-                      fontSize: "14px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {item.price}
-                  </div>
-
-                  {/* Item Container */}
-                  <div
-                    style={{
-                      aspectRatio: "3/4",
-                      backgroundColor: "#34495E",
-                      borderRadius: "4px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      color: "white",
-                      fontSize: "14px",
-                    }}
-                  >
-                    {item.name}
-                  </div>
-                </div>
+                <ShopItem key={index}>
+                  <PriceTag>{item.price}</PriceTag>
+                  <ItemContainer>{item.name}</ItemContainer>
+                </ShopItem>
               ))}
-            </div>
-          </div>
+            </ShopItemsGrid>
+          </ShopContainer>
         )}
 
         {currentState === GameState.ROUND_ENDED && (
-          <div
-            style={{
-              padding: "20px",
-              backgroundColor: "#1E2A38",
-              borderRadius: "8px",
-              marginTop: "20px",
-              color: "white",
-            }}
-          >
-            {/* Cash Out Header */}
-            <button
-              onClick={() => setCurrentState(GameState.SHOPPING)}
-              style={{
-                backgroundColor: "#8B4513",
-                padding: "8px 16px",
-                borderRadius: "8px",
-                display: "inline-block",
-                marginBottom: "20px",
-              }}
-            >
-              <span style={{ fontSize: "20px", fontWeight: "bold" }}>
-                Cash Out: $42
-              </span>
-            </button>
+          <RoundEndContainer>
+            <CashOutButton onClick={() => setCurrentState(GameState.SHOPPING)}>
+              Cash Out: $42
+            </CashOutButton>
 
-            {/* Score Target */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                marginBottom: "15px",
-              }}
-            >
-              <div
-                style={{
-                  backgroundColor: "#3498db",
-                  width: "24px",
-                  height: "24px",
-                  borderRadius: "50%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                A
-              </div>
-              <span
-                style={{
-                  color: "#e74c3c",
-                  fontSize: "20px",
-                  fontWeight: "bold",
-                }}
-              >
-                12,000
-              </span>
-              <span style={{ color: "#f1c40f", marginLeft: "auto" }}>
-                $$$$$
-              </span>
-            </div>
+            <FlexRow>
+              <CircleIcon>A</CircleIcon>
+              <ScoreText>12,000</ScoreText>
+              <RewardText>$$$$$</RewardText>
+            </FlexRow>
 
-            <hr
-              style={{
-                border: "1px dotted #34495e",
-                margin: "15px 0",
-              }}
-            />
+            <Separator />
 
-            {/* Remaining Hands */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                marginBottom: "10px",
-              }}
-            >
+            <FlexRow>
               <span style={{ marginRight: "10px" }}>3</span>
               <span>Remaining Hands ($1 each)</span>
-              <span style={{ marginLeft: "auto", color: "#f1c40f" }}>$$$</span>
-            </div>
+              <RewardText>$$$</RewardText>
+            </FlexRow>
 
-            {/* Boss Blind Rows */}
             {[1, 2].map((_, index) => (
-              <div
-                key={index}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  marginBottom: "10px",
-                }}
-              >
-                <div
-                  style={{
-                    backgroundColor: "#f1c40f",
-                    width: "24px",
-                    height: "24px",
-                    borderRadius: "4px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginRight: "10px",
-                  }}
-                >
-                  S
-                </div>
+              <FlexRow key={index}>
+                <SquareIcon>S</SquareIcon>
                 <span>Defeat the Boss Blind</span>
-                <span style={{ marginLeft: "auto", color: "#f1c40f" }}>
-                  $$$$$$$$$$$$$$$
-                </span>
-              </div>
+                <RewardText>$$$$$$$$$$$$$$$</RewardText>
+              </FlexRow>
             ))}
 
-            {/* Interest Row */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                marginBottom: "10px",
-              }}
-            >
+            <FlexRow>
               <span style={{ marginRight: "10px" }}>4</span>
               <span>1 Interest per $5 (5 max)</span>
-              <span style={{ marginLeft: "auto", color: "#f1c40f" }}>$$$$</span>
-            </div>
-          </div>
+              <RewardText>$$$$</RewardText>
+            </FlexRow>
+          </RoundEndContainer>
         )}
 
         {currentState === GameState.PLAYING && (
           <>
-            {/* Played Hand Area */}
-            <div
-              style={{
-                minHeight: "180px",
-                marginBottom: "20px",
-                position: "relative",
-              }}
-            >
+            <PlayedHandArea>
               {playedHands.map((hand, handIndex) => (
-                <div
+                <PlayedHandContainer
                   key={handIndex}
-                  style={{
-                    position: "relative",
-                    opacity: handIndex === lastPlayedIndex ? 1 : 0,
-                    display: handIndex === lastPlayedIndex ? "block" : "none",
-                  }}
+                  isLastPlayed={handIndex === lastPlayedIndex}
                 >
-                  <div
-                    style={{
-                      padding: "4px",
-                      display: "flex",
-                      justifyContent: "center",
-                      transition: "all 0.3s ease",
-                      transform:
-                        handIndex === lastPlayedIndex
-                          ? "scale(1.05)"
-                          : "scale(1)",
-                    }}
-                  >
+                  <CardRow isLastPlayed={handIndex === lastPlayedIndex}>
                     {hand.map((card, index) => (
-                      <div
-                        key={card.id}
-                        style={{
-                          marginLeft: index > 0 ? "20px" : "0",
-                          position: "relative",
-                          zIndex: index,
-                        }}
-                      >
+                      <CardWrapper key={card.id} index={index}>
                         <DisplayCard card={card} />
                         {cardScores[card.id] && (
-                          <motion.div
+                          <ScorePopup
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            style={{
-                              position: "absolute",
-                              top: "-40px",
-                              left: "50%",
-                              width: "fit-content",
-                              transform: "translateX(-50%)",
-                              display: "flex",
-                              flexDirection: "column",
-                              alignItems: "center",
-                              gap: "4px",
-                            }}
                           >
                             {cardScores[card.id].chips.map((chip, i) => (
-                              <div
-                                key={i}
-                                style={{
-                                  background: "#0092ff",
-                                  padding: "10px",
-                                  color: "#fff",
-                                  fontSize: "20px",
-                                  fontWeight: "bold",
-                                }}
-                              >
-                                +{chip}
-                              </div>
+                              <ChipScore key={i}>+{chip}</ChipScore>
                             ))}
                             {cardScores[card.id].mults.map((mult, i) => (
-                              <div
-                                key={i}
-                                style={{
-                                  background: "#0092ff",
-                                  padding: "10px",
-                                  color: "#fff",
-                                  fontSize: "12px",
-                                }}
-                              >
-                                ×{mult}
-                              </div>
+                              <MultScore key={i}>×{mult}</MultScore>
                             ))}
-                          </motion.div>
+                          </ScorePopup>
                         )}
-                      </div>
+                      </CardWrapper>
                     ))}
-                  </div>
-                </div>
+                  </CardRow>
+                </PlayedHandContainer>
               ))}
-            </div>
+            </PlayedHandArea>
 
-            {/* Hand Cards Area */}
-            <div
-              style={{
-                backgroundColor: "rgba(0,0,0,0.2)",
-                padding: "10px",
-                marginTop: "auto",
-              }}
-            >
-              <Reorder.Group
+            <HandCardsArea>
+              <ReorderGroup
                 axis="x"
-                values={handCards.map((card) => card.id)}
-                onReorder={reorderCards}
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  position: "relative",
-                  minHeight: "100px",
-                  listStyle: "none",
-                  margin: "0 auto",
-                  width: "fit-content",
-                }}
+                values={handCards.map((card) => card.index)}
+                onReorder={(newOrder) => reorderCards(newOrder as number[])}
               >
                 <AnimatePresence mode="popLayout" initial={true}>
                   {handCards.map((card, index) => (
-                    <div
+                    <CardSlot
                       key={card.id}
-                      style={{
-                        marginLeft:
-                          index > 0
-                            ? `-${Math.min(10 + handCards.length, 10)}px`
-                            : "0", // Adaptive negative margin
-                        position: "relative",
-                        // zIndex: selectedCards.includes(card.id) ? 100 : index, // Selected cards appear on top
-                      }}
+                      index={index}
+                      totalCards={handCards.length}
                     >
                       <DraggableCard
                         className="hand-card"
@@ -735,98 +385,49 @@ export const Game = () => {
                         isSelected={selectedCards.includes(card.id)}
                         onSelect={toggleSelectedCard}
                       />
-                    </div>
+                    </CardSlot>
                   ))}
                 </AnimatePresence>
-              </Reorder.Group>
-            </div>
+              </ReorderGroup>
+            </HandCardsArea>
 
-            {/* Action Buttons */}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                gap: "10px",
-                marginTop: "20px",
-              }}
-            >
-              <button
-                onClick={sortByValue}
-                style={{
-                  padding: "8px 16px",
-                  backgroundColor: "#3498db",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "4px",
-                }}
-              >
+            <ActionButtonsContainer>
+              <SortButton variant="value" onClick={sortByValue}>
                 Sort Value
-              </button>
-              <button
-                onClick={sortBySuit}
-                style={{
-                  padding: "8px 16px",
-                  backgroundColor: "#2ecc71",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "4px",
-                }}
-              >
+              </SortButton>
+              <SortButton variant="suit" onClick={sortBySuit}>
                 Sort Suit
-              </button>
+              </SortButton>
               {selectedCards.length > 0 && (
-                <motion.div
+                <ActionButtonGroup
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
-                  style={{ display: "flex", gap: "10px" }}
                 >
-                  <motion.button
+                  <ActionButton
+                    action="play"
+                    disabled={playedHands.length >= maxHands}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => handleAction("play")}
-                    disabled={playedHands.length >= maxHands}
-                    style={{
-                      padding: "8px 16px",
-                      backgroundColor:
-                        playedHands.length >= maxHands ? "#95a5a6" : "#e67e22",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor:
-                        playedHands.length >= maxHands
-                          ? "not-allowed"
-                          : "pointer",
-                    }}
                   >
                     Play
-                  </motion.button>
-                  <motion.button
+                  </ActionButton>
+                  <ActionButton
+                    action="discard"
+                    disabled={discards.length >= maxDiscards}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => handleAction("discard")}
-                    disabled={discards.length >= maxDiscards}
-                    style={{
-                      padding: "8px 16px",
-                      backgroundColor:
-                        discards.length >= maxDiscards ? "#95a5a6" : "#e74c3c",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor:
-                        discards.length >= maxDiscards
-                          ? "not-allowed"
-                          : "pointer",
-                    }}
                   >
                     Discard
-                  </motion.button>
-                </motion.div>
+                  </ActionButton>
+                </ActionButtonGroup>
               )}
-            </div>
+            </ActionButtonsContainer>
           </>
         )}
-      </div>
-    </div>
+      </MainGameArea>
+    </GameContainer>
   );
 };

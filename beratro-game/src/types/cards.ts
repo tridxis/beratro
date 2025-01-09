@@ -4,4 +4,5 @@ export interface CardPosition {
   id: number;
   rank: CardRank;
   suit: CardSuit;
+  index: number;
 }
