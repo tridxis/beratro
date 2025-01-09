@@ -136,4 +136,19 @@ Tomorrow I will spend more time for the UI. Currently files is too mess & too lo
 
 See yaa tmr 🍀
 
+## Day 8
+
+I moved all styles to another file and used @emotion for styling. Code is better right now.
+
+And thank God, I found the repo: https://github.com/EFHIII/balatro-calculator, the code is very clean.
+
+I will learn how to breakdown the score from this guy, and tmr will try to simulate a real score calculation including Beras, cards' effect...
+
+I'm thinking about game look & feel to. Maybe it will look like Animal restaurant, cute minimalism & street background (top down)
+
+![image](https://github.com/user-attachments/assets/d887761d-72f3-4a0c-8028-7a2f295c6022)
+
+![image](https://github.com/user-attachments/assets/41d38346-a10f-4b90-8625-d05bf3f7d174)
+
+tmr tmr 🍀
 
