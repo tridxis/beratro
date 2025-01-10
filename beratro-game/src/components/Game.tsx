@@ -59,7 +59,11 @@ import {
   ScoreDisplay,
   ChipsDisplay,
   MultiplierDisplay,
+  LeftArea,
+  HandContainer,
+  BentoBox,
 } from "./Game.styles";
+import { BLUE_COLOR, GOLD_COLOR, RED_COLOR } from "@/utils/colors";
 
 export const Game = () => {
   const {
@@ -130,7 +134,7 @@ export const Game = () => {
         .map((id) => handCards.find((card) => card.id === id)!)
         .sort((a, b) => a.index - b.index);
 
-      console.log(playedCards);
+      console;
 
       const { score, scoredCards, pokerHand } =
         Calculator.calculateScore(playedCards);
@@ -199,69 +203,81 @@ export const Game = () => {
 
   return (
     <GameContainer>
-      <LeftPanel>
-        <ResetButton
-          onClick={() => {
-            reset();
-            dealCards();
-          }}
-        >
-          Reset
-        </ResetButton>
+      <LeftArea>
+        <LeftPanel>
+          <ResetButton
+            onClick={() => {
+              reset();
+              dealCards();
+            }}
+          >
+            Reset
+          </ResetButton>
 
-        <BigBlindBox>
-          <BigBlindHeader>Big Blind</BigBlindHeader>
-          <BigBlindContent>
-            <div style={{ color: "white" }}>Score at least</div>
-            <BigBlindTarget>450</BigBlindTarget>
-            <div style={{ color: "#FFD700" }}>to earn $$$$</div>
-          </BigBlindContent>
-        </BigBlindBox>
+          <BentoBox>
+            <BigBlindHeader>BIG BLIND</BigBlindHeader>
+            <BigBlindContent>
+              <FlexRow style={{ justifyContent: "space-between" }}>
+                <div>
+                  <div>Score at least</div>
+                  <BigBlindTarget>450</BigBlindTarget>
+                </div>
+                <div>to earn $$$$</div>
+              </FlexRow>
+            </BigBlindContent>
+          </BentoBox>
 
-        <ScoreBox>
-          <div style={{ color: "white" }}>Round score</div>
-          <ScoreValue>{score}</ScoreValue>
-        </ScoreBox>
+          <BentoBox style={{ padding: "1vw" }}>
+            <div>Round score</div>
+            <ScoreValue>{score}</ScoreValue>
+          </BentoBox>
 
-        <HandScoreContainer>
-          <HandTypeText>{pokerHandRef.current?.handType}</HandTypeText>
-          <ScoreDisplay>
-            <ChipsDisplay>
-              {useAnimatedCounter(
-                (pokerHandRef.current?.chips || 0) +
-                  Object.keys(cardScores).reduce(
-                    (sum: number, card: string) =>
-                      sum +
-                      cardScores[Number(card)].chips.reduce(
-                        (sum: number, chip: number) => sum + chip,
-                        0
-                      ),
-                    0
-                  )
-              )}
-            </ChipsDisplay>
-            ×
-            <MultiplierDisplay>
-              {pokerHandRef.current?.mult || 0}
-            </MultiplierDisplay>
-          </ScoreDisplay>
-        </HandScoreContainer>
+          <HandScoreContainer>
+            <HandTypeText>{pokerHandRef.current?.handType}</HandTypeText>
+            <ScoreDisplay>
+              <ChipsDisplay>
+                {useAnimatedCounter(
+                  (pokerHandRef.current?.chips || 0) +
+                    Object.keys(cardScores).reduce(
+                      (sum: number, card: string) =>
+                        sum +
+                        cardScores[Number(card)].chips.reduce(
+                          (sum: number, chip: number) => sum + chip,
+                          0
+                        ),
+                      0
+                    )
+                )}
+              </ChipsDisplay>
+              <span style={{ fontSize: "2vw" }}>×</span>
+              <MultiplierDisplay>
+                {pokerHandRef.current?.mult || 0}
+              </MultiplierDisplay>
+            </ScoreDisplay>
+          </HandScoreContainer>
 
-        <StatsGrid>
-          <StatBox>
-            <div style={{ color: "white" }}>Hands</div>
-            <StatValue color="#3498db">
-              {maxHands - playedHands.length}
-            </StatValue>
-          </StatBox>
-          <StatBox>
-            <div style={{ color: "white" }}>Discards</div>
-            <StatValue color="#e74c3c">
-              {maxDiscards - discards.length}
-            </StatValue>
-          </StatBox>
-        </StatsGrid>
-      </LeftPanel>
+          <StatsGrid>
+            <StatBox>
+              <div>Hands</div>
+              <StatValue color={BLUE_COLOR}>
+                {maxHands - playedHands.length}
+              </StatValue>
+            </StatBox>
+            <StatBox>
+              <div>Discards</div>
+              <StatValue color={RED_COLOR}>
+                {maxDiscards - discards.length}
+              </StatValue>
+            </StatBox>
+            <StatBox>
+              <div>Golds</div>
+              <StatValue color={GOLD_COLOR}>
+                {maxDiscards - discards.length}
+              </StatValue>
+            </StatBox>
+          </StatsGrid>
+        </LeftPanel>
+      </LeftArea>
 
       <MainGameArea>
         <DeckAreaContainer>
@@ -367,37 +383,33 @@ export const Game = () => {
             </PlayedHandArea>
 
             <HandCardsArea>
-              <ReorderGroup
-                axis="x"
-                values={handCards.map((card) => card.index)}
-                onReorder={(newOrder) => reorderCards(newOrder as number[])}
-              >
-                <AnimatePresence mode="popLayout" initial={true}>
-                  {handCards.map((card, index) => (
-                    <CardSlot
-                      key={card.id}
-                      index={index}
-                      totalCards={handCards.length}
-                    >
-                      <DraggableCard
-                        className="hand-card"
-                        card={card}
-                        isSelected={selectedCards.includes(card.id)}
-                        onSelect={toggleSelectedCard}
-                      />
-                    </CardSlot>
-                  ))}
-                </AnimatePresence>
-              </ReorderGroup>
+              <HandContainer>
+                <ReorderGroup
+                  axis="x"
+                  values={handCards.map((card) => card.index)}
+                  onReorder={(newOrder) => reorderCards(newOrder as number[])}
+                >
+                  <AnimatePresence mode="popLayout" initial={true}>
+                    {handCards.map((card, index) => (
+                      <CardSlot
+                        key={card.id}
+                        index={index}
+                        totalCards={handCards.length}
+                      >
+                        <DraggableCard
+                          className="hand-card"
+                          card={card}
+                          isSelected={selectedCards.includes(card.id)}
+                          onSelect={toggleSelectedCard}
+                        />
+                      </CardSlot>
+                    ))}
+                  </AnimatePresence>
+                </ReorderGroup>
+              </HandContainer>
             </HandCardsArea>
 
             <ActionButtonsContainer>
-              <SortButton variant="value" onClick={sortByValue}>
-                Sort Value
-              </SortButton>
-              <SortButton variant="suit" onClick={sortBySuit}>
-                Sort Suit
-              </SortButton>
               {selectedCards.length > 0 && (
                 <ActionButtonGroup
                   initial={{ opacity: 0, x: -20 }}
@@ -411,8 +423,22 @@ export const Game = () => {
                     whileTap={{ scale: 0.95 }}
                     onClick={() => handleAction("play")}
                   >
-                    Play
+                    PLAY
                   </ActionButton>
+                </ActionButtonGroup>
+              )}
+              <SortButton variant="value" onClick={sortByValue}>
+                Sort Rank
+              </SortButton>
+              <SortButton variant="suit" onClick={sortBySuit}>
+                Sort Suit
+              </SortButton>
+              {selectedCards.length > 0 && (
+                <ActionButtonGroup
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 20 }}
+                >
                   <ActionButton
                     action="discard"
                     disabled={discards.length >= maxDiscards}
@@ -420,7 +446,7 @@ export const Game = () => {
                     whileTap={{ scale: 0.95 }}
                     onClick={() => handleAction("discard")}
                   >
-                    Discard
+                    DISCARD
                   </ActionButton>
                 </ActionButtonGroup>
               )}

@@ -1,16 +1,53 @@
+import {
+  BG_COLOR,
+  BLUE_COLOR,
+  BORDER_COLOR,
+  FLOOR_BORDER_COLOR,
+  FLOOR_COLOR,
+  GREEN_COLOR,
+  RED_COLOR,
+  WHITE_COLOR,
+  WOOD_COLOR,
+} from "@/utils/colors";
 import styled from "@emotion/styled";
 import { motion } from "framer-motion";
 import { Reorder } from "framer-motion";
 
-export const RoundEndContainer = styled.div`
-  padding: 20px;
-  background-color: #1e2a38;
-  border-radius: 8px;
-  margin-top: 20px;
-  color: white;
+export const Button = styled.button`
+  border: 0.15vw solid ${BORDER_COLOR};
+  border-radius: 1vw;
+  padding: 0.75vw;
+  background-color: ${WOOD_COLOR};
+  color: ${WHITE_COLOR};
+  font-weight: bold;
+  font-size: 1vw;
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+  box-shadow: inset 0 0px 0px rgba(0, 0, 0, 0);
+  transition: all 0.1s ease;
+  &:hover:not(:disabled) {
+    transform: translateY(1px);
+    box-shadow: inset 0 -0.3vw 0 rgba(0, 0, 0, 0.3);
+    padding-top: 0.6vw;
+    padding-bottom: 0.9vw;
+  }
+
+  &:active:not(:disabled) {
+    padding-top: 0.65vw;
+    padding-bottom: 0.85vw;
+    box-shadow: inset 0 -0.2vw 0 rgba(0, 0, 0, 0.3);
+  }
 `;
 
-export const CashOutButton = styled.button`
+export const RoundEndContainer = styled.div`
+  padding: 1vw;
+  background-color: ${FLOOR_COLOR};
+  border: 0.2vw solid ${FLOOR_BORDER_COLOR};
+  border-radius: 8px;
+  color: white;
+  flex: 2;
+`;
+
+export const CashOutButton = styled(Button)`
   background-color: #8b4513;
   padding: 8px 16px;
   border-radius: 8px;
@@ -25,7 +62,6 @@ export const CashOutButton = styled.button`
 export const FlexRow = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
 `;
 
 const IconBase = styled.div`
@@ -65,82 +101,78 @@ export const ScoreText = styled.span`
 
 // Add more styled components for inline styles
 export const GameContainer = styled.div`
-  background-color: #1a472a;
-  min-height: 100vh;
-  width: 100vw;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: ${BG_COLOR};
+  height: 100%;
+  width: 100%;
   display: flex;
 `;
 
+export const LeftArea = styled.div`
+  flex: 1;
+  padding: 0.5vw;
+  overflow: hidden;
+`;
+
 export const LeftPanel = styled.div`
-  width: 300px;
-  background: rgba(0, 0, 0, 0.8);
-  padding: 20px;
-`;
-
-export const ResetButton = styled.button`
   width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  background-color: #9e9e9e;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background-color: #858585;
-  }
+  background: ${WOOD_COLOR};
+  border: 0.2vw solid ${BORDER_COLOR};
+  border-radius: 0.5vw;
+  padding: 1vw;
+  height: 100%;
 `;
 
-export const BigBlindBox = styled.div`
-  background-color: #8b4513;
-  border-radius: 8px;
-  margin-bottom: 10px;
+export const ResetButton = styled(Button)`
+  width: 100%;
+  background-color: ${WHITE_COLOR};
+  color: ${BORDER_COLOR};
+  margin-bottom: 1vw;
+`;
+
+export const BentoBox = styled.div`
+  background-color: ${BG_COLOR};
+  color: ${BORDER_COLOR};
+  margin-bottom: 1vw;
+  border-radius: 1vw;
+  overflow: hidden;
 `;
 
 export const BigBlindHeader = styled.div`
   padding: 10px;
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
-  background-color: #704214;
-  color: white;
+  background-color: ${BORDER_COLOR};
+  color: ${WHITE_COLOR};
+  font-size: 1.2vw;
+  text-align: center;
   font-weight: bold;
 `;
 
 export const BigBlindContent = styled.div`
-  padding: 10px;
-  background-color: #2c3e50;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
+  padding: 0.5vw 1vw;
+  font-size: 0.8vw;
 `;
 
 export const BigBlindTarget = styled.div`
-  font-size: 32px;
-  color: #ff4444;
-`;
-
-export const ScoreBox = styled.div`
-  background-color: #2c3e50;
-  padding: 10px;
-  border-radius: 8px;
-  margin-bottom: 10px;
+  font-size: 1.2vw;
+  color: ${RED_COLOR};
 `;
 
 export const ScoreValue = styled.div`
-  font-size: 32px;
-  color: white;
+  font-size: 1.2vw;
+  color: ${BORDER_COLOR};
 `;
 
 export const StatsGrid = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1vw;
 `;
 
 export const StatBox = styled.div`
-  background-color: #2c3e50;
+  background-color: ${BORDER_COLOR};
+  color: ${WHITE_COLOR};
   padding: 10px;
   border-radius: 8px;
   text-align: center;
@@ -153,13 +185,17 @@ export const StatValue = styled.div<{ color: string }>`
 `;
 
 export const MainGameArea = styled.div`
-  flex: 1;
-  padding: 1vw;
+  flex: 3;
+  padding: 0.5vw;
+  display: flex;
+  flex-direction: column;
+  gap: 1vw;
 `;
 
 export const DeckAreaContainer = styled.div`
   display: flex;
-  gap: 2vw;
+  gap: 1vw;
+  flex: 1;
 `;
 
 export const DeckSection = styled.div`
@@ -167,8 +203,29 @@ export const DeckSection = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 180px;
-  background: rgba(0, 0, 0, 0.2);
+  background: transparent;
+  position: relative;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 0.5vw;
+
+  // &::before,
+  // &::after {
+  //   content: "";
+  //   position: absolute;
+  //   inset: 0;
+  // }
+
+  // &::before {
+  //   border-bottom: 4px solid rgba(255, 255, 255, 0.9);
+  //   border-left: 4px solid rgba(255, 255, 255, 0.9);
+  //   transform: translate(2px, -2px);
+  // }
+
+  // &::after {
+  //   border-top: 4px solid rgba(255, 255, 255, 0.9);
+  //   border-right: 4px solid rgba(255, 255, 255, 0.9);
+  //   transform: translate(-2px, 2px);
+  // }
 `;
 
 export const MemesSection = styled(DeckSection)`
@@ -180,6 +237,7 @@ export const ShopContainer = styled.div`
   background-color: #1e2a38;
   border-radius: 8px;
   margin-top: 20px;
+  flex: 2;
 `;
 
 export const ShopButtonGrid = styled.div`
@@ -189,7 +247,7 @@ export const ShopButtonGrid = styled.div`
   margin-bottom: 20px;
 `;
 
-export const ShopButton = styled.button<{ variant?: "primary" | "secondary" }>`
+export const ShopButton = styled(Button)<{ variant?: "primary" | "secondary" }>`
   padding: 15px;
   background-color: ${(props) =>
     props.variant === "primary" ? "#E74C3C" : "#2ECC71"};
@@ -241,9 +299,11 @@ export const ItemContainer = styled.div`
 `;
 
 export const PlayedHandArea = styled.div`
-  min-height: 180px;
-  margin-bottom: 20px;
+  flex: 1;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const PlayedHandContainer = styled.div<{ isLastPlayed: boolean }>`
@@ -279,24 +339,35 @@ export const ScorePopup = styled(motion.div)`
 `;
 
 export const ChipScore = styled.div`
-  background: #0092ff;
-  padding: 10px;
-  color: #fff;
-  font-size: 20px;
+  background: ${BLUE_COLOR};
+  padding: 0.3vw;
+  color: ${WHITE_COLOR};
+  border: 0.2vw solid ${BORDER_COLOR};
+  font-size: 1vw;
   font-weight: bold;
 `;
 
 export const MultScore = styled.div`
-  background: #0092ff;
-  padding: 10px;
-  color: #fff;
-  font-size: 12px;
+  background: ${RED_COLOR};
+  padding: 0.3vw;
+  border: 0.2vw solid ${BORDER_COLOR};
+  color: ${WHITE_COLOR};
+  font-size: 1vw;
+  font-weight: bold;
 `;
 
 export const HandCardsArea = styled.div`
-  background-color: rgba(0, 0, 0, 0.2);
-  padding: 10px;
-  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+`;
+
+export const HandContainer = styled.div`
+  width: 100%;
+  height: fit-content;
+  border-radius: 0.5vw;
+  background-color: rgba(0, 0, 0, 0.1);
 `;
 
 export const ReorderGroup = styled(Reorder.Group)`
@@ -322,41 +393,25 @@ export const ActionButtonsContainer = styled.div`
   margin-top: 20px;
 `;
 
-export const SortButton = styled.button<{ variant: "value" | "suit" }>`
-  padding: 8px 16px;
-  background-color: ${(props) =>
-    props.variant === "value" ? "#3498db" : "#2ecc71"};
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-`;
+export const SortButton = styled(Button)<{ variant: "value" | "suit" }>``;
 
 export const ActionButtonGroup = styled(motion.div)`
   display: flex;
   gap: 10px;
 `;
 
-export const ActionButton = styled(motion.button)<{
+export const ActionButton = styled(Button)<{
   action: "play" | "discard";
   disabled: boolean;
 }>`
-  padding: 8px 16px;
-  background-color: ${(props) => {
-    if (props.disabled) return "#95a5a6";
-    return props.action === "play" ? "#e67e22" : "#e74c3c";
-  }};
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+  background-color: ${(props) =>
+    props.action === "play" ? GREEN_COLOR : RED_COLOR};
+  color: ${(props) => (props.action === "play" ? "#fff" : "#fff")};
+  width: 10vw;
 `;
 
 export const HandScoreContainer = styled.div`
-  background-color: #2c3e50;
-  padding: 10px;
-  border-radius: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 1vw;
 `;
 
 export const HandTypeText = styled.div`
@@ -366,25 +421,32 @@ export const HandTypeText = styled.div`
 
 export const ScoreDisplay = styled.div`
   display: flex;
-  gap: 5px;
+  font-size: 1.2vw;
+  gap: 0.5vw;
   font-weight: bold;
   align-items: center;
   justify-content: center;
 `;
 
 export const ChipsDisplay = styled(motion.div)`
-  background-color: #3498db;
-  padding: 5px 10px;
-  border-radius: 4px;
-  color: white;
+  background-color: ${BLUE_COLOR};
+  border: 0.15vw solid ${BORDER_COLOR};
+  padding: 0.5vw;
+  border-radius: 0.5vw;
+  text-align: center;
+  color: ${WHITE_COLOR};
+  flex: 1;
   display: inline-block;
 `;
 
 export const MultiplierDisplay = styled.span`
-  background-color: #e74c3c;
-  padding: 5px 10px;
-  border-radius: 4px;
-  color: white;
+  background-color: ${RED_COLOR};
+  border: 0.15vw solid ${BORDER_COLOR};
+  padding: 0.5vw;
+  border-radius: 0.5vw;
+  color: ${WHITE_COLOR};
+  text-align: center;
+  flex: 1;
 `;
 
 // ... continue with other styled components as needed
