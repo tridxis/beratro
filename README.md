@@ -152,3 +152,18 @@ I'm thinking about game look & feel to. Maybe it will look like Animal restauran
 
 tmr tmr 🍀
 
+## Day 9
+
+<img width="1512" alt="image" src="https://github.com/user-attachments/assets/74b3ebff-7353-4d7e-95bd-740dd4326b62" />
+
+I like this style!
+
+Spent all day to pick the color scheme then make up game components. Now it looks good (for me)
+
+I want to do more and more on look and feel but I think I need to comeback to game mechanism 🕹️
+
+See tmr 🍀
+
+
+
+
