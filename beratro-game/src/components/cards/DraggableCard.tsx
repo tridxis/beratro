@@ -3,7 +3,7 @@ import { CardSuit, SUIT_SYMBOLS } from "@/utils/constants";
 import { Reorder } from "framer-motion";
 import { useRef } from "react";
 import { CARD_STYLES } from "@/utils/cardStyles";
-import { BORDER_COLOR, FLOOR_BORDER_COLOR, GREEN_COLOR } from "@/utils/colors";
+import { BLACK_COLOR, RED_COLOR } from "@/utils/colors";
 
 const DraggableCard = ({
   card: { id, suit, rank },
@@ -50,8 +50,8 @@ const DraggableCard = ({
       style={{
         ...CARD_STYLES.container,
         color: [CardSuit.HEARTS, CardSuit.DIAMONDS].includes(suit)
-          ? "red"
-          : "black",
+          ? RED_COLOR
+          : BLACK_COLOR,
         cursor: "grab",
         // zIndex: 100,
       }}

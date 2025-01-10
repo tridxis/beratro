@@ -1,7 +1,7 @@
 import {
   BG_COLOR,
-  BLUE_COLOR,
   BORDER_COLOR,
+  BLUE_COLOR,
   FLOOR_BORDER_COLOR,
   FLOOR_COLOR,
   GREEN_COLOR,
@@ -173,14 +173,15 @@ export const StatsGrid = styled.div`
 export const StatBox = styled.div`
   background-color: ${BORDER_COLOR};
   color: ${WHITE_COLOR};
-  padding: 10px;
-  border-radius: 8px;
+  padding: 0.5vw;
+  border-radius: 0.5vw;
   text-align: center;
+  font-size: 0.8vw;
 `;
 
 export const StatValue = styled.div<{ color: string }>`
   color: ${(props) => props.color};
-  font-size: 24px;
+  font-size: 1.2vw;
   font-weight: bold;
 `;
 
@@ -201,31 +202,29 @@ export const DeckAreaContainer = styled.div`
 export const DeckSection = styled.div`
   flex: 2;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: transparent;
+  color: ${BORDER_COLOR};
+`;
+
+export const DeckContainer = styled.div`
+  width: 100%;
   position: relative;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.05);
   border-radius: 0.5vw;
+  height: 12vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.8vw;
+`;
 
-  // &::before,
-  // &::after {
-  //   content: "";
-  //   position: absolute;
-  //   inset: 0;
-  // }
-
-  // &::before {
-  //   border-bottom: 4px solid rgba(255, 255, 255, 0.9);
-  //   border-left: 4px solid rgba(255, 255, 255, 0.9);
-  //   transform: translate(2px, -2px);
-  // }
-
-  // &::after {
-  //   border-top: 4px solid rgba(255, 255, 255, 0.9);
-  //   border-right: 4px solid rgba(255, 255, 255, 0.9);
-  //   transform: translate(-2px, 2px);
-  // }
+export const DeckDescription = styled.div`
+  width: 100%;
+  text-align: right;
+  padding: 0.2vw;
+  font-size: 0.8vw;
 `;
 
 export const MemesSection = styled(DeckSection)`
@@ -367,7 +366,7 @@ export const HandContainer = styled.div`
   width: 100%;
   height: fit-content;
   border-radius: 0.5vw;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.05);
 `;
 
 export const ReorderGroup = styled(Reorder.Group)`
@@ -412,11 +411,17 @@ export const ActionButton = styled(Button)<{
 
 export const HandScoreContainer = styled.div`
   margin-bottom: 1vw;
+  background-color: ${BG_COLOR};
+  border-radius: 1vw;
+  padding: 1vw;
+  text-align: center;
+  color: ${BORDER_COLOR};
 `;
 
 export const HandTypeText = styled.div`
-  color: white;
-  margin-bottom: 5px;
+  color: ${BORDER_COLOR};
+  margin-bottom: 0.5vw;
+  font-size: 1.2vw;
 `;
 
 export const ScoreDisplay = styled.div`

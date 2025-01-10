@@ -62,6 +62,8 @@ import {
   LeftArea,
   HandContainer,
   BentoBox,
+  DeckContainer,
+  DeckDescription,
 } from "./Game.styles";
 import { BLUE_COLOR, GOLD_COLOR, RED_COLOR } from "@/utils/colors";
 
@@ -133,8 +135,6 @@ export const Game = () => {
       const playedCards = selectedCards
         .map((id) => handCards.find((card) => card.id === id)!)
         .sort((a, b) => a.index - b.index);
-
-      console;
 
       const { score, scoredCards, pokerHand } =
         Calculator.calculateScore(playedCards);
@@ -281,8 +281,14 @@ export const Game = () => {
 
       <MainGameArea>
         <DeckAreaContainer>
-          <DeckSection>Beras Here!</DeckSection>
-          <MemesSection>Memes Here!</MemesSection>
+          <DeckSection>
+            <DeckContainer>Beras Here!</DeckContainer>
+            <DeckDescription>0/5</DeckDescription>
+          </DeckSection>
+          <MemesSection>
+            <DeckContainer>Memes Here!</DeckContainer>
+            <DeckDescription>0/2</DeckDescription>
+          </MemesSection>
         </DeckAreaContainer>
 
         {currentState === GameState.SHOPPING && (
