@@ -164,6 +164,16 @@ I want to do more and more on look and feel but I think I need to comeback to ga
 
 See tmr 🍀
 
+## Day 10
+
+Today I finished the calculation including beras & in hand cards with mocks. And make a breakdown about scoring, using for animations
+
+Tmr I will make the breakdown animations & decide the first 20 bera cards
+
+It's important day, see you 🍀
+
+
+
 
 
 
