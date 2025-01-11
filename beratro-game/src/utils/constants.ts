@@ -22,7 +22,6 @@ export enum CardSuit {
 }
 
 export const CARD_RANKS = {
-  [CardRank.ACE]: 1,
   [CardRank.TWO]: 2,
   [CardRank.THREE]: 3,
   [CardRank.FOUR]: 4,
@@ -35,6 +34,7 @@ export const CARD_RANKS = {
   [CardRank.JACK]: 11,
   [CardRank.QUEEN]: 12,
   [CardRank.KING]: 13,
+  [CardRank.ACE]: 14,
 } as const;
 
 export const SUIT_ORDER = {
@@ -52,33 +52,47 @@ export const SUIT_SYMBOLS = {
 } as const;
 
 export enum HandType {
-  RoyalFlush = "RoyalFlush",
-  StraightFlush = "StraightFlush",
-  FourOfAKind = "FourOfAKind",
-  FullHouse = "FullHouse",
+  FlushFive = "Flush Five",
+  FlushHouse = "Flush House",
+  FiveOfAKind = "Five of a Kind",
+  StraightFlush = "Straight Flush",
+  FourOfAKind = "Four of a Kind",
+  FullHouse = "Full House",
   Flush = "Flush",
   Straight = "Straight",
-  ThreeOfAKind = "ThreeOfAKind",
-  TwoPair = "TwoPair",
+  ThreeOfAKind = "Three of a Kind",
+  TwoPair = "Two Pair",
   Pair = "Pair",
-  HighCard = "HighCard",
+  HighCard = "High Card",
 }
 
-export const HAND_VALUES: Record<HandType, { mult: number; chips: number }> = {
-  [HandType.RoyalFlush]: { mult: 9, chips: 150 },
-  [HandType.StraightFlush]: { mult: 8, chips: 100 },
-  [HandType.FourOfAKind]: { mult: 7, chips: 60 },
-  [HandType.FullHouse]: { mult: 4, chips: 40 },
-  [HandType.Flush]: { mult: 4, chips: 35 },
-  [HandType.Straight]: { mult: 4, chips: 30 },
-  [HandType.ThreeOfAKind]: { mult: 3, chips: 30 },
-  [HandType.TwoPair]: { mult: 2, chips: 20 },
-  [HandType.Pair]: { mult: 2, chips: 10 },
-  [HandType.HighCard]: { mult: 1, chips: 5 },
+export const HAND_VALUES: Record<
+  HandType,
+  {
+    mult: number;
+    chips: number;
+    multLvl: number; // mult per level
+    chipsLvl: number; // chips per level
+  }
+> = {
+  [HandType.FlushFive]: { mult: 16, chips: 160, multLvl: 3, chipsLvl: 50 },
+  [HandType.FlushHouse]: { mult: 14, chips: 140, multLvl: 4, chipsLvl: 40 },
+  [HandType.FiveOfAKind]: { mult: 12, chips: 120, multLvl: 3, chipsLvl: 35 },
+  [HandType.StraightFlush]: { mult: 8, chips: 100, multLvl: 4, chipsLvl: 40 },
+  [HandType.FourOfAKind]: { mult: 7, chips: 60, multLvl: 3, chipsLvl: 30 },
+  [HandType.FullHouse]: { mult: 4, chips: 40, multLvl: 2, chipsLvl: 25 },
+  [HandType.Flush]: { mult: 4, chips: 35, multLvl: 2, chipsLvl: 15 },
+  [HandType.Straight]: { mult: 4, chips: 30, multLvl: 3, chipsLvl: 30 },
+  [HandType.ThreeOfAKind]: { mult: 3, chips: 30, multLvl: 2, chipsLvl: 20 },
+  [HandType.TwoPair]: { mult: 2, chips: 20, multLvl: 1, chipsLvl: 20 },
+  [HandType.Pair]: { mult: 2, chips: 10, multLvl: 1, chipsLvl: 15 },
+  [HandType.HighCard]: { mult: 1, chips: 5, multLvl: 1, chipsLvl: 10 },
 };
 
 export const HAND_NAMES: Record<HandType, string> = {
-  [HandType.RoyalFlush]: "Royal Flush",
+  [HandType.FlushFive]: "Flush Five",
+  [HandType.FlushHouse]: "Flush House",
+  [HandType.FiveOfAKind]: "Five of a Kind",
   [HandType.StraightFlush]: "Straight Flush",
   [HandType.FourOfAKind]: "Four of a Kind",
   [HandType.FullHouse]: "Full House",
