@@ -4,7 +4,7 @@ import { useGameStore } from "@/store/gameStore";
 import { DisplayCard } from "./cards/DisplayCard";
 import DraggableCard from "./cards/DraggableCard";
 import { Calculator } from "@/utils/calculator";
-import { HandType } from "@/utils/constants";
+import { Bera, HandType } from "@/utils/constants";
 import { PokerHand } from "@/types/hands";
 import { useMotionValue, useTransform, animate } from "framer-motion";
 import { GameState } from "@/types/games";
@@ -91,12 +91,6 @@ export const Game = () => {
 
   const [lastPlayedIndex, setLastPlayedIndex] = useState<number | null>(null);
   const [currentScore, setCurrentScore] = useState<number | null>(null);
-  const [cardScores, setCardScores] = useState<{
-    [key: number]: {
-      chips: number[];
-      mults: number[];
-    };
-  }>({});
 
   const pokerHandRef = useRef<PokerHand | null>(null);
 
@@ -136,23 +130,36 @@ export const Game = () => {
         .map((id) => handCards.find((card) => card.id === id)!)
         .sort((a, b) => a.index - b.index);
 
-      const { score, scoredCards, pokerHand } =
-        Calculator.calculateScore(playedCards);
+      const inHandCards = handCards.filter(
+        (card) => !selectedCards.some((id) => id === card.id)
+      );
 
-      // Animate individual card scores
-      playedCards.forEach((card, index) => {
-        if (scoredCards[index]) {
-          setTimeout(() => {
-            setCardScores((prev) => ({
-              ...prev,
-              [scoredCards[index].id]: {
-                chips: scoredCards[index].chips,
-                mults: scoredCards[index].mults,
-              },
-            }));
-          }, index * 360); // Show each card's score 200ms apart
-        }
-      });
+      const { score, pokerHand, playingBreakdowns, inHandBreakdowns } =
+        Calculator.calculateScore(
+          playedCards,
+          inHandCards,
+          [
+            {
+              id: 1,
+              bera: Bera.TEST_CHIPS,
+              index: 1,
+            },
+            {
+              id: 2,
+              bera: Bera.TEST_MULT,
+              index: 2,
+            },
+            {
+              id: 3,
+              bera: Bera.TEST_IN_HAND,
+              index: 3,
+            },
+          ],
+          { breakdown: true }
+        );
+
+      console.log(playingBreakdowns);
+      console.log(inHandBreakdowns);
 
       pokerHandRef.current = pokerHand;
 
@@ -161,7 +168,6 @@ export const Game = () => {
         setCurrentScore(score);
         addScore(score);
 
-        setCardScores({});
         // Clear individual scores and reset display after 5s
         setTimeout(() => {
           setCurrentScore(null);
@@ -170,7 +176,7 @@ export const Game = () => {
           if (score >= 1) {
             setCurrentState(GameState.ROUND_ENDED);
           }
-        }, playedCards.length * (scoredCards[0].chips.length + scoredCards[0].mults.length) * 360 + 360);
+        }, playedCards.length * 360 + 360);
       }, playedCards.length * 360 + 360); // Wait for all card scores to show
 
       setLastPlayedIndex(playedHands.length);
@@ -235,7 +241,7 @@ export const Game = () => {
           <HandScoreContainer>
             <HandTypeText>{pokerHandRef.current?.handType}</HandTypeText>
             <ScoreDisplay>
-              <ChipsDisplay>
+              {/* <ChipsDisplay>
                 {useAnimatedCounter(
                   (pokerHandRef.current?.chips || 0) +
                     Object.keys(cardScores).reduce(
@@ -248,7 +254,7 @@ export const Game = () => {
                       0
                     )
                 )}
-              </ChipsDisplay>
+              </ChipsDisplay> */}
               <span style={{ fontSize: "2vw" }}>×</span>
               <MultiplierDisplay>
                 {pokerHandRef.current?.mult || 0}
@@ -368,7 +374,7 @@ export const Game = () => {
                     {hand.map((card, index) => (
                       <CardWrapper key={card.id} index={index}>
                         <DisplayCard card={card} />
-                        {cardScores[card.id] && (
+                        {/* {cardScores[card.id] && (
                           <ScorePopup
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -380,7 +386,7 @@ export const Game = () => {
                               <MultScore key={i}>×{mult}</MultScore>
                             ))}
                           </ScorePopup>
-                        )}
+                        )} */}
                       </CardWrapper>
                     ))}
                   </CardRow>

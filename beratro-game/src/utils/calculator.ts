@@ -1,50 +1,180 @@
 import { type CardPosition } from "@/types/cards";
-import { CARD_RANKS, CardRank, HAND_VALUES, HandType } from "@/utils/constants";
-import { type PokerHand } from "@/types/hands";
+import {
+  Bera,
+  CARD_RANKS,
+  CardRank,
+  HAND_VALUES,
+  HandType,
+  Unit,
+} from "@/utils/constants";
+import { Breakdown, type PokerHand } from "@/types/hands";
+import { BeraPosition } from "@/types/beras";
+
+type CalculationOption = {
+  breakdown?: boolean;
+};
 
 export class Calculator {
-  static calculateScore(cards: CardPosition[]): {
+  static calculateScore(
+    playingCards: CardPosition[],
+    inHandCards: CardPosition[],
+    beras: BeraPosition[],
+    options?: CalculationOption
+  ): {
     score: number;
-    scoredCards: (CardPosition & { chips: number[]; mults: number[] })[];
+    playingBreakdowns: Breakdown[];
+    inHandBreakdowns: Breakdown[];
     pokerHand: PokerHand;
   } {
-    const pokerHand = this.identifyPokerHand(cards);
-    const { baseChips, scoredCards } = this.calculateBaseChips(
-      pokerHand.scoredCards
+    const pokerHand = this.identifyPokerHand(playingCards);
+    let totalMult = pokerHand.mult;
+    let totalChips = pokerHand.chips;
+    const { chips, mult, playingBreakdowns } = this.triggerPlayingCards(
+      pokerHand.scoredCards,
+      beras,
+      totalChips,
+      totalMult,
+      options
     );
 
+    totalMult *= mult;
+    totalChips += chips;
+
+    for (let i = 0; i < beras.length; i++) {
+      const bera = beras[i];
+      if (bera.bera === Bera.TEST_MULT) {
+        totalMult *= 3;
+        if (options?.breakdown) {
+          playingBreakdowns.push({
+            cards: [],
+            beras: [bera],
+            values: [3],
+            units: [Unit.MULT],
+            chips: totalChips,
+            mult: totalMult,
+          });
+        }
+      }
+    }
+
+    const {
+      chips: inHandChips,
+      mult: inHandMult,
+      inHandBreakdowns,
+    } = this.triggerInHandCards(
+      inHandCards,
+      beras,
+      totalChips,
+      totalMult,
+      options
+    );
+
+    totalMult *= inHandMult;
+    totalChips += inHandChips;
+
     return {
-      score: (baseChips + pokerHand.chips) * pokerHand.mult,
-      scoredCards,
+      score: totalChips * totalMult,
+      playingBreakdowns,
+      inHandBreakdowns,
       pokerHand: pokerHand,
     };
   }
 
-  private static calculateBaseChips(cards: CardPosition[]): {
-    baseChips: number;
-    scoredCards: (CardPosition & { chips: number[]; mults: number[] })[];
+  private static triggerPlayingCards(
+    cards: CardPosition[],
+    beras: BeraPosition[],
+    startingChips: number,
+    startingMult: number,
+    options?: CalculationOption
+  ): {
+    chips: number;
+    mult: number;
+    playingBreakdowns: Breakdown[];
   } {
-    const scoredCards: (CardPosition & { chips: number[]; mults: number[] })[] =
-      [];
-    const baseChips = cards.reduce((sum, card) => {
+    const playingBreakdowns: Breakdown[] = [];
+    let chips = 0;
+    const mult = 1;
+    for (let i = 0; i < cards.length; i++) {
+      const card = cards[i];
       let value = 0;
       // Face cards (J, Q, K) are worth 10, Ace is worth 11
       if (CARD_RANKS[card.rank] === CARD_RANKS[CardRank.ACE]) {
         value = 11;
-        scoredCards.push({ ...card, chips: [11], mults: [] });
       } else if (CARD_RANKS[card.rank] > 10) {
         value = 10;
-        scoredCards.push({ ...card, chips: [10], mults: [] });
       } else {
         value = CARD_RANKS[card.rank];
-        if (value > 0) {
-          scoredCards.push({ ...card, chips: [value], mults: [] });
+      }
+      chips += value;
+      if (options?.breakdown) {
+        playingBreakdowns.push({
+          cards: [card],
+          beras: [],
+          values: [value],
+          units: [Unit.CHIPS],
+          chips,
+          mult,
+        });
+      }
+      for (let j = 0; j < beras.length; j++) {
+        const bera = beras[j];
+        if (bera.bera === Bera.TEST_CHIPS) {
+          chips += 30;
+          if (options?.breakdown) {
+            playingBreakdowns.push({
+              cards: [],
+              beras: [bera],
+              values: [30],
+              units: [Unit.CHIPS],
+              chips: startingChips + chips,
+              mult: startingMult * mult,
+            });
+          }
         }
       }
-      return sum + value;
-    }, 0);
+    }
 
-    return { baseChips, scoredCards };
+    return { chips, mult, playingBreakdowns };
+  }
+
+  private static triggerInHandCards(
+    cards: CardPosition[],
+    beras: BeraPosition[],
+    startingChips: number,
+    startingMult: number,
+    options?: CalculationOption
+  ): {
+    chips: number;
+    mult: number;
+    inHandBreakdowns: Breakdown[];
+  } {
+    const inHandBreakdowns: Breakdown[] = [];
+    const chips = 0;
+    let mult = 1;
+    for (let i = 0; i < cards.length; i++) {
+      const card = cards[i];
+
+      for (let j = 0; j < beras.length; j++) {
+        const bera = beras[j];
+        if (bera.bera === Bera.TEST_IN_HAND) {
+          if (card.rank === CardRank.KING) {
+            mult *= 1.5;
+            if (options?.breakdown) {
+              inHandBreakdowns.push({
+                cards: [card],
+                beras: [bera],
+                values: [1.5],
+                units: [Unit.MULT],
+                chips: startingChips + chips,
+                mult: startingMult * mult,
+              });
+            }
+          }
+        }
+      }
+    }
+
+    return { chips, mult, inHandBreakdowns };
   }
 
   private static identifyPokerHand(

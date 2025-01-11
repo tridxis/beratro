@@ -1,3 +1,18 @@
+export enum Bera {
+  TEST_CHIPS = "TEST_CHIPS",
+  TEST_MULT = "TEST_MULT",
+  TEST_IN_HAND = "TEST_IN_HAND",
+}
+
+export enum Unit {
+  CHIPS = "CHIPS",
+  MULT = "MULT",
+  GOLD = "GOLD",
+  MEME = "MEME",
+  FLOWER = "FLOWER",
+  STICKER = "STICKER",
+}
+
 export enum CardRank {
   TWO = "2",
   THREE = "3",
