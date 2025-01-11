@@ -112,8 +112,8 @@ export class Calculator {
           beras: [],
           values: [value],
           units: [Unit.CHIPS],
-          chips,
-          mult,
+          chips: startingChips + chips,
+          mult: startingMult * mult,
         });
       }
       for (let j = 0; j < beras.length; j++) {
@@ -205,12 +205,12 @@ export class Calculator {
     }
 
     // Check non-flush hands
-    const rankValues = Object.values(rankCounts);
-    if (rankValues.includes(5)) {
+    const counts = Object.values(rankCounts);
+    if (counts.includes(5)) {
       return this.createHandResult(HandType.FiveOfAKind, cards, cards);
     }
 
-    if (rankValues.includes(4)) {
+    if (counts.includes(4)) {
       const rank = Object.entries(rankCounts).find(
         ([, count]) => count === 4
       )![0];
@@ -220,7 +220,7 @@ export class Calculator {
       return this.createHandResult(HandType.FourOfAKind, cards, scoredCards);
     }
 
-    if (rankValues.includes(3) && rankValues.includes(2)) {
+    if (counts.includes(3) && counts.includes(2)) {
       return this.createHandResult(HandType.FullHouse, cards, cards);
     }
 
@@ -228,7 +228,7 @@ export class Calculator {
       return this.createHandResult(HandType.Straight, cards, cards);
     }
 
-    if (rankValues.includes(3)) {
+    if (counts.includes(3)) {
       const rank = Object.entries(rankCounts).find(
         ([, count]) => count === 3
       )![0];
