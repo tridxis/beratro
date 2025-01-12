@@ -12,6 +12,7 @@ import {
 import styled from "@emotion/styled";
 import { motion } from "framer-motion";
 import { Reorder } from "framer-motion";
+import { AnimatedValueDisplay } from "./AnimatedValueDisplay";
 
 export const Button = styled.button`
   border: 0.15vw solid ${BORDER_COLOR};
@@ -159,7 +160,7 @@ export const BigBlindTarget = styled.div`
   color: ${RED_COLOR};
 `;
 
-export const ScoreValue = styled.div`
+export const ScoreValue = styled(motion.div)`
   font-size: 1.2vw;
   color: ${BORDER_COLOR};
 `;
@@ -341,7 +342,8 @@ export const ChipScore = styled.div`
   background: ${BLUE_COLOR};
   padding: 0.3vw;
   color: ${WHITE_COLOR};
-  border: 0.2vw solid ${BORDER_COLOR};
+  border: 0.1vw solid ${BORDER_COLOR};
+  border-radius: 0.5vw;
   font-size: 1vw;
   font-weight: bold;
 `;
@@ -424,16 +426,17 @@ export const HandTypeText = styled.div`
   font-size: 1.2vw;
 `;
 
-export const ScoreDisplay = styled.div`
+export const ScoreDisplay = styled(motion.div)`
   display: flex;
   font-size: 1.2vw;
   gap: 0.5vw;
   font-weight: bold;
   align-items: center;
   justify-content: center;
+  position: relative;
 `;
 
-export const ChipsDisplay = styled(motion.div)`
+export const ChipsDisplay = styled(AnimatedValueDisplay)`
   background-color: ${BLUE_COLOR};
   border: 0.15vw solid ${BORDER_COLOR};
   padding: 0.5vw;
@@ -441,10 +444,9 @@ export const ChipsDisplay = styled(motion.div)`
   text-align: center;
   color: ${WHITE_COLOR};
   flex: 1;
-  display: inline-block;
 `;
 
-export const MultiplierDisplay = styled.span`
+export const MultiplierDisplay = styled(AnimatedValueDisplay)`
   background-color: ${RED_COLOR};
   border: 0.15vw solid ${BORDER_COLOR};
   padding: 0.5vw;

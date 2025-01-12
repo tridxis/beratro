@@ -47,7 +47,7 @@ export class Calculator {
         if (options?.breakdown) {
           playingBreakdowns.push({
             cards: [],
-            beras: [bera],
+            beras: [bera.id],
             values: [3],
             units: [Unit.MULT],
             chips: totalChips,
@@ -108,7 +108,7 @@ export class Calculator {
       chips += value;
       if (options?.breakdown) {
         playingBreakdowns.push({
-          cards: [card],
+          cards: [card.id],
           beras: [],
           values: [value],
           units: [Unit.CHIPS],
@@ -123,7 +123,7 @@ export class Calculator {
           if (options?.breakdown) {
             playingBreakdowns.push({
               cards: [],
-              beras: [bera],
+              beras: [bera.id],
               values: [30],
               units: [Unit.CHIPS],
               chips: startingChips + chips,
@@ -161,8 +161,8 @@ export class Calculator {
             mult *= 1.5;
             if (options?.breakdown) {
               inHandBreakdowns.push({
-                cards: [card],
-                beras: [bera],
+                cards: [card.id],
+                beras: [bera.id],
                 values: [1.5],
                 units: [Unit.MULT],
                 chips: startingChips + chips,

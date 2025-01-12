@@ -10,8 +10,8 @@ export type PokerHand = {
 };
 
 export type Breakdown = {
-  cards: CardPosition[];
-  beras: BeraPosition[];
+  cards: number[];
+  beras: number[];
   values: number[];
   units: Unit[];
   chips: number;

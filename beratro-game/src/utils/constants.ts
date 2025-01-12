@@ -1,3 +1,5 @@
+export const ANIMATION_MS = 240;
+
 export enum Bera {
   TEST_CHIPS = "TEST_CHIPS",
   TEST_MULT = "TEST_MULT",

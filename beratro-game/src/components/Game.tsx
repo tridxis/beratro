@@ -4,8 +4,8 @@ import { useGameStore } from "@/store/gameStore";
 import { DisplayCard } from "./cards/DisplayCard";
 import DraggableCard from "./cards/DraggableCard";
 import { Calculator } from "@/utils/calculator";
-import { Bera, HandType } from "@/utils/constants";
-import { PokerHand } from "@/types/hands";
+import { ANIMATION_MS, Bera, HandType, Unit } from "@/utils/constants";
+import { Breakdown, PokerHand } from "@/types/hands";
 import { useMotionValue, useTransform, animate } from "framer-motion";
 import { GameState } from "@/types/games";
 import {
@@ -66,6 +66,8 @@ import {
   DeckDescription,
 } from "./Game.styles";
 import { BLUE_COLOR, GOLD_COLOR, RED_COLOR } from "@/utils/colors";
+import { CardPosition } from "@/types/cards";
+import { AnimatedValueDisplay } from "./AnimatedValueDisplay";
 
 export const Game = () => {
   const {
@@ -90,9 +92,13 @@ export const Game = () => {
   } = useGameStore();
 
   const [lastPlayedIndex, setLastPlayedIndex] = useState<number | null>(null);
-  const [currentScore, setCurrentScore] = useState<number | null>(null);
 
   const pokerHandRef = useRef<PokerHand | null>(null);
+
+  // Add state for current breakdown at component level
+  const [currentBreakdown, setCurrentBreakdown] = useState<Breakdown | null>(
+    null
+  );
 
   useEffect(() => {
     if (handCards.length === 0) {
@@ -164,20 +170,31 @@ export const Game = () => {
       pokerHandRef.current = pokerHand;
 
       // Update total score after all individual scores are shown
-      setTimeout(() => {
-        setCurrentScore(score);
-        addScore(score);
+      // Animate breakdowns first
+      const allBreakdowns = [...playingBreakdowns, ...inHandBreakdowns];
+      let currentIndex = 0;
 
-        // Clear individual scores and reset display after 5s
-        setTimeout(() => {
-          setCurrentScore(null);
-          setLastPlayedIndex(null);
-          pokerHandRef.current = null;
-          if (score >= 1) {
-            setCurrentState(GameState.ROUND_ENDED);
-          }
-        }, playedCards.length * 360 + 360);
-      }, playedCards.length * 360 + 360); // Wait for all card scores to show
+      const breakdownInterval = setInterval(() => {
+        if (currentIndex < allBreakdowns.length) {
+          setCurrentBreakdown(allBreakdowns[currentIndex]);
+          currentIndex++;
+        } else {
+          clearInterval(breakdownInterval);
+
+          // After breakdowns finish, set the final score
+          addScore(score);
+
+          // Clear individual scores and reset display after original timeout
+          setTimeout(() => {
+            setCurrentBreakdown(null);
+            setLastPlayedIndex(null);
+            pokerHandRef.current = null;
+            if (score >= 1) {
+              setCurrentState(GameState.ROUND_ENDED);
+            }
+          }, playedCards.length * ANIMATION_MS + ANIMATION_MS * 3);
+        }
+      }, ANIMATION_MS);
 
       setLastPlayedIndex(playedHands.length);
     } else {
@@ -205,6 +222,24 @@ export const Game = () => {
     }, [value]);
 
     return rounded;
+  };
+
+  const renderBreakdownCard = (card: CardPosition) => {
+    const index = currentBreakdown?.cards.indexOf(card.id);
+    if (!currentBreakdown || index == null || index === -1) return <></>;
+    const value = currentBreakdown.values[index];
+    const unit = currentBreakdown.units[index];
+    if (!value || (unit !== Unit.CHIPS && unit !== Unit.MULT)) return <></>;
+    return (
+      <ScorePopup
+        initial={{ opacity: 0.5, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: ANIMATION_MS / 2000, ease: "easeInOut" }}
+      >
+        {unit === Unit.CHIPS && <ChipScore>+{value}</ChipScore>}
+        {unit === Unit.MULT && <MultScore>×{value}</MultScore>}
+      </ScorePopup>
+    );
   };
 
   return (
@@ -235,30 +270,15 @@ export const Game = () => {
 
           <BentoBox style={{ padding: "1vw" }}>
             <div>Round score</div>
-            <ScoreValue>{score}</ScoreValue>
+            <ScoreValue>{useAnimatedCounter(score)}</ScoreValue>
           </BentoBox>
 
           <HandScoreContainer>
             <HandTypeText>{pokerHandRef.current?.handType}</HandTypeText>
             <ScoreDisplay>
-              {/* <ChipsDisplay>
-                {useAnimatedCounter(
-                  (pokerHandRef.current?.chips || 0) +
-                    Object.keys(cardScores).reduce(
-                      (sum: number, card: string) =>
-                        sum +
-                        cardScores[Number(card)].chips.reduce(
-                          (sum: number, chip: number) => sum + chip,
-                          0
-                        ),
-                      0
-                    )
-                )}
-              </ChipsDisplay> */}
+              <ChipsDisplay value={currentBreakdown?.chips || 0} />
               <span style={{ fontSize: "2vw" }}>×</span>
-              <MultiplierDisplay>
-                {pokerHandRef.current?.mult || 0}
-              </MultiplierDisplay>
+              <MultiplierDisplay value={currentBreakdown?.mult || 0} />
             </ScoreDisplay>
           </HandScoreContainer>
 
@@ -374,19 +394,7 @@ export const Game = () => {
                     {hand.map((card, index) => (
                       <CardWrapper key={card.id} index={index}>
                         <DisplayCard card={card} />
-                        {/* {cardScores[card.id] && (
-                          <ScorePopup
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                          >
-                            {cardScores[card.id].chips.map((chip, i) => (
-                              <ChipScore key={i}>+{chip}</ChipScore>
-                            ))}
-                            {cardScores[card.id].mults.map((mult, i) => (
-                              <MultScore key={i}>×{mult}</MultScore>
-                            ))}
-                          </ScorePopup>
-                        )} */}
+                        {renderBreakdownCard(card)}
                       </CardWrapper>
                     ))}
                   </CardRow>
