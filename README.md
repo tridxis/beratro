@@ -172,6 +172,23 @@ Tmr I will make the breakdown animations & decide the first 20 bera cards
 
 It's important day, see you 🍀
 
+## Day 11
+
+Today I made the breakdown animations for total chips, mult & played hand.
+
+About Beras, The first 15 Bera Cards will be like Balatro (diff from name, image & stats), and the last 5 will be different (Except King cards, I like it so muuuuch)
+
+| No |	Bera |	Effect |	Cost |	Rarity |	Type |	Action |
+|---|---|---|---|---|---|---|
+| 16 | Perfection |	Each played 10 gives +100/+150/+200 Chips when scored if only 10 played |	$8 |	Rare | PLUS_MULT | CARD |
+| 17 | Musketeers | x3/x4/x5 Mult if played hand contains a Three of a Kind of J | $8 |	Rare | MULT_MULT | HAND |
+| 18 | Mother Care | 1 in 3/2/1 chance for each played Q to create a Flower card when scored |	$8 | Rare | GEN_FLOWER | CARD |
+| 19 | Crown | Each King held in hand gives x1.5/x2/x2.5 Mult |	$8 | Rare | MULT_MULT | STATIC |
+| 20 | AirDrop |	Gains x1/x1.5/x2 Mult for every A that is destroyed |	$8 |	Rare | MULT_MULT | STATIC |
+
+Tomorrow I will make data for 20 Beras, then implement them to current game
+
+See ya 🍀
 
 
 
