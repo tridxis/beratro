@@ -244,9 +244,9 @@ export const Game = () => {
     if (!value || (unit !== Unit.CHIPS && unit !== Unit.MULT)) return <></>;
     return (
       <ScorePopup
-        initial={{ opacity: 0.5, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: ANIMATION_MS / 2000, ease: "easeInOut" }}
+        initial={{ opacity: 0.5, y: "1vw", scale: 0.5 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: ANIMATION_MS / 3000 }}
       >
         {unit === Unit.CHIPS && <ChipScore>+{value}</ChipScore>}
         {unit === Unit.MULT && <MultScore>×{value}</MultScore>}

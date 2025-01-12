@@ -328,7 +328,7 @@ export const CardWrapper = styled.div<{ index: number }>`
 
 export const ScorePopup = styled(motion.div)`
   position: absolute;
-  top: -40px;
+  top: -2.5vw;
   right: 0;
   width: fit-content;
   display: flex;
