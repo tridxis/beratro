@@ -1,5 +1,5 @@
 import { AnimatePresence, motion, Reorder } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { useGameStore } from "@/store/gameStore";
 import { DisplayCard } from "./cards/DisplayCard";
 import DraggableCard from "./cards/DraggableCard";
@@ -99,6 +99,18 @@ export const Game = () => {
   const [currentBreakdown, setCurrentBreakdown] = useState<Breakdown | null>(
     null
   );
+
+  const previewPokerHand = useMemo(() => {
+    if (selectedCards.length === 0) return null;
+
+    const selectedCardObjects = selectedCards
+      .map((id) => handCards.find((card) => card.id === id)!)
+      .sort((a, b) => a.index - b.index);
+
+    const pokerHand = Calculator.identifyPokerHand(selectedCardObjects);
+
+    return pokerHand;
+  }, [selectedCards, handCards]);
 
   useEffect(() => {
     if (handCards.length === 0) {
@@ -274,11 +286,17 @@ export const Game = () => {
           </BentoBox>
 
           <HandScoreContainer>
-            <HandTypeText>{pokerHandRef.current?.handType}</HandTypeText>
+            <HandTypeText>
+              {pokerHandRef.current?.handType || previewPokerHand?.handType}
+            </HandTypeText>
             <ScoreDisplay>
-              <ChipsDisplay value={currentBreakdown?.chips || 0} />
+              <ChipsDisplay
+                value={currentBreakdown?.chips || previewPokerHand?.chips || 0}
+              />
               <span style={{ fontSize: "2vw" }}>×</span>
-              <MultiplierDisplay value={currentBreakdown?.mult || 0} />
+              <MultiplierDisplay
+                value={currentBreakdown?.mult || previewPokerHand?.mult || 0}
+              />
             </ScoreDisplay>
           </HandScoreContainer>
 

@@ -182,7 +182,7 @@ export const StatBox = styled.div`
 
 export const StatValue = styled.div<{ color: string }>`
   color: ${(props) => props.color};
-  font-size: 1.2vw;
+  font-size: 2vw;
   font-weight: bold;
 `;
 
@@ -321,7 +321,7 @@ export const CardRow = styled.div<{ isLastPlayed: boolean }>`
 `;
 
 export const CardWrapper = styled.div<{ index: number }>`
-  margin-left: ${(props) => (props.index > 0 ? "20px" : "0")};
+  margin-left: ${(props) => (props.index > 0 ? "2vw" : "0")};
   position: relative;
   z-index: ${(props) => props.index};
 `;
@@ -329,9 +329,8 @@ export const CardWrapper = styled.div<{ index: number }>`
 export const ScorePopup = styled(motion.div)`
   position: absolute;
   top: -40px;
-  left: 50%;
+  right: 0;
   width: fit-content;
-  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -340,7 +339,7 @@ export const ScorePopup = styled(motion.div)`
 
 export const ChipScore = styled.div`
   background: ${BLUE_COLOR};
-  padding: 0.3vw;
+  padding: 0.3vw 0.5vw;
   color: ${WHITE_COLOR};
   border: 0.1vw solid ${BORDER_COLOR};
   border-radius: 0.5vw;
@@ -350,7 +349,7 @@ export const ChipScore = styled.div`
 
 export const MultScore = styled.div`
   background: ${RED_COLOR};
-  padding: 0.3vw;
+  padding: 0.3vw 0.5vw;
   border: 0.2vw solid ${BORDER_COLOR};
   color: ${WHITE_COLOR};
   font-size: 1vw;
@@ -423,6 +422,7 @@ export const HandScoreContainer = styled.div`
 export const HandTypeText = styled.div`
   color: ${BORDER_COLOR};
   margin-bottom: 0.5vw;
+  height: 2vw;
   font-size: 1.2vw;
 `;
 

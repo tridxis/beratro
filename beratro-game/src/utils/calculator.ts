@@ -177,7 +177,7 @@ export class Calculator {
     return { chips, mult, inHandBreakdowns };
   }
 
-  private static identifyPokerHand(
+  static identifyPokerHand(
     cards: CardPosition[]
   ): PokerHand & { scoredCards: CardPosition[] } {
     // Pre-calculate common checks that are used by multiple hand types
