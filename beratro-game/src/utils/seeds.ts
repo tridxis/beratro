@@ -1,5 +1,6 @@
 import { CardPosition } from "@/types/cards";
 import { CardRank, CardSuit } from "./constants";
+import { BeraPosition } from "@/types/beras";
 
 function generateSequentialIds(): number[] {
   // Create array of numbers from 1 to 52
@@ -28,3 +29,5 @@ export const initCards = (): CardPosition[] => {
     )
     .sort((a, b) => a.id - b.id);
 };
+
+export const gameBeras: BeraPosition[] = 
