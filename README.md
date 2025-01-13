@@ -180,15 +180,26 @@ About Beras, The first 15 Bera Cards will be like Balatro (diff from name, image
 
 | No |	Bera |	Effect |	Cost |	Rarity |	Type |	Action |
 |---|---|---|---|---|---|---|
-| 16 | Perfection |	Each played 10 gives +100/+150/+200 Chips when scored if only 10 played |	$8 |	Rare | PLUS_MULT | CARD |
-| 17 | Musketeers | x3/x4/x5 Mult if played hand contains a Three of a Kind of J | $8 |	Rare | MULT_MULT | HAND |
-| 18 | Mother Care | 1 in 3/2/1 chance for each played Q to create a Flower card when scored |	$8 | Rare | GEN_FLOWER | CARD |
-| 19 | Crown | Each King held in hand gives x1.5/x2/x2.5 Mult |	$8 | Rare | MULT_MULT | STATIC |
-| 20 | AirDrop |	Gains x1/x1.5/x2 Mult for every A that is destroyed |	$8 |	Rare | MULT_MULT | STATIC |
+| 16 | Perfection |	Each played 10 gives +100/+150/+200 Chips when scored if only 10 played |	$8 |	Rare | PLUS_CHIPS | ON_SCORED |
+| 17 | Musketeers | x3/x4/x5 Mult if played hand contains a Three of a Kind of J | $8 |	Rare | MULT_MULT | INDEP |
+| 18 | Mother Care | 1 in 3/2/1 chance for each played Q to create a Flower card when scored |	$8 | Rare | GEN_FLOWER | ON_SCORED |
+| 19 | Crown | Each King held in hand gives x1.5/x2/x2.5 Mult |	$8 | Rare | MULT_MULT | INDEP |
+| 20 | AirDrop |	Gains x0.25/x0.5/x0.75 Mult for every A that is destroyed |	$8 |	Rare | MULT_MULT | INDEP |
 
 Tomorrow I will make data for 20 Beras, then implement them to current game
 
 See ya 🍀
+
+## Day 12
+
+Indeed, naming is an art. Cost a lot of time. But I think from their names, I can easily "invent" the stats for them.
+
+Also, I created the base type, action, and rarity for easier data organization.
+
+Made stats for 18 / 40 cards. Tmr I will do the rest.
+
+Seeey 🍀
+
 
 
 
