@@ -200,6 +200,14 @@ Made stats for 18 / 40 cards. Tmr I will do the rest.
 
 Seeey 🍀
 
+## Day 12
+
+Fewww, finished stats for the first 40 cards. I think I need to play around 100 games to re-balance.
+
+Tomorrow I will complete a full game flow without boss effects and shop to see how it is
+
+See youu! 🍀
+
 
 
 
