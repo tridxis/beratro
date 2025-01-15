@@ -1,4 +1,6 @@
+import { Bera } from "@/utils/constants";
 import { CardPosition } from "./cards";
+import { BeraPosition } from "./beras";
 
 export enum GameState {
   BERAS_PICKING = "BERAS_PICKING",
@@ -9,6 +11,8 @@ export enum GameState {
 }
 
 export interface GameStore {
+  gameBeras: Bera[];
+  deckBeras: BeraPosition[];
   handCards: CardPosition[];
   deckCards: CardPosition[];
   selectedCards: number[];

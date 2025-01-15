@@ -9,36 +9,40 @@ import {
   CardText,
   ContinueButton,
 } from "./Beras.styles";
+import { BERA_STATS } from "@/utils/beraStats";
 
 const Beras = () => {
-  const { setCurrentState } = useGameStore();
+  const { setCurrentState, gameBeras } = useGameStore();
+
+  // Group beras into rows
+  const firstRow = gameBeras.slice(0, 6);
+  const middleRow = gameBeras.slice(6, 14);
+  const lastRow = gameBeras.slice(14, 20);
+
   return (
     <BerasContainer>
       <BerasTitle>Beras This Game</BerasTitle>
       <CardsContainer>
-        {/* First row - 6 cards */}
         <CardRow>
-          {[...Array(6)].map((_, index) => (
-            <Card key={`row1-${index}`}>
-              <CardText>Bera #{index}</CardText>
+          {firstRow.map((bera) => (
+            <Card key={bera}>
+              <CardText>{BERA_STATS[bera].name}</CardText>
             </Card>
           ))}
         </CardRow>
 
-        {/* Middle row - 8 cards */}
         <CardRow>
-          {[...Array(8)].map((_, index) => (
-            <Card key={`row2-${index}`}>
-              <CardText>Bera #{index + 6}</CardText>
+          {middleRow.map((bera) => (
+            <Card key={bera}>
+              <CardText>{BERA_STATS[bera].name}</CardText>
             </Card>
           ))}
         </CardRow>
 
-        {/* Last row - 6 cards */}
         <CardRow>
-          {[...Array(6)].map((_, index) => (
-            <Card key={`row3-${index}`}>
-              <CardText>Bera #{index + 14}</CardText>
+          {lastRow.map((bera) => (
+            <Card key={bera}>
+              <CardText>{BERA_STATS[bera].name}</CardText>
             </Card>
           ))}
         </CardRow>
