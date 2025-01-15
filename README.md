@@ -184,7 +184,7 @@ About Beras, The first 15 Bera Cards will be like Balatro (diff from name, image
 | 17 | Musketeers | x3/x4/x5 Mult if played hand contains a Three of a Kind of J | $8 |	Rare | MULT_MULT | INDEP |
 | 18 | Mother Care | 1 in 3/2/1 chance for each played Q to create a Flower card when scored |	$8 | Rare | GEN_FLOWER | ON_SCORED |
 | 19 | Crown | Each King held in hand gives x1.5/x2/x2.5 Mult |	$8 | Rare | MULT_MULT | INDEP |
-| 20 | AirDrop |	Gains x0.25/x0.5/x0.75 Mult for every A that is destroyed |	$8 |	Rare | MULT_MULT | INDEP |
+| 20 | AirDrop | Gains x1/x1.5/x2 Mult for every A that is destroyed |	$8 |	Rare | MULT_MULT | INDEP |
 
 Tomorrow I will make data for 20 Beras, then implement them to current game
 
@@ -200,13 +200,25 @@ Made stats for 18 / 40 cards. Tmr I will do the rest.
 
 Seeey 🍀
 
-## Day 12
+## Day 13
 
 Fewww, finished stats for the first 40 cards. I think I need to play around 100 games to re-balance.
 
 Tomorrow I will complete a full game flow without boss effects and shop to see how it is
 
 See youu! 🍀
+
+## Day 14
+
+Randomize 20 Beras from 40, then create 8 clones for each Bera & shuffle. Show game Beras in the first screen
+
+Support Beras in shop & work on buy Bera mechanism
+
+***Serious Mode***
+
+Just kidding :P seeey 🍀
+
+
 
 
 
