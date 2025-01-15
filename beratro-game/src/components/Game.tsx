@@ -39,7 +39,6 @@ import {
   ShopItemsGrid,
   ShopItem,
   PriceTag,
-  ItemContainer,
   PlayedHandArea,
   PlayedHandContainer,
   CardRow,
@@ -64,10 +63,13 @@ import {
   BentoBox,
   DeckContainer,
   DeckDescription,
+  ShopItemGrid,
+  ShopSection,
 } from "./Game.styles";
 import { BLUE_COLOR, GOLD_COLOR, RED_COLOR } from "@/utils/colors";
 import { CardPosition } from "@/types/cards";
 import { AnimatedValueDisplay } from "./AnimatedValueDisplay";
+import { BERA_STATS } from "@/utils/beraStats";
 
 export const Game = () => {
   const {
@@ -89,6 +91,8 @@ export const Game = () => {
     maxDiscards,
     currentState,
     setCurrentState,
+    endRound,
+    shopBeras,
   } = useGameStore();
 
   const [lastPlayedIndex, setLastPlayedIndex] = useState<number | null>(null);
@@ -157,21 +161,21 @@ export const Game = () => {
           playedCards,
           inHandCards,
           [
-            {
-              id: 1,
-              bera: Bera.TEST_CHIPS,
-              index: 1,
-            },
-            {
-              id: 2,
-              bera: Bera.TEST_MULT,
-              index: 2,
-            },
-            {
-              id: 3,
-              bera: Bera.TEST_IN_HAND,
-              index: 3,
-            },
+            // {
+            //   id: 1,
+            //   bera: Bera.TEST_CHIPS,
+            //   index: 1,
+            // },
+            // {
+            //   id: 2,
+            //   bera: Bera.TEST_MULT,
+            //   index: 2,
+            // },
+            // {
+            //   id: 3,
+            //   bera: Bera.TEST_IN_HAND,
+            //   index: 3,
+            // },
           ],
           { breakdown: true }
         );
@@ -337,37 +341,57 @@ export const Game = () => {
 
         {currentState === GameState.SHOPPING && (
           <ShopContainer>
-            <ShopButtonGrid>
-              <ShopButton
-                variant="primary"
-                onClick={() => setCurrentState(GameState.PLAYING)}
-              >
-                Next Round
-              </ShopButton>
-              <ShopButton variant="secondary">Reroll $5</ShopButton>
-            </ShopButtonGrid>
-
             <ShopItemsGrid>
-              {[
-                { name: "Joker #1", price: "$3" },
-                { name: "Joker #8", price: "$7" },
-                { name: "Joker #12", price: "$10" },
-                { name: "Memes Pack", price: "$4" },
-                { name: "Super Memes Pack", price: "$8" },
-              ].map((item, index) => (
-                <ShopItem key={index}>
-                  <PriceTag>{item.price}</PriceTag>
-                  <ItemContainer>{item.name}</ItemContainer>
-                </ShopItem>
-              ))}
+              <ShopSection>
+                <ShopItemGrid>
+                  <ShopButtonGrid>
+                    <ShopButton
+                      variant="primary"
+                      onClick={() => setCurrentState(GameState.PLAYING)}
+                    >
+                      Next Round
+                    </ShopButton>
+                    <ShopButton variant="secondary">Reroll $5</ShopButton>
+                  </ShopButtonGrid>
+
+                  {shopBeras.map((bera, index) => (
+                    <ShopItem key={`pack-${index}`}>
+                      <PriceTag>${BERA_STATS[bera.bera].cost}</PriceTag>
+                      {BERA_STATS[bera.bera].name}
+                      <span>
+                        {BERA_STATS[bera.bera].description.replace(
+                          "{{value}}",
+                          BERA_STATS[bera.bera].values[0].toString()
+                        )}
+                      </span>
+                    </ShopItem>
+                  ))}
+                </ShopItemGrid>
+              </ShopSection>
+
+              <ShopSection>
+                <ShopItemGrid>
+                  <div></div>
+                  {[
+                    { name: "Basic Pack", price: "$4" },
+                    { name: "Premium Pack", price: "$8" },
+                    { name: "Ultra Pack", price: "$12" },
+                  ].map((item, index) => (
+                    <ShopItem key={`pack-${index}`}>
+                      <PriceTag>{item.price}</PriceTag>
+                      {item.name}
+                    </ShopItem>
+                  ))}
+                </ShopItemGrid>
+              </ShopSection>
             </ShopItemsGrid>
           </ShopContainer>
         )}
 
         {currentState === GameState.ROUND_ENDED && (
           <RoundEndContainer>
-            <CashOutButton onClick={() => setCurrentState(GameState.SHOPPING)}>
-              Cash Out: $42
+            <CashOutButton onClick={() => endRound(5)}>
+              Cash Out: $5
             </CashOutButton>
 
             <FlexRow>

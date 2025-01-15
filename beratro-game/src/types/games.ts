@@ -37,4 +37,7 @@ export interface GameStore {
   setMaxHands: (value: number) => void;
   setMaxDiscards: (value: number) => void;
   addScore: (points: number) => void;
+  shopBeras: BeraPosition[];
+  gold: number;
+  endRound: (goldEarned: number) => void;
 }

@@ -8,12 +8,14 @@ import {
   RED_COLOR,
   WHITE_COLOR,
   WOOD_COLOR,
+  BLACK_COLOR,
 } from "@/utils/colors";
 import styled from "@emotion/styled";
 import { motion } from "framer-motion";
 import { Reorder } from "framer-motion";
 import { AnimatedValueDisplay } from "./AnimatedValueDisplay";
 import Button from "./Button";
+import { CARD_STYLES } from "@/utils/cardStyles";
 
 export const RoundEndContainer = styled.div`
   padding: 1vw;
@@ -210,29 +212,29 @@ export const MemesSection = styled(DeckSection)`
 
 export const ShopContainer = styled.div`
   padding: 20px;
-  background-color: #1e2a38;
+  background-color: ${BLACK_COLOR};
   border-radius: 8px;
-  margin-top: 20px;
   flex: 2;
 `;
 
 export const ShopButtonGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 1vw;
+  justify-content: center;
 `;
 
 export const ShopButton = styled(Button)<{ variant?: "primary" | "secondary" }>`
-  padding: 15px;
+  padding: 1vw;
   background-color: ${(props) =>
     props.variant === "primary" ? "#E74C3C" : "#2ECC71"};
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 18px;
+  font-size: 1vw;
   cursor: pointer;
   transition: opacity 0.2s;
+  height: 4vw;
 
   &:hover {
     opacity: 0.9;
@@ -240,38 +242,53 @@ export const ShopButton = styled(Button)<{ variant?: "primary" | "secondary" }>`
 `;
 
 export const ShopItemsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 15px;
+  display: block;
+  gap: 1vw;
 `;
 
 export const ShopItem = styled.div`
-  background-color: #2c3e50;
+  background-color: ${CARD_STYLES.container.backgroundColor};
+  border: ${CARD_STYLES.container.border};
   border-radius: 8px;
-  padding: 10px;
+  width: ${CARD_STYLES.container.width};
+  height: ${CARD_STYLES.container.height};
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: ${BLACK_COLOR};
+  font-size: 1vw;
+  & span {
+    color: ${BORDER_COLOR};
+    text-align: center;
+    padding: 0.25vw;
+    display: block;
+    font-size: 0.5vw;
+  }
+`;
+
+export const ShopItemGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1vw;
+`;
+
+export const ShopSection = styled.div`
+  &:not(:first-child) {
+    margin-top: 2rem;
+  }
 `;
 
 export const PriceTag = styled.div`
   position: absolute;
-  top: -10px;
-  right: -10px;
+  top: -0.75vw;
+  right: -0.75vw;
   background-color: #f1c40f;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 14px;
+  padding: 0.25vw 0.5vw;
+  border-radius: 2vw;
+  font-size: 0.75vw;
   font-weight: bold;
-`;
-
-export const ItemContainer = styled.div`
-  aspect-ratio: 3/4;
-  background-color: #34495e;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 14px;
 `;
 
 export const PlayedHandArea = styled.div`

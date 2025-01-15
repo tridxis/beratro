@@ -17,15 +17,37 @@ export const useGameStore = create<GameStore>()(
       return {
         gameBeras,
         deckBeras,
+        shopBeras: [],
         handCards: [],
         deckCards: initCards(),
-        selectedCards: [] as number[],
-        playedHands: [] as CardPosition[][],
-        discards: [] as CardPosition[][],
+        selectedCards: [],
+        playedHands: [],
+        discards: [],
         maxHands: DEFAULT_MAX_HANDS,
         maxDiscards: DEFAULT_MAX_DISCARDS,
         score: 0,
+        gold: 0,
         currentState: GameState.BERAS_PICKING,
+
+        endRound: (goldEarned: number) =>
+          set((state) => {
+            // Take top 3 beras from deck for shop
+            const shopBeras = state.deckBeras.slice(0, 3);
+            const remainingDeckBeras = state.deckBeras.slice(3);
+
+            return {
+              gold: state.gold + goldEarned,
+              handCards: [],
+              deckCards: initCards(),
+              selectedCards: [],
+              playedHands: [],
+              discards: [],
+              currentState: GameState.SHOPPING,
+              shopBeras,
+              deckBeras: remainingDeckBeras,
+            };
+          }),
+
         setCurrentState: (state: GameState) => set({ currentState: state }),
         reset: () => {
           const { gameBeras, deckBeras } = initBeras();
