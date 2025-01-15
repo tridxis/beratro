@@ -9,6 +9,7 @@ import {
   DEFAULT_MAX_DISCARDS,
 } from "@/utils/constants";
 import { initCards, initBeras } from "@/utils/seeds";
+import { BERA_STATS } from "@/utils/beraStats";
 
 export const useGameStore = create<GameStore>()(
   persist(
@@ -16,6 +17,7 @@ export const useGameStore = create<GameStore>()(
       const { gameBeras, deckBeras } = initBeras();
       return {
         gameBeras,
+        playingBeras: [],
         deckBeras,
         shopBeras: [],
         handCards: [],
@@ -48,11 +50,27 @@ export const useGameStore = create<GameStore>()(
             };
           }),
 
+        buyBera: (id: number) =>
+          set((state) => {
+            const bera = state.shopBeras.find((b) => b.id === id);
+            if (!bera) return state;
+
+            const cost = BERA_STATS[bera.bera].cost;
+            if (state.gold < cost) return state;
+
+            return {
+              shopBeras: state.shopBeras.filter((b) => b.id !== id),
+              playingBeras: [...state.playingBeras, bera],
+              gold: state.gold - cost,
+            };
+          }),
+
         setCurrentState: (state: GameState) => set({ currentState: state }),
         reset: () => {
           const { gameBeras, deckBeras } = initBeras();
           set(() => ({
             handCards: [],
+            playingBeras: [],
             deckCards: initCards(),
             deckBeras,
             gameBeras,

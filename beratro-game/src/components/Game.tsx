@@ -65,6 +65,7 @@ import {
   DeckDescription,
   ShopItemGrid,
   ShopSection,
+  BuyButton,
 } from "./Game.styles";
 import { BLUE_COLOR, GOLD_COLOR, RED_COLOR } from "@/utils/colors";
 import { CardPosition } from "@/types/cards";
@@ -93,6 +94,9 @@ export const Game = () => {
     setCurrentState,
     endRound,
     shopBeras,
+    buyBera,
+    playingBeras,
+    gold,
   } = useGameStore();
 
   const [lastPlayedIndex, setLastPlayedIndex] = useState<number | null>(null);
@@ -319,9 +323,7 @@ export const Game = () => {
             </StatBox>
             <StatBox>
               <div>Golds</div>
-              <StatValue color={GOLD_COLOR}>
-                {maxDiscards - discards.length}
-              </StatValue>
+              <StatValue color={GOLD_COLOR}>{gold}</StatValue>
             </StatBox>
           </StatsGrid>
         </LeftPanel>
@@ -330,8 +332,20 @@ export const Game = () => {
       <MainGameArea>
         <DeckAreaContainer>
           <DeckSection>
-            <DeckContainer>Beras Here!</DeckContainer>
-            <DeckDescription>0/5</DeckDescription>
+            <DeckContainer>
+              {playingBeras.map((bera, index) => (
+                <ShopItem key={`playing-bera-${index}`}>
+                  {BERA_STATS[bera.bera].name}
+                  <span>
+                    {BERA_STATS[bera.bera].description.replace(
+                      "{{value}}",
+                      BERA_STATS[bera.bera].values[0].toString()
+                    )}
+                  </span>
+                </ShopItem>
+              ))}
+            </DeckContainer>
+            <DeckDescription>{playingBeras.length}/5</DeckDescription>
           </DeckSection>
           <MemesSection>
             <DeckContainer>Memes Here!</DeckContainer>
@@ -364,6 +378,9 @@ export const Game = () => {
                           BERA_STATS[bera.bera].values[0].toString()
                         )}
                       </span>
+                      <BuyButton onClick={() => buyBera(bera.id)}>
+                        Buy
+                      </BuyButton>
                     </ShopItem>
                   ))}
                 </ShopItemGrid>

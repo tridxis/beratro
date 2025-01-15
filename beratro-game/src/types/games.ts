@@ -12,6 +12,7 @@ export enum GameState {
 
 export interface GameStore {
   gameBeras: Bera[];
+  playingBeras: BeraPosition[];
   deckBeras: BeraPosition[];
   handCards: CardPosition[];
   deckCards: CardPosition[];
@@ -40,4 +41,5 @@ export interface GameStore {
   shopBeras: BeraPosition[];
   gold: number;
   endRound: (goldEarned: number) => void;
+  buyBera: (id: number) => void;
 }

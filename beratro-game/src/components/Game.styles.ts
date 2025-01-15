@@ -194,7 +194,7 @@ export const DeckContainer = styled.div`
   border-radius: 0.5vw;
   height: 12vw;
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
   font-size: 0.8vw;
 `;
@@ -241,6 +241,25 @@ export const ShopButton = styled(Button)<{ variant?: "primary" | "secondary" }>`
   }
 `;
 
+export const BuyButton = styled(Button)`
+  position: absolute;
+  bottom: 10px;
+  left: 1vw;
+  right: 1vw;
+  font-size: 0.75vw;
+  height: 2vw;
+  width: calc(100% - 2vw);
+  padding: 0.4vw;
+  &:hover:not(:disabled) {
+    padding-top: 0.25vw;
+    padding-bottom: 0.55vw;
+  }
+  &:active:not(:disabled) {
+    padding-top: 0.3vw;
+    padding-bottom: 0.5vw;
+  }
+`;
+
 export const ShopItemsGrid = styled.div`
   display: block;
   gap: 1vw;
@@ -275,9 +294,7 @@ export const ShopItemGrid = styled.div`
 `;
 
 export const ShopSection = styled.div`
-  &:not(:first-child) {
-    margin-top: 2rem;
-  }
+  margin-top: 2vw;
 `;
 
 export const PriceTag = styled.div`
