@@ -1,4 +1,7 @@
-import { Bera } from "./constants";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { CalculationOption } from "@/types/hands";
+import { Bera, CardSuit } from "./constants";
+import { CardPosition } from "@/types/cards";
 
 export enum BeraType {
   ADD_CHIPS = "ADD_CHIPS",
@@ -34,7 +37,7 @@ export enum BeraRarity {
   LEGENDARY = "LEGENDARY",
 }
 
-export const BERA_STATS = {
+export const BERA_STATS: Record<Bera, BeraStats> = {
   [Bera.BABY]: {
     name: "Baby",
     description: "+4 Mult",
@@ -43,46 +46,59 @@ export const BERA_STATS = {
     values: [4, 8, 16],
     type: BeraType.ADD_MULT,
     action: BeraAction.INDEP,
+    condition: (options: CalculationOption) => {
+      return true;
+    },
   },
   [Bera.HEART]: {
     name: "Heart",
-    description:
-      "Played cards with Heart suit icon Heart suit give {{value}} Mult when scored",
+    description: "Played cards with Heart suit give {{value}} Mult when scored",
     cost: 5,
     rarity: BeraRarity.COMMON,
     values: [3, 4, 5],
     type: BeraType.ADD_MULT,
     action: BeraAction.ON_SCORED,
+    condition: (card: CardPosition) => {
+      return card.suit === CardSuit.HEARTS;
+    },
   },
   [Bera.DIAMOND]: {
     name: "Diamond",
     description:
-      "Played cards with Diamond suit icon give {{value}} Mult when scored",
+      "Played cards with Diamond suit give {{value}} Mult when scored",
     cost: 5,
     rarity: BeraRarity.COMMON,
     values: [3, 4, 5],
     type: BeraType.ADD_MULT,
     action: BeraAction.ON_SCORED,
+    condition: (card: CardPosition) => {
+      return card.suit === CardSuit.DIAMONDS;
+    },
   },
   [Bera.CLUB]: {
     name: "Club",
-    description:
-      "Played cards with Club suit icon give +{{value}} Mult when scored",
+    description: "Played cards with Club suit give +{{value}} Mult when scored",
     cost: 5,
     rarity: BeraRarity.COMMON,
     values: [3, 4, 5],
     type: BeraType.ADD_MULT,
     action: BeraAction.ON_SCORED,
+    condition: (card: CardPosition) => {
+      return card.suit === CardSuit.CLUBS;
+    },
   },
   [Bera.SPADE]: {
     name: "Spade",
     description:
-      "Played cards with Spade suit icon give +{{value}} Mult when scored",
+      "Played cards with Spade suit give +{{value}} Mult when scored",
     cost: 5,
     rarity: BeraRarity.COMMON,
     values: [3, 4, 5],
     type: BeraType.ADD_MULT,
     action: BeraAction.ON_SCORED,
+    condition: (card: CardPosition) => {
+      return card.suit === CardSuit.SPADES;
+    },
   },
   [Bera.TWINS]: {
     name: "Twins",
@@ -92,6 +108,9 @@ export const BERA_STATS = {
     values: [50, 75, 100],
     type: BeraType.ADD_CHIPS,
     action: BeraAction.INDEP,
+    condition: (options: CalculationOption) => {
+      return card.suit === CardSuit.SPADES;
+    },
   },
   [Bera.TRIPLETS]: {
     name: "Triplets",
@@ -101,6 +120,7 @@ export const BERA_STATS = {
     values: [100, 150, 200],
     type: BeraType.ADD_CHIPS,
     action: BeraAction.INDEP,
+    condition: () => true,
   },
   [Bera.CLIMB]: {
     name: "Climb",
@@ -110,6 +130,7 @@ export const BERA_STATS = {
     values: [100, 150, 200],
     type: BeraType.ADD_CHIPS,
     action: BeraAction.INDEP,
+    condition: () => true,
   },
   [Bera.UNIFORM]: {
     name: "Uniform",
@@ -119,6 +140,7 @@ export const BERA_STATS = {
     values: [80, 120, 160],
     type: BeraType.ADD_CHIPS,
     action: BeraAction.INDEP,
+    condition: () => true,
   },
   [Bera.DOUBLES]: {
     name: "Doubles",
@@ -128,6 +150,7 @@ export const BERA_STATS = {
     values: [8, 12, 16],
     type: BeraType.ADD_MULT,
     action: BeraAction.INDEP,
+    condition: () => true,
   },
   [Bera.FAMILY]: {
     name: "Family",
@@ -137,6 +160,7 @@ export const BERA_STATS = {
     values: [12, 16, 20],
     type: BeraType.ADD_MULT,
     action: BeraAction.INDEP,
+    condition: () => true,
   },
   [Bera.BUILDER]: {
     name: "Builder",
@@ -146,6 +170,7 @@ export const BERA_STATS = {
     values: [12, 16, 20],
     type: BeraType.ADD_MULT,
     action: BeraAction.INDEP,
+    condition: () => true,
   },
   [Bera.COLORLESS]: {
     name: "Colorless",
@@ -155,6 +180,7 @@ export const BERA_STATS = {
     values: [10, 15, 20],
     type: BeraType.ADD_MULT,
     action: BeraAction.INDEP,
+    condition: () => true,
   },
   [Bera.PERFECTION]: {
     name: "Perfection",
@@ -165,6 +191,7 @@ export const BERA_STATS = {
     values: [100, 150, 200],
     type: BeraType.ADD_CHIPS,
     action: BeraAction.ON_SCORED,
+    condition: () => true,
   },
   [Bera.MUSKETEERS]: {
     name: "Musketeers",
@@ -175,6 +202,7 @@ export const BERA_STATS = {
     values: [3, 4, 5],
     type: BeraType.MUL_MULT,
     action: BeraAction.INDEP,
+    condition: () => true,
   },
   [Bera.MOTHER_CARE]: {
     name: "Mother Care",
@@ -185,6 +213,7 @@ export const BERA_STATS = {
     values: [3, 2, 1],
     type: BeraType.GEN_FLOWER,
     action: BeraAction.ON_SCORED,
+    condition: () => true,
   },
   [Bera.CROWN]: {
     name: "Crown",
@@ -194,6 +223,7 @@ export const BERA_STATS = {
     values: [1.5, 2, 2.5],
     type: BeraType.MUL_MULT,
     action: BeraAction.ON_HELD,
+    condition: () => true,
   },
   [Bera.AIRDROP]: {
     name: "Airdrop",
@@ -203,6 +233,7 @@ export const BERA_STATS = {
     values: [1, 1.5, 2],
     type: BeraType.MUL_MULT,
     action: BeraAction.INDEP,
+    condition: () => true,
   },
   [Bera.CHIP]: {
     name: "Chip",
@@ -212,6 +243,7 @@ export const BERA_STATS = {
     values: [20, 30, 40],
     type: BeraType.ADD_MULT,
     action: BeraAction.INDEP,
+    condition: () => true,
   },
   [Bera.CRAWL]: {
     name: "Crawl",
@@ -221,6 +253,7 @@ export const BERA_STATS = {
     values: [2, 3, 4],
     type: BeraType.MUL_MULT,
     action: BeraAction.INDEP,
+    condition: () => true,
   },
   [Bera.FISH]: {
     name: "Fish",
@@ -230,6 +263,7 @@ export const BERA_STATS = {
     values: [1, 2, 3],
     type: BeraType.ADD_GOLD,
     action: BeraAction.ON_HELD,
+    condition: () => true,
   },
   [Bera.BAG]: {
     name: "Bag",
@@ -239,6 +273,7 @@ export const BERA_STATS = {
     values: [5, 7, 10],
     type: BeraType.ADD_GOLD,
     action: BeraAction.ON_HELD,
+    condition: () => true,
   },
   [Bera.SCARF]: {
     name: "Scarf",
@@ -248,6 +283,9 @@ export const BERA_STATS = {
     values: [30, 40, 50],
     type: BeraType.ADD_CHIPS,
     action: BeraAction.INDEP,
+    multiplier: (options: CalculationOption) =>
+      options.maxDiscards - options.discards.length,
+    condition: () => true,
   },
   [Bera.HAT]: {
     name: "Hat",
@@ -258,6 +296,7 @@ export const BERA_STATS = {
     values: [3, 2, 1],
     type: BeraType.ADD_GOLD,
     action: BeraAction.ON_HELD,
+    condition: () => true,
   },
   [Bera.LUSCIOUS]: {
     name: "Luscious",
@@ -267,6 +306,7 @@ export const BERA_STATS = {
     values: [0.1, 0.2, 0.3],
     type: BeraType.MUL_MULT,
     action: BeraAction.INDEP,
+    condition: () => true,
   },
   [Bera.BADGE]: {
     name: "Gains {{value}} every time a playing card is added to the deck",
@@ -276,6 +316,7 @@ export const BERA_STATS = {
     values: [0.25, 0.5, 0.75],
     type: BeraType.MUL_MULT,
     action: BeraAction.INDEP,
+    condition: () => true,
   },
   [Bera.SHY]: {
     name: "Shy",
@@ -285,6 +326,7 @@ export const BERA_STATS = {
     values: [20, 30, 40],
     type: BeraType.ADD_MULT,
     action: BeraAction.INDEP,
+    condition: () => true,
   },
   [Bera.NOPE]: {
     name: "Nope",
@@ -294,6 +336,7 @@ export const BERA_STATS = {
     values: [0.1, 0.2, 0.3],
     type: BeraType.MUL_MULT,
     action: BeraAction.INDEP,
+    condition: () => true,
   },
   [Bera.BIG_TINY]: {
     name: "Big Tiny",
@@ -303,6 +346,7 @@ export const BERA_STATS = {
     values: [1, 2, 3],
     type: BeraType.RETRIGGER,
     action: BeraAction.INDEP,
+    condition: () => true,
   },
   [Bera.GIFT]: {
     name: "Gift",
@@ -312,6 +356,7 @@ export const BERA_STATS = {
     values: [4, 6, 8],
     type: BeraType.ADD_GOLD,
     action: BeraAction.ON_ENDED,
+    condition: () => true,
   },
   [Bera.MAGNET]: {
     name: "Magnet",
@@ -322,6 +367,7 @@ export const BERA_STATS = {
     values: [1, 2, 3],
     type: BeraType.GEN_STICKER,
     action: BeraAction.ON_PLAYED,
+    condition: () => true,
   },
   [Bera.BAKER]: {
     name: "Baker",
@@ -331,6 +377,7 @@ export const BERA_STATS = {
     values: [5, 10, 15],
     type: BeraType.ADD_GOLD,
     action: BeraAction.ON_PLAYED,
+    condition: () => true,
   },
   [Bera.SMILE]: {
     name: "Smile",
@@ -340,6 +387,7 @@ export const BERA_STATS = {
     values: [1, 2, 3],
     type: BeraType.RETRIGGER,
     action: BeraAction.ON_HELD,
+    condition: () => true,
   },
   [Bera.STAR]: {
     name: "Star",
@@ -349,6 +397,7 @@ export const BERA_STATS = {
     values: [0.25, 0.5, 0.75],
     type: BeraType.MUL_MULT,
     action: BeraAction.INDEP,
+    condition: () => true,
   },
   [Bera.DROOL]: {
     name: "Drool",
@@ -358,6 +407,7 @@ export const BERA_STATS = {
     values: [2, 3, 4],
     type: BeraType.MUL_MULT,
     action: BeraAction.ON_SCORED,
+    condition: () => true,
   },
   [Bera.SLEEP]: {
     name: "Sleep",
@@ -368,6 +418,7 @@ export const BERA_STATS = {
     values: [1, 2, 3],
     type: BeraType.UPDATE_HAND,
     action: BeraAction.ON_DISCARD,
+    condition: () => true,
   },
   [Bera.STRONG]: {
     name: "Strong",
@@ -378,6 +429,7 @@ export const BERA_STATS = {
     values: [5, 10, 15],
     type: BeraType.INCREASE_CHIPS,
     action: BeraAction.ON_SCORED,
+    condition: () => true,
   },
   [Bera.CLOUD]: {
     name: "Cloud",
@@ -387,6 +439,7 @@ export const BERA_STATS = {
     values: [1, 2, 3],
     type: BeraType.ADD_GOLD,
     action: BeraAction.ON_ENDED,
+    condition: () => true,
   },
   [Bera.SOCKS]: {
     name: "Socks",
@@ -396,6 +449,7 @@ export const BERA_STATS = {
     values: [2, 3, 4],
     type: BeraType.ADD_MULT,
     action: BeraAction.INDEP,
+    condition: () => true,
   },
   [Bera.X]: {
     name: "X",
@@ -406,6 +460,7 @@ export const BERA_STATS = {
     values: [5, 7, 10],
     type: BeraType.ADD_GOLD,
     action: BeraAction.ON_DISCARD,
+    condition: () => true,
   },
 };
 
@@ -418,4 +473,6 @@ export type BeraStats = {
   values: [number, number, number]; // tuple of 3 numbers
   type: BeraType;
   action: BeraAction;
+  multiplier?: (options: CalculationOption) => number;
+  condition: (data: any) => boolean;
 };

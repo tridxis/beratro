@@ -161,28 +161,16 @@ export const Game = () => {
       );
 
       const { score, pokerHand, playingBreakdowns, inHandBreakdowns } =
-        Calculator.calculateScore(
+        Calculator.calculateScore({
           playedCards,
           inHandCards,
-          [
-            // {
-            //   id: 1,
-            //   bera: Bera.TEST_CHIPS,
-            //   index: 1,
-            // },
-            // {
-            //   id: 2,
-            //   bera: Bera.TEST_MULT,
-            //   index: 2,
-            // },
-            // {
-            //   id: 3,
-            //   bera: Bera.TEST_IN_HAND,
-            //   index: 3,
-            // },
-          ],
-          { breakdown: true }
-        );
+          playedHands,
+          discards,
+          playingBeras,
+          maxHands,
+          maxDiscards,
+          breakdown: true,
+        });
 
       console.log(playingBreakdowns);
       console.log(inHandBreakdowns);

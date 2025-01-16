@@ -7,31 +7,33 @@ import {
   HandType,
   Unit,
 } from "@/utils/constants";
-import { Breakdown, type PokerHand } from "@/types/hands";
+import { Breakdown, CalculationOption, type PokerHand } from "@/types/hands";
 import { BeraPosition } from "@/types/beras";
-
-type CalculationOption = {
-  breakdown?: boolean;
-};
+import { BERA_STATS, BeraAction, BeraType } from "./beraStats";
+import { getRankCounts, isFlush, isStraight } from "./atomic";
 
 export class Calculator {
-  static calculateScore(
-    playingCards: CardPosition[],
-    inHandCards: CardPosition[],
-    beras: BeraPosition[],
-    options?: CalculationOption
-  ): {
+  static calculateScore(options: CalculationOption): {
     score: number;
     playingBreakdowns: Breakdown[];
     inHandBreakdowns: Breakdown[];
     pokerHand: PokerHand;
   } {
-    const pokerHand = this.identifyPokerHand(playingCards);
+    const {
+      playedCards,
+      inHandCards,
+      playedHands,
+      discards,
+      playingBeras,
+      maxDiscards,
+      maxHands,
+    } = options;
+    const pokerHand = this.identifyPokerHand(playedCards);
     let totalMult = pokerHand.mult;
     let totalChips = pokerHand.chips;
     const { chips, mult, playingBreakdowns } = this.triggerPlayingCards(
       pokerHand.scoredCards,
-      beras,
+      playingBeras,
       totalChips,
       totalMult,
       options
@@ -40,22 +42,43 @@ export class Calculator {
     totalMult *= mult;
     totalChips += chips;
 
-    for (let i = 0; i < beras.length; i++) {
-      const bera = beras[i];
-      if (bera.bera === Bera.TEST_MULT) {
-        totalMult *= 3;
-        if (options?.breakdown) {
+    playingBeras
+      .filter((bera) => BERA_STATS[bera.bera].action === BeraAction.INDEP)
+      .forEach((bera) => {
+        const { values, condition, type, multiplier } = BERA_STATS[bera.bera];
+        const valid = condition(options);
+        let unit: Unit | undefined;
+
+        if (!valid) return;
+
+        const value = values[0] * (multiplier?.(options) || 1);
+
+        switch (type) {
+          case BeraType.ADD_CHIPS:
+            unit = Unit.CHIPS;
+            totalChips += value;
+            break;
+          case BeraType.ADD_MULT:
+            unit = Unit.MULT;
+            totalMult += value;
+            break;
+          case BeraType.MUL_MULT:
+            unit = Unit.MULT;
+            totalMult *= value;
+            break;
+        }
+
+        if (unit) {
           playingBreakdowns.push({
             cards: [],
             beras: [bera.id],
-            values: [3],
-            units: [Unit.MULT],
+            values: [value],
+            units: [unit],
             chips: totalChips,
             mult: totalMult,
           });
         }
-      }
-    }
+      });
 
     const {
       chips: inHandChips,
@@ -63,7 +86,7 @@ export class Calculator {
       inHandBreakdowns,
     } = this.triggerInHandCards(
       inHandCards,
-      beras,
+      playingBeras,
       totalChips,
       totalMult,
       options
@@ -116,22 +139,22 @@ export class Calculator {
           mult: startingMult * mult,
         });
       }
-      for (let j = 0; j < beras.length; j++) {
-        const bera = beras[j];
-        if (bera.bera === Bera.TEST_CHIPS) {
-          chips += 30;
-          if (options?.breakdown) {
-            playingBreakdowns.push({
-              cards: [],
-              beras: [bera.id],
-              values: [30],
-              units: [Unit.CHIPS],
-              chips: startingChips + chips,
-              mult: startingMult * mult,
-            });
-          }
-        }
-      }
+      // for (let j = 0; j < beras.length; j++) {
+      //   const bera = beras[j];
+      //   if (bera.bera === Bera.TEST_CHIPS) {
+      //     chips += 30;
+      //     if (options?.breakdown) {
+      //       playingBreakdowns.push({
+      //         cards: [],
+      //         beras: [bera.id],
+      //         values: [30],
+      //         units: [Unit.CHIPS],
+      //         chips: startingChips + chips,
+      //         mult: startingMult * mult,
+      //       });
+      //     }
+      //   }
+      // }
     }
 
     return { chips, mult, playingBreakdowns };
@@ -150,28 +173,28 @@ export class Calculator {
   } {
     const inHandBreakdowns: Breakdown[] = [];
     const chips = 0;
-    let mult = 1;
+    const mult = 1;
     for (let i = 0; i < cards.length; i++) {
       const card = cards[i];
 
-      for (let j = 0; j < beras.length; j++) {
-        const bera = beras[j];
-        if (bera.bera === Bera.TEST_IN_HAND) {
-          if (card.rank === CardRank.KING) {
-            mult *= 1.5;
-            if (options?.breakdown) {
-              inHandBreakdowns.push({
-                cards: [card.id],
-                beras: [bera.id],
-                values: [1.5],
-                units: [Unit.MULT],
-                chips: startingChips + chips,
-                mult: startingMult * mult,
-              });
-            }
-          }
-        }
-      }
+      // for (let j = 0; j < beras.length; j++) {
+      //   const bera = beras[j];
+      //   if (bera.bera === Bera.TEST_IN_HAND) {
+      //     if (card.rank === CardRank.KING) {
+      //       mult *= 1.5;
+      //       if (options?.breakdown) {
+      //         inHandBreakdowns.push({
+      //           cards: [card.id],
+      //           beras: [bera.id],
+      //           values: [1.5],
+      //           units: [Unit.MULT],
+      //           chips: startingChips + chips,
+      //           mult: startingMult * mult,
+      //         });
+      //       }
+      //     }
+      //   }
+      // }
     }
 
     return { chips, mult, inHandBreakdowns };
@@ -181,9 +204,9 @@ export class Calculator {
     cards: CardPosition[]
   ): PokerHand & { scoredCards: CardPosition[] } {
     // Pre-calculate common checks that are used by multiple hand types
-    const rankCounts = this.getRankCounts(cards);
-    const { isValid: isAllSameSuit } = this.isFlush(cards);
-    const { isValid: isStraightHand } = this.isStraight(cards);
+    const rankCounts = getRankCounts(cards);
+    const { isValid: isAllSameSuit } = isFlush(cards);
+    const { isValid: isStraightHand } = isStraight(cards);
 
     // Organize checks from most specific/valuable to least, with optimized short-circuits
     if (isAllSameSuit) {
@@ -271,57 +294,5 @@ export class Calculator {
   ): PokerHand & { scoredCards: CardPosition[] } {
     const { mult, chips } = HAND_VALUES[handType];
     return { handType, mult, chips, cards, scoredCards };
-  }
-
-  private static getRankCounts(cards: CardPosition[]): Record<number, number> {
-    return cards.reduce((counts, card) => {
-      counts[CARD_RANKS[card.rank]] = (counts[CARD_RANKS[card.rank]] || 0) + 1;
-      return counts;
-    }, {} as Record<number, number>);
-  }
-
-  private static isFlush(cards: CardPosition[]): {
-    isValid: boolean;
-    scoredCards: CardPosition[];
-  } {
-    if (cards.length !== 5) return { isValid: false, scoredCards: [] };
-
-    const isAllSameSuit = cards.every((card) => card.suit === cards[0].suit);
-    return {
-      isValid: isAllSameSuit,
-      scoredCards: isAllSameSuit ? cards : [],
-    };
-  }
-
-  private static isStraight(cards: CardPosition[]): {
-    isValid: boolean;
-    scoredCards: CardPosition[];
-  } {
-    if (cards.length !== 5) return { isValid: false, scoredCards: [] };
-
-    // Sort cards by rank, handling Ace (1) as both low and high
-    const sortedRanks = cards
-      .map((card) => CARD_RANKS[card.rank])
-      .sort((a, b) => a - b);
-
-    // Check for A-5 straight
-    if (
-      sortedRanks[0] === CARD_RANKS[CardRank.ACE] &&
-      sortedRanks[1] === 2 &&
-      sortedRanks[2] === 3 &&
-      sortedRanks[3] === 4 &&
-      sortedRanks[4] === 5
-    ) {
-      return { isValid: true, scoredCards: cards };
-    }
-
-    // Check for regular straight (including A-K)
-    for (let i = 1; i < sortedRanks.length; i++) {
-      if (sortedRanks[i] !== sortedRanks[i - 1] + 1) {
-        return { isValid: false, scoredCards: [] };
-      }
-    }
-
-    return { isValid: true, scoredCards: cards };
   }
 }
