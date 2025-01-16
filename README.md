@@ -218,6 +218,16 @@ Support Beras in shop & work on buy Bera mechanism
 
 Just kidding :P seeey 🍀
 
+## Day 15
+
+Re-struct function using for both scoring & check condtion (flush, straight, pair...)
+
+Modify Beras data to easily checking bonus when scoring
+
+Tmr I will re-write calculator with real Bera effect & real Bera data
+
+Byee 🍀
+
 
 
 
