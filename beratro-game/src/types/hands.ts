@@ -24,6 +24,7 @@ export type CalculationOption = {
   inHandCards: CardPosition[];
   playedHands: CardPosition[][];
   discards: CardPosition[][];
+  removedCards: CardPosition[][];
   playingBeras: BeraPosition[];
   maxHands: number;
   maxDiscards: number;

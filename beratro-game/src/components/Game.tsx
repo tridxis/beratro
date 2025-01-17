@@ -88,6 +88,7 @@ export const Game = () => {
     score,
     addScore,
     discards,
+    removedCards,
     maxHands,
     maxDiscards,
     currentState,
@@ -169,6 +170,7 @@ export const Game = () => {
           playingBeras,
           maxHands,
           maxDiscards,
+          removedCards,
           breakdown: true,
         });
 

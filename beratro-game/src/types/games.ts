@@ -19,6 +19,7 @@ export interface GameStore {
   selectedCards: number[];
   playedHands: CardPosition[][];
   discards: CardPosition[][];
+  removedCards: CardPosition[][];
   maxHands: number;
   maxDiscards: number;
   score: number;
@@ -42,4 +43,5 @@ export interface GameStore {
   gold: number;
   endRound: (goldEarned: number) => void;
   buyBera: (id: number) => void;
+  removeSelectedCards: () => void;
 }

@@ -46,12 +46,11 @@ export class Calculator {
       .filter((bera) => BERA_STATS[bera.bera].action === BeraAction.INDEP)
       .forEach((bera) => {
         const { values, condition, type, multiplier } = BERA_STATS[bera.bera];
-        const valid = condition(options);
-        let unit: Unit | undefined;
+        const value = condition(values[0], options);
 
-        if (!valid) return;
+        if (!value) return;
 
-        const value = values[0] * (multiplier?.(options) || 1);
+        let unit: Unit;
 
         switch (type) {
           case BeraType.ADD_CHIPS:

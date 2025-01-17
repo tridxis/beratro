@@ -25,6 +25,7 @@ export const useGameStore = create<GameStore>()(
         selectedCards: [],
         playedHands: [],
         discards: [],
+        removedCards: [],
         maxHands: DEFAULT_MAX_HANDS,
         maxDiscards: DEFAULT_MAX_DISCARDS,
         score: 0,
@@ -179,6 +180,24 @@ export const useGameStore = create<GameStore>()(
               handCards: remainingHandCards,
               selectedCards: [],
               discards: [...state.discards, selectedHandCards],
+            };
+          }),
+        removeSelectedCards: () =>
+          set((state) => {
+            const selectedHandCards = state.handCards.filter((card) =>
+              state.selectedCards.includes(card.id)
+            );
+
+            if (selectedHandCards.length === 0) return state;
+
+            const remainingHandCards = state.handCards.filter(
+              (card) => !state.selectedCards.includes(card.id)
+            );
+
+            return {
+              handCards: remainingHandCards,
+              selectedCards: [],
+              removedCards: [...state.removedCards, selectedHandCards],
             };
           }),
         setMaxHands: (value) => set({ maxHands: value }),

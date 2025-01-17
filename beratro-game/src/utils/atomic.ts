@@ -59,6 +59,6 @@ export const getRankCounts = (
   }, {} as Record<number, number>);
 };
 
-export const countRanks = (cards: CardPosition[]): Record<number, number> => {
+export const countRanks = (cards: CardPosition[]): number[] => {
   return Object.values(getRankCounts(cards));
 };
