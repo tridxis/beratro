@@ -63,6 +63,7 @@ export const initBeras = (): {
         id: shuffledIds[deckBeras.length],
         bera,
         index: shuffledIds[deckBeras.length],
+        level: 1,
       });
     }
   });

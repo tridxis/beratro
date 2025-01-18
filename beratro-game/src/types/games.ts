@@ -20,6 +20,7 @@ export interface GameStore {
   playedHands: CardPosition[][];
   discards: CardPosition[][];
   removedCards: CardPosition[][];
+  addedCards: CardPosition[][];
   maxHands: number;
   maxDiscards: number;
   usedFlowers: Flower[];

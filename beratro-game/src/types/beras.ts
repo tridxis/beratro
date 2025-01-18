@@ -4,4 +4,5 @@ export interface BeraPosition {
   id: number;
   bera: Bera;
   index: number;
+  level: number;
 }

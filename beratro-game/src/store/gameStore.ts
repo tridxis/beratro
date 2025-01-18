@@ -11,6 +11,7 @@ import {
 } from "@/utils/constants";
 import { initCards, initBeras } from "@/utils/seeds";
 import { BERA_STATS } from "@/utils/beraStats";
+import { shuffleCards } from "@/utils/cards";
 
 export const useGameStore = create<GameStore>()(
   persist(
@@ -27,6 +28,7 @@ export const useGameStore = create<GameStore>()(
         playedHands: [],
         discards: [],
         removedCards: [],
+        addedCards: [],
         maxHands: DEFAULT_MAX_HANDS,
         maxDiscards: DEFAULT_MAX_DISCARDS,
         usedFlowers: [],
@@ -200,6 +202,16 @@ export const useGameStore = create<GameStore>()(
               handCards: remainingHandCards,
               selectedCards: [],
               removedCards: [...state.removedCards, selectedHandCards],
+            };
+          }),
+        addCardsToDeck: (cards: CardPosition[]) =>
+          set((state) => {
+            // Add cards to both deck and tracking array
+            const newDeckCards = [...state.deckCards, ...cards];
+            const shuffledDeckCards = shuffleCards(newDeckCards);
+            return {
+              deckCards: shuffledDeckCards,
+              addedCards: [...state.addedCards, cards],
             };
           }),
         setMaxHands: (value) => set({ maxHands: value }),

@@ -1,14 +1,8 @@
-import { CalculationOption } from "@/types/hands";
 import { Bera, CARD_RANKS, CardRank, CardSuit } from "./constants";
 import { CardPosition } from "@/types/cards";
-import {
-  countRanks,
-  getPlayedCards,
-  getRankCounts,
-  isFlush,
-  isStraight,
-} from "./atomic";
+import { countRanks, getRankCounts, isFlush, isStraight } from "./atomic";
 import { GameStore } from "@/types/games";
+import { isFaceCard } from "./cards";
 
 export enum BeraType {
   ADD_CHIPS = "ADD_CHIPS",
@@ -22,7 +16,7 @@ export enum BeraType {
   RETRIGGER = "RETRIGGER",
   INCREASE_CHIPS = "INCREASE_CHIPS",
   INCREASE_MULT = "INCREASE_MULT",
-  UPDATE_HAND = "UPDATE_HAND",
+  REMOVE_CARDS = "REMOVE_CARDS",
 }
 
 export enum BeraAction {
@@ -330,9 +324,10 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     values: [30, 40, 50],
     type: BeraType.ADD_CHIPS,
     action: BeraAction.INDEP,
-    multiplier: (state: GameStore) => state.maxDiscards - state.discards.length,
     trigger: (value: number, cards: CardPosition[], state: GameStore) => {
-      return state.maxDiscards - state.discards.length > 0 ? value : 0;
+      return state.maxDiscards - state.discards.length > 0
+        ? value * (state.maxDiscards - state.discards.length)
+        : 0;
     },
   },
   [Bera.HAT]: {
@@ -358,18 +353,22 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     action: BeraAction.INDEP,
     trigger: (value: number, cards: CardPosition[], state: GameStore) => {
       const times = state.usedFlowers.length;
-      return times > 0 ? 1 + value * times : 0;
+      return times > 0 ? 1 + value * times : 1;
     },
   },
   [Bera.BADGE]: {
-    name: "Gains {{value}} every time a playing card is added to the deck",
+    name: "Gains +{{value}} Chips for each card is added to the deck",
     description: "BADGE",
     cost: 7,
     rarity: BeraRarity.UNCOMMON,
-    values: [0.25, 0.5, 0.75],
-    type: BeraType.MUL_MULT,
+    values: [50, 75, 100],
+    type: BeraType.ADD_CHIPS,
     action: BeraAction.INDEP,
-    trigger: (value: number) => 1,
+    trigger: (value: number, cards: CardPosition[], state: GameStore) => {
+      return state.addedCards.length > 0
+        ? value * state.addedCards.flat().length
+        : 0;
+    },
   },
   [Bera.SHY]: {
     name: "Shy",
@@ -379,37 +378,45 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     values: [20, 30, 40],
     type: BeraType.ADD_MULT,
     action: BeraAction.INDEP,
-    trigger: (value: number) => 1,
+    trigger: (value: number, cards: CardPosition[]) => {
+      return cards.every((card) => !isFaceCard(card)) ? value : 0;
+    },
   },
   [Bera.NOPE]: {
     name: "Nope",
-    description: "Gains x{{value}} Mult when any Booster Pack is skipped",
+    description: "+{{value}} Mult for each discarded cards this round",
     cost: 6,
     rarity: BeraRarity.UNCOMMON,
-    values: [0.1, 0.2, 0.3],
+    values: [2, 3, 4],
     type: BeraType.MUL_MULT,
     action: BeraAction.INDEP,
-    trigger: (value: number) => 1,
+    trigger: (value: number, cards: CardPosition[], state: GameStore) => {
+      return state.discards.length > 0
+        ? value * state.discards.flat().length
+        : 0;
+    },
   },
   [Bera.BIG_TINY]: {
     name: "Big Tiny",
-    description: "Retrigger {{value}} times all played cards less than 10",
+    description: "Retrigger {{value}} times all scored cards less than 10",
     cost: 6,
     rarity: BeraRarity.UNCOMMON,
     values: [1, 2, 3],
     type: BeraType.RETRIGGER,
-    action: BeraAction.INDEP,
-    trigger: (value: number) => 1,
+    action: BeraAction.ON_SCORED,
+    trigger: (value: number, cards: CardPosition[]) => {
+      return cards[0].rank < CardRank.TEN ? value : 0;
+    },
   },
   [Bera.GIFT]: {
     name: "Gift",
     description: "Earn ${{value}} at end of round",
     cost: 6,
     rarity: BeraRarity.COMMON,
-    values: [4, 6, 8],
+    values: [4, 8, 12],
     type: BeraType.ADD_GOLD,
     action: BeraAction.ON_ENDED,
-    trigger: (value: number) => 1,
+    trigger: (value: number) => value,
   },
   [Bera.MAGNET]: {
     name: "Magnet",
@@ -420,7 +427,10 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     values: [1, 2, 3],
     type: BeraType.GEN_STICKER,
     action: BeraAction.ON_PLAYED,
-    trigger: (value: number) => 1,
+    trigger: (value: number, cards: CardPosition[]) => {
+      // TODO: random sticker
+      return isFlush(cards).isValid && Math.random() < 1 / value ? 1 : 0;
+    },
   },
   [Bera.BAKER]: {
     name: "Baker",
@@ -430,7 +440,9 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     values: [5, 10, 15],
     type: BeraType.ADD_GOLD,
     action: BeraAction.ON_PLAYED,
-    trigger: (value: number) => 1,
+    trigger: (value: number, cards: CardPosition[]) => {
+      return isStraight(cards).isValid ? value : 0;
+    },
   },
   [Bera.SMILE]: {
     name: "Smile",
@@ -440,7 +452,9 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     values: [1, 2, 3],
     type: BeraType.RETRIGGER,
     action: BeraAction.ON_HELD,
-    trigger: (value: number) => 1,
+    trigger: (value: number) => {
+      return value;
+    },
   },
   [Bera.STAR]: {
     name: "Star",
@@ -450,7 +464,13 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     values: [0.25, 0.5, 0.75],
     type: BeraType.MUL_MULT,
     action: BeraAction.INDEP,
-    trigger: (value: number) => 1,
+    trigger: (value: number, cards: CardPosition[], state: GameStore) => {
+      return state.playingBeras.length > 0
+        ? 1 +
+            value *
+              state.playingBeras.reduce((acc, bera) => acc + bera.level, 0)
+        : 1;
+    },
   },
   [Bera.DROOL]: {
     name: "Drool",
@@ -459,19 +479,27 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.COMMON,
     values: [2, 3, 4],
     type: BeraType.MUL_MULT,
-    action: BeraAction.ON_SCORED,
-    trigger: (value: number) => 1,
+    action: BeraAction.ON_PLAYED,
+    trigger: (value: number, cards: CardPosition[]) => {
+      return isFaceCard(cards[0]) ? value : 0;
+    },
   },
   [Bera.SLEEP]: {
     name: "Sleep",
     description:
-      "Upgrade the level of the first discarded poker hand each round by {{value}}",
+      "If discard less than or equal to {{value}} card/cards below Rank 10, remove it/them from the game",
     cost: 8,
     rarity: BeraRarity.RARE,
     values: [1, 2, 3],
-    type: BeraType.UPDATE_HAND,
+    type: BeraType.REMOVE_CARDS,
     action: BeraAction.ON_DISCARD,
-    trigger: (value: number) => 1,
+    trigger: (value: number, cards: CardPosition[]) => {
+      return cards.every(
+        (card) => CARD_RANKS[card.rank] < CARD_RANKS[CardRank.TEN]
+      ) && cards.length <= value
+        ? 1
+        : 0;
+    },
   },
   [Bera.STRONG]: {
     name: "Strong",
@@ -482,7 +510,9 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     values: [5, 10, 15],
     type: BeraType.INCREASE_CHIPS,
     action: BeraAction.ON_SCORED,
-    trigger: (value: number) => 1,
+    trigger: (value: number) => {
+      return value;
+    },
   },
   [Bera.CLOUD]: {
     name: "Cloud",
@@ -492,17 +522,34 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     values: [1, 2, 3],
     type: BeraType.ADD_GOLD,
     action: BeraAction.ON_ENDED,
-    trigger: (value: number) => 1,
+    trigger: (value: number, cards: CardPosition[], state: GameStore) => {
+      const nines = [
+        ...state.deckCards,
+        ...state.discards.flat(),
+        ...state.playedHands.flat(),
+      ].filter((card) => card.rank === CardRank.NINE).length;
+      return cards.filter((card) => card.rank === CardRank.NINE).length > 0
+        ? value * nines
+        : 0;
+    },
   },
   [Bera.SOCKS]: {
     name: "Socks",
-    description: "Gains +{{value}} Mult if played hand contains a Two Pair",
+    description: "Gains x{{value}} Mult if played hand contains a Two Pair",
     cost: 6,
     rarity: BeraRarity.UNCOMMON,
-    values: [2, 3, 4],
-    type: BeraType.ADD_MULT,
+    values: [0.1, 0.2, 0.3],
+    type: BeraType.MUL_MULT,
     action: BeraAction.INDEP,
-    trigger: (value: number) => 1,
+    trigger: (value: number, cards: CardPosition[], state: GameStore) => {
+      let count = 0;
+      state.playedHands.forEach((hand) => {
+        const rankCounts = countRanks(hand);
+        const pairs = rankCounts.filter((count) => count >= 2);
+        count += pairs.length;
+      });
+      return 1 + count * value;
+    },
   },
   [Bera.X]: {
     name: "X",
@@ -513,7 +560,17 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     values: [5, 7, 10],
     type: BeraType.ADD_GOLD,
     action: BeraAction.ON_DISCARD,
-    trigger: (value: number) => 1,
+    trigger: (value: number, cards: CardPosition[]) => {
+      // from 2 to A
+      const randomRank =
+        Object.values(CARD_RANKS)[
+          Math.floor(Math.random() * Object.values(CARD_RANKS).length)
+        ];
+      const validCards = cards.filter(
+        (card) => CARD_RANKS[card.rank] === randomRank
+      );
+      return validCards.length > 0 ? value * validCards.length : 0;
+    },
   },
 };
 
