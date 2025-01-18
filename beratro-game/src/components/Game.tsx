@@ -71,6 +71,7 @@ import { BLUE_COLOR, GOLD_COLOR, RED_COLOR } from "@/utils/colors";
 import { CardPosition } from "@/types/cards";
 import { AnimatedValueDisplay } from "./AnimatedValueDisplay";
 import { BERA_STATS } from "@/utils/beraStats";
+import useCalculator from "@/hooks/useCalculator";
 
 export const Game = () => {
   const {
@@ -99,6 +100,8 @@ export const Game = () => {
     playingBeras,
     gold,
   } = useGameStore();
+
+  const { play } = useCalculator();
 
   const [lastPlayedIndex, setLastPlayedIndex] = useState<number | null>(null);
 
@@ -152,28 +155,7 @@ export const Game = () => {
       }
       playSelectedCards();
 
-      // Calculate score for the played hand
-      const playedCards = selectedCards
-        .map((id) => handCards.find((card) => card.id === id)!)
-        .sort((a, b) => a.index - b.index);
-
-      const inHandCards = handCards.filter(
-        (card) => !selectedCards.some((id) => id === card.id)
-      );
-
-      const { score, pokerHand, playingBreakdowns, inHandBreakdowns } =
-        Calculator.calculateScore({
-          playedCards,
-          inHandCards,
-          playedHands,
-          discards,
-          playingBeras,
-          maxHands,
-          maxDiscards,
-          removedCards,
-          breakdown: true,
-        });
-
+      const { score, pokerHand, playingBreakdowns, inHandBreakdowns } = play();
       console.log(playingBreakdowns);
       console.log(inHandBreakdowns);
 
@@ -202,7 +184,7 @@ export const Game = () => {
             if (score >= 1) {
               setCurrentState(GameState.ROUND_ENDED);
             }
-          }, playedCards.length * ANIMATION_MS + ANIMATION_MS * 3);
+          }, ANIMATION_MS * 3);
         }
       }, ANIMATION_MS);
 

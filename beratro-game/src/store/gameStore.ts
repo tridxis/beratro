@@ -7,6 +7,7 @@ import {
   CARD_RANKS,
   DEFAULT_MAX_HANDS,
   DEFAULT_MAX_DISCARDS,
+  Flower,
 } from "@/utils/constants";
 import { initCards, initBeras } from "@/utils/seeds";
 import { BERA_STATS } from "@/utils/beraStats";
@@ -28,6 +29,7 @@ export const useGameStore = create<GameStore>()(
         removedCards: [],
         maxHands: DEFAULT_MAX_HANDS,
         maxDiscards: DEFAULT_MAX_DISCARDS,
+        usedFlowers: [],
         score: 0,
         gold: 0,
         currentState: GameState.BERAS_PICKING,
@@ -205,6 +207,10 @@ export const useGameStore = create<GameStore>()(
         addScore: (points: number) =>
           set((state) => ({
             score: state.score + points,
+          })),
+        useFlower: (flower: Flower) =>
+          set((state) => ({
+            usedFlowers: [...state.usedFlowers, flower],
           })),
       };
     },

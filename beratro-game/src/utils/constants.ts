@@ -43,6 +43,12 @@ export enum Bera {
   AIRDROP = "AIRDROP",
 }
 
+export enum Flower {
+  FLOWER_1 = "FLOWER_1",
+  FLOWER_2 = "FLOWER_2",
+  FLOWER_3 = "FLOWER_3",
+}
+
 export enum Unit {
   CHIPS = "CHIPS",
   MULT = "MULT",

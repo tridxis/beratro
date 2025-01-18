@@ -1,5 +1,6 @@
 import { CardPosition } from "@/types/cards";
 import { CARD_RANKS, CardRank } from "./constants";
+import { GameStore } from "@/types/games";
 
 export const isStraight = (
   cards: CardPosition[]

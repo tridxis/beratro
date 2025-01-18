@@ -1,4 +1,4 @@
-import { Bera } from "@/utils/constants";
+import { Bera, Flower } from "@/utils/constants";
 import { CardPosition } from "./cards";
 import { BeraPosition } from "./beras";
 
@@ -22,6 +22,7 @@ export interface GameStore {
   removedCards: CardPosition[][];
   maxHands: number;
   maxDiscards: number;
+  usedFlowers: Flower[];
   score: number;
   currentState: GameState;
   setCurrentState: (state: GameState) => void;
@@ -44,4 +45,9 @@ export interface GameStore {
   endRound: (goldEarned: number) => void;
   buyBera: (id: number) => void;
   removeSelectedCards: () => void;
+  useFlower: (flower: Flower) => void;
 }
+
+export type CalculationOption = {
+  breakdown?: boolean;
+};

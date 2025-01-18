@@ -1,4 +1,4 @@
-import { HandType, Unit } from "@/utils/constants";
+import { Flower, HandType, Unit } from "@/utils/constants";
 import { CardPosition } from "./cards";
 import { BeraPosition } from "./beras";
 
@@ -16,16 +16,4 @@ export type Breakdown = {
   units: Unit[];
   chips: number;
   mult: number;
-};
-
-export type CalculationOption = {
-  breakdown?: boolean;
-  playedCards: CardPosition[];
-  inHandCards: CardPosition[];
-  playedHands: CardPosition[][];
-  discards: CardPosition[][];
-  removedCards: CardPosition[][];
-  playingBeras: BeraPosition[];
-  maxHands: number;
-  maxDiscards: number;
 };

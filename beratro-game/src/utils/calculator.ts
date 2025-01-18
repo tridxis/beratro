@@ -1,39 +1,43 @@
 import { type CardPosition } from "@/types/cards";
 import {
-  Bera,
   CARD_RANKS,
   CardRank,
   HAND_VALUES,
   HandType,
   Unit,
 } from "@/utils/constants";
-import { Breakdown, CalculationOption, type PokerHand } from "@/types/hands";
-import { BeraPosition } from "@/types/beras";
+import { Breakdown, type PokerHand } from "@/types/hands";
 import { BERA_STATS, BeraAction, BeraType } from "./beraStats";
 import { getRankCounts, isFlush, isStraight } from "./atomic";
+import { CalculationOption, GameStore } from "@/types/games";
 
 export class Calculator {
-  static calculateScore(options: CalculationOption): {
+  static calculate(
+    state: GameStore,
+    options?: CalculationOption
+  ): {
     score: number;
     playingBreakdowns: Breakdown[];
     inHandBreakdowns: Breakdown[];
     pokerHand: PokerHand;
+    options?: CalculationOption;
   } {
-    const {
-      playedCards,
-      inHandCards,
-      playedHands,
-      discards,
-      playingBeras,
-      maxDiscards,
-      maxHands,
-    } = options;
+    // Calculate score for the played hand
+
+    const playedCards = state.selectedCards
+      .map((id) => state.handCards.find((card) => card.id === id)!)
+      .sort((a, b) => a.index - b.index);
+
+    const inHandCards = state.handCards.filter(
+      (card) => !state.selectedCards.some((id) => id === card.id)
+    );
+
     const pokerHand = this.identifyPokerHand(playedCards);
     let totalMult = pokerHand.mult;
     let totalChips = pokerHand.chips;
     const { chips, mult, playingBreakdowns } = this.triggerPlayingCards(
       pokerHand.scoredCards,
-      playingBeras,
+      state,
       totalChips,
       totalMult,
       options
@@ -42,11 +46,11 @@ export class Calculator {
     totalMult *= mult;
     totalChips += chips;
 
-    playingBeras
+    state.playingBeras
       .filter((bera) => BERA_STATS[bera.bera].action === BeraAction.INDEP)
       .forEach((bera) => {
-        const { values, condition, type, multiplier } = BERA_STATS[bera.bera];
-        const value = condition(values[0], options);
+        const { values, trigger, type, multiplier } = BERA_STATS[bera.bera];
+        const value = trigger(values[0], pokerHand.scoredCards, state);
 
         if (!value) return;
 
@@ -83,13 +87,7 @@ export class Calculator {
       chips: inHandChips,
       mult: inHandMult,
       inHandBreakdowns,
-    } = this.triggerInHandCards(
-      inHandCards,
-      playingBeras,
-      totalChips,
-      totalMult,
-      options
-    );
+    } = this.triggerInHandCards(inHandCards, state, totalChips, totalMult);
 
     totalMult *= inHandMult;
     totalChips += inHandChips;
@@ -104,7 +102,7 @@ export class Calculator {
 
   private static triggerPlayingCards(
     cards: CardPosition[],
-    beras: BeraPosition[],
+    state: GameStore,
     startingChips: number,
     startingMult: number,
     options?: CalculationOption
@@ -161,7 +159,7 @@ export class Calculator {
 
   private static triggerInHandCards(
     cards: CardPosition[],
-    beras: BeraPosition[],
+    state: GameStore,
     startingChips: number,
     startingMult: number,
     options?: CalculationOption
