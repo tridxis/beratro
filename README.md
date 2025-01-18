@@ -234,9 +234,17 @@ Refactor bera stats to adapt dynamic scoring
 
 Fix calculator to using state for calculation
 
-OMG, I need to handle generating flower, meme... programatically
+OMG, I need to handle generating flower, meme, sticker... programatically
 
 Sorry for late report, I have some personal stuffs. See you 🍀
+
+## Day 17
+
+Yes yes, I finished implementing all methods to trigger effect of a Beras
+
+Tmr I will apply them in scoring and generating cards
+
+Will cost a lot of time to verify that all Bera cards' effect are right. See soon 🍀
 
 
 
