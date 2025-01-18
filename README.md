@@ -228,6 +228,16 @@ Tmr I will re-write calculator with real Bera effect & real Bera data
 
 Byee 🍀
 
+## Day 16
+
+Refactor bera stats to adapt dynamic scoring
+
+Fix calculator to using state for calculation
+
+OMG, I need to handle generating flower, meme... programatically
+
+Sorry for late report, I have some personal stuffs. See you 🍀
+
 
 
 
