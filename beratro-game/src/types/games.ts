@@ -1,5 +1,5 @@
-import { Bera, Flower } from "@/utils/constants";
-import { CardPosition } from "./cards";
+import { Bera, Flower, Meme, Sticker } from "@/utils/constants";
+import { BoosterPosition, CardPosition } from "./cards";
 import { BeraPosition } from "./beras";
 
 export enum GameState {
@@ -23,8 +23,13 @@ export interface GameStore {
   addedCards: CardPosition[][];
   maxHands: number;
   maxDiscards: number;
+  maxBoosters: number;
+  maxBeras: number;
   usedFlowers: Flower[];
+  usedStickers: Sticker[];
+  usedMemes: Meme[];
   score: number;
+  boosters: BoosterPosition[];
   currentState: GameState;
   setCurrentState: (state: GameState) => void;
   reset: () => void;
@@ -46,9 +51,15 @@ export interface GameStore {
   endRound: (goldEarned: number) => void;
   buyBera: (id: number) => void;
   removeSelectedCards: () => void;
-  useFlower: (flower: Flower) => void;
+  useBooster: (booster: BoosterPosition) => void;
+  modifyGold: (value: number) => void;
+  addBooster: (booster: Flower | Sticker | Meme) => void;
+  addCardsToDeck: (cards: CardPosition[]) => void;
+  modifyCards: (value: { chips?: number; mult?: number }) => void;
 }
 
 export type CalculationOption = {
   breakdown?: boolean;
+  isInHand?: boolean;
+  isScored?: boolean;
 };

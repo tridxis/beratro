@@ -44,10 +44,31 @@ export enum Bera {
 }
 
 export enum Flower {
+  NONE = "NONE",
   FLOWER_1 = "FLOWER_1",
   FLOWER_2 = "FLOWER_2",
   FLOWER_3 = "FLOWER_3",
 }
+
+export const FLOWERS = Object.values(Flower);
+
+export enum Sticker {
+  NONE = "NONE",
+  STICKER_1 = "STICKER_1",
+  STICKER_2 = "STICKER_2",
+  STICKER_3 = "STICKER_3",
+}
+
+export const STICKERS = Object.values(Sticker);
+
+export enum Meme {
+  NONE = "NONE",
+  MEME_1 = "MEME_1",
+  MEME_2 = "MEME_2",
+  MEME_3 = "MEME_3",
+}
+
+export const MEMES = Object.values(Meme);
 
 export enum Unit {
   CHIPS = "CHIPS",
@@ -166,3 +187,5 @@ export const HAND_NAMES: Record<HandType, string> = {
 
 export const DEFAULT_MAX_HANDS = 4;
 export const DEFAULT_MAX_DISCARDS = 3;
+export const DEFAULT_MAX_BOOSTERS = 2;
+export const DEFAULT_MAX_BERAS = 5;

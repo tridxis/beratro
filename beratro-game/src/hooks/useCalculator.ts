@@ -1,6 +1,5 @@
 import { useGameStore } from "@/store/gameStore";
 import { Calculator } from "@/utils/calculator";
-import React from "react";
 
 const useCalculator = () => {
   const state = useGameStore((state) => state);

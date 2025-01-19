@@ -1,4 +1,4 @@
-import { CardRank, CardSuit } from "@/utils/constants";
+import { CardRank, CardSuit, Flower, Meme, Sticker } from "@/utils/constants";
 
 export interface CardPosition {
   id: number;
@@ -8,4 +8,10 @@ export interface CardPosition {
   chips?: number;
   mult?: number;
   xMult?: number;
+}
+
+export interface BoosterPosition {
+  id: number;
+  booster: Flower | Sticker | Meme;
+  index: number;
 }

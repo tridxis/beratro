@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { type CardPosition } from "@/types/cards";
+import { BoosterPosition, type CardPosition } from "@/types/cards";
 import { GameState, type GameStore } from "@/types/games";
 import {
   SUIT_ORDER,
@@ -8,6 +8,10 @@ import {
   DEFAULT_MAX_HANDS,
   DEFAULT_MAX_DISCARDS,
   Flower,
+  Sticker,
+  Meme,
+  DEFAULT_MAX_BOOSTERS,
+  DEFAULT_MAX_BERAS,
 } from "@/utils/constants";
 import { initCards, initBeras } from "@/utils/seeds";
 import { BERA_STATS } from "@/utils/beraStats";
@@ -31,9 +35,14 @@ export const useGameStore = create<GameStore>()(
         addedCards: [],
         maxHands: DEFAULT_MAX_HANDS,
         maxDiscards: DEFAULT_MAX_DISCARDS,
+        maxBoosters: DEFAULT_MAX_BOOSTERS,
+        maxBeras: DEFAULT_MAX_BERAS,
         usedFlowers: [],
+        usedStickers: [],
+        usedMemes: [],
         score: 0,
         gold: 0,
+        boosters: [],
         currentState: GameState.BERAS_PICKING,
 
         endRound: (goldEarned: number) =>
@@ -220,9 +229,57 @@ export const useGameStore = create<GameStore>()(
           set((state) => ({
             score: state.score + points,
           })),
-        useFlower: (flower: Flower) =>
+        useBooster: (booster: BoosterPosition) =>
+          set((state) => {
+            if (booster.booster in Flower) {
+              return {
+                usedFlowers: [...state.usedFlowers, booster.booster as Flower],
+                boosters: state.boosters.filter((b) => b.id !== booster.id),
+              };
+            }
+            if (booster.booster in Sticker) {
+              return {
+                usedStickers: [
+                  ...state.usedStickers,
+                  booster.booster as Sticker,
+                ],
+                boosters: state.boosters.filter((b) => b.id !== booster.id),
+              };
+            }
+            if (booster.booster in Meme) {
+              return {
+                usedMemes: [...state.usedMemes, booster.booster as Meme],
+                boosters: state.boosters.filter((b) => b.id !== booster.id),
+              };
+            }
+            return state;
+          }),
+        modifyGold: (value: number) =>
           set((state) => ({
-            usedFlowers: [...state.usedFlowers, flower],
+            gold: state.gold + value,
+          })),
+        addBooster: (booster: Flower | Sticker | Meme) =>
+          set((state) => {
+            const nextIndex = state.boosters.length;
+            if (nextIndex >= state.maxBoosters) return state;
+            return {
+              boosters: [
+                ...state.boosters,
+                {
+                  id: nextIndex,
+                  index: nextIndex,
+                  booster,
+                },
+              ],
+            };
+          }),
+        modifyCards: (value: { chips?: number; mult?: number }) =>
+          set((state) => ({
+            handCards: state.handCards.map((card) =>
+              state.selectedCards.includes(card.id)
+                ? { ...card, ...value }
+                : card
+            ),
           })),
       };
     },
