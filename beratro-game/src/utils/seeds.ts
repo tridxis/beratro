@@ -19,16 +19,22 @@ export const initCards = (): CardPosition[] => {
   const shuffledIds = generateSequentialIds();
   let idIndex = 0;
 
-  return Object.values(CardSuit)
-    .flatMap((suit) =>
-      Object.values(CardRank).map((rank) => ({
-        id: shuffledIds[idIndex++],
+  const cards = [];
+
+  for (const suit of Object.values(CardSuit)) {
+    for (const rank of Object.values(CardRank)) {
+      cards.push({
+        id: shuffledIds[idIndex],
         suit,
         rank,
-        index: shuffledIds[idIndex++],
-      }))
-    )
-    .sort((a, b) => a.index - b.index);
+        index: shuffledIds[idIndex],
+      });
+
+      idIndex++;
+    }
+  }
+
+  return cards.sort((a, b) => a.index - b.index);
 };
 
 export const initBeras = (): {

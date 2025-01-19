@@ -23,8 +23,8 @@ export const useGameStore = create<GameStore>()(
       const { gameBeras, deckBeras } = initBeras();
       return {
         gameBeras,
-        playingBeras: [],
         deckBeras,
+        playingBeras: [],
         shopBeras: [],
         handCards: [],
         deckCards: initCards(),
@@ -83,15 +83,27 @@ export const useGameStore = create<GameStore>()(
         reset: () => {
           const { gameBeras, deckBeras } = initBeras();
           set(() => ({
-            handCards: [],
-            playingBeras: [],
-            deckCards: initCards(),
-            deckBeras,
             gameBeras,
+            deckBeras,
+            playingBeras: [],
+            shopBeras: [],
+            handCards: [],
+            deckCards: initCards(),
             selectedCards: [],
             playedHands: [],
             discards: [],
+            removedCards: [],
+            addedCards: [],
+            maxHands: DEFAULT_MAX_HANDS,
+            maxDiscards: DEFAULT_MAX_DISCARDS,
+            maxBoosters: DEFAULT_MAX_BOOSTERS,
+            maxBeras: DEFAULT_MAX_BERAS,
+            usedFlowers: [],
+            usedStickers: [],
+            usedMemes: [],
             score: 0,
+            gold: 0,
+            boosters: [],
             currentState: GameState.BERAS_PICKING,
           }));
         },
@@ -281,6 +293,21 @@ export const useGameStore = create<GameStore>()(
                 : card
             ),
           })),
+        nextRound: () => {
+          set((state) => {
+            return {
+              currentState: GameState.PLAYING,
+              playedHands: [],
+              discards: [],
+              deckCards: shuffleCards([
+                ...state.deckCards,
+                ...state.handCards,
+                ...state.discards.flat(),
+                ...state.playedHands.flat(),
+              ]),
+            };
+          });
+        },
       };
     },
     {

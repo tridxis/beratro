@@ -356,8 +356,8 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     },
   },
   [Bera.BADGE]: {
-    name: "Gains +{{value}} Chips for each card is added to the deck",
-    description: "BADGE",
+    name: "Badge",
+    description: "Gains +{{value}} Chips for each card is added to the deck",
     cost: 7,
     rarity: BeraRarity.UNCOMMON,
     values: [50, 75, 100],

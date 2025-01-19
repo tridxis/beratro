@@ -89,6 +89,7 @@ export const Game = () => {
     score,
     addScore,
     discards,
+    deckCards,
     removedCards,
     maxHands,
     maxDiscards,
@@ -99,6 +100,7 @@ export const Game = () => {
     buyBera,
     playingBeras,
     gold,
+    nextRound,
   } = useGameStore();
 
   const { play } = useCalculator();
@@ -333,7 +335,10 @@ export const Game = () => {
                   <ShopButtonGrid>
                     <ShopButton
                       variant="primary"
-                      onClick={() => setCurrentState(GameState.PLAYING)}
+                      onClick={() => {
+                        nextRound();
+                        dealCards();
+                      }}
                     >
                       Next Round
                     </ShopButton>
