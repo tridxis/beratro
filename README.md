@@ -246,6 +246,17 @@ Tmr I will apply them in scoring and generating cards
 
 Will cost a lot of time to verify that all Bera cards' effect are right. See soon 🍀
 
+## Day 18
+
+Huuray, back to da game, now I can play with Beras!
+
+<img width="1512" alt="image" src="https://github.com/user-attachments/assets/92c42417-0599-4ae9-96a9-bd2b5deec779" />
+
+Still need to test, so I will play some games then fixing bugs before continuing
+
+See tmr 🍀
+
+
 
 
 
