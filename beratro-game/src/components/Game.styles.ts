@@ -119,7 +119,7 @@ export const BentoBox = styled.div`
   overflow: hidden;
 `;
 
-export const BigBlindHeader = styled.div`
+export const RoundHeader = styled.div`
   padding: 10px;
   background-color: ${BORDER_COLOR};
   color: ${WHITE_COLOR};
@@ -128,12 +128,12 @@ export const BigBlindHeader = styled.div`
   font-weight: bold;
 `;
 
-export const BigBlindContent = styled.div`
+export const RoundContent = styled.div`
   padding: 0.5vw 1vw;
   font-size: 0.8vw;
 `;
 
-export const BigBlindTarget = styled.div`
+export const ScoreTarget = styled.div`
   font-size: 1.2vw;
   color: ${RED_COLOR};
 `;
@@ -336,9 +336,9 @@ export const CardWrapper = styled.div<{ index: number }>`
   z-index: ${(props) => props.index};
 `;
 
-export const ScorePopup = styled(motion.div)`
+export const ScorePopup = styled(motion.div)<{ type: "bera" | "card" }>`
   position: absolute;
-  top: -2.5vw;
+  ${(props) => (props.type === "bera" ? "bottom: -3vw" : "top: -2.5vw")};
   right: 0;
   width: fit-content;
   display: flex;
@@ -347,8 +347,7 @@ export const ScorePopup = styled(motion.div)`
   gap: 4px;
 `;
 
-export const ChipScore = styled.div`
-  background: ${BLUE_COLOR};
+const BaseScore = styled.div`
   padding: 0.3vw 0.5vw;
   color: ${WHITE_COLOR};
   border: 0.1vw solid ${BORDER_COLOR};
@@ -357,13 +356,12 @@ export const ChipScore = styled.div`
   font-weight: bold;
 `;
 
-export const MultScore = styled.div`
+export const ChipScore = styled(BaseScore)`
+  background: ${BLUE_COLOR};
+`;
+
+export const MultScore = styled(BaseScore)`
   background: ${RED_COLOR};
-  padding: 0.3vw 0.5vw;
-  border: 0.2vw solid ${BORDER_COLOR};
-  color: ${WHITE_COLOR};
-  font-size: 1vw;
-  font-weight: bold;
 `;
 
 export const HandCardsArea = styled.div`

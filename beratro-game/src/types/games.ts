@@ -29,6 +29,8 @@ export interface GameStore {
   usedStickers: Sticker[];
   usedMemes: Meme[];
   score: number;
+  round: number;
+  reqScore: number;
   boosters: BoosterPosition[];
   currentState: GameState;
   setCurrentState: (state: GameState) => void;

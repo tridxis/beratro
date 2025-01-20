@@ -1,4 +1,4 @@
-export const ANIMATION_MS = 240;
+export const ANIMATION_MS = 360;
 
 export enum Bera {
   BABY = "BABY",

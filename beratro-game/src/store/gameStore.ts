@@ -17,6 +17,10 @@ import { initCards, initBeras } from "@/utils/seeds";
 import { BERA_STATS } from "@/utils/beraStats";
 import { shuffleCards } from "@/utils/cards";
 
+const getRoundReqScore = (round: number) => {
+  return Math.round(165 * Math.exp(0.2 * round));
+};
+
 export const useGameStore = create<GameStore>()(
   persist(
     (set) => {
@@ -42,6 +46,8 @@ export const useGameStore = create<GameStore>()(
         usedMemes: [],
         score: 0,
         gold: 0,
+        round: 1,
+        reqScore: getRoundReqScore(1),
         boosters: [],
         currentState: GameState.BERAS_PICKING,
 
@@ -296,6 +302,9 @@ export const useGameStore = create<GameStore>()(
         nextRound: () => {
           set((state) => {
             return {
+              score: 0,
+              round: state.round + 1,
+              reqScore: getRoundReqScore(state.round + 1),
               currentState: GameState.PLAYING,
               playedHands: [],
               discards: [],

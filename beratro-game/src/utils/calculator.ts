@@ -141,8 +141,9 @@ export class Calculator {
         break;
       case BeraType.RETRIGGER:
         cards.forEach((card) => {
+          let result;
           if (options?.isScored) {
-            this.triggerScoredCards(
+            result = this.triggerScoredCards(
               [card],
               state,
               totalChips,
@@ -150,13 +151,17 @@ export class Calculator {
               options
             );
           } else if (options?.isInHand) {
-            this.triggerInHandCards(
+            result = this.triggerInHandCards(
               [card],
               state,
               totalChips,
               totalMult,
               options
             );
+          }
+          if (result) {
+            totalChips += result.chips;
+            totalMult *= result.mult;
           }
         });
         break;
@@ -189,8 +194,8 @@ export class Calculator {
   private static triggerScoredCards(
     cards: CardPosition[],
     state: GameStore,
-    startingChips: number,
-    startingMult: number,
+    chips: number,
+    mult: number,
     options?: CalculationOption
   ): {
     chips: number;
@@ -198,8 +203,6 @@ export class Calculator {
     playingBreakdowns: Breakdown[];
   } {
     const playingBreakdowns: Breakdown[] = [];
-    let chips = 0;
-    let mult = 1;
     for (let i = 0; i < cards.length; i++) {
       const card = cards[i];
       let value = 0;
@@ -218,8 +221,8 @@ export class Calculator {
           beras: [],
           values: [value],
           units: [Unit.CHIPS],
-          chips: startingChips + chips,
-          mult: startingMult * mult,
+          chips,
+          mult,
         });
       }
 
@@ -236,8 +239,8 @@ export class Calculator {
             options,
           });
           if (result) {
-            mult = result.totalMult;
-            chips = result.totalChips;
+            mult = mult * result.totalMult;
+            chips = chips + result.totalChips;
           }
         });
     }
@@ -248,8 +251,8 @@ export class Calculator {
   private static triggerInHandCards(
     cards: CardPosition[],
     state: GameStore,
-    startingChips: number,
-    startingMult: number,
+    chips: number,
+    mult: number,
     options?: CalculationOption
   ): {
     chips: number;
@@ -257,11 +260,9 @@ export class Calculator {
     inHandBreakdowns: Breakdown[];
   } {
     const inHandBreakdowns: Breakdown[] = [];
-    let chips = 0;
-    let mult = 1;
+
     for (let i = 0; i < cards.length; i++) {
       const card = cards[i];
-
       state.playingBeras
         .filter((bera) => BERA_STATS[bera.bera].action === BeraAction.ON_HELD)
         .forEach((bera) => {
@@ -275,8 +276,8 @@ export class Calculator {
             options,
           });
           if (result) {
-            mult = result.totalMult;
-            chips = result.totalChips;
+            mult *= result.totalMult;
+            chips += result.totalChips;
           }
         });
     }

@@ -20,10 +20,9 @@ import {
   GameContainer,
   LeftPanel,
   ResetButton,
-  BigBlindBox,
-  BigBlindHeader,
-  BigBlindContent,
-  BigBlindTarget,
+  RoundHeader,
+  RoundContent,
+  ScoreTarget,
   ScoreBox,
   ScoreValue,
   StatsGrid,
@@ -72,6 +71,7 @@ import { CardPosition } from "@/types/cards";
 import { AnimatedValueDisplay } from "./AnimatedValueDisplay";
 import { BERA_STATS } from "@/utils/beraStats";
 import useCalculator from "@/hooks/useCalculator";
+import { BeraPosition } from "@/types/beras";
 
 export const Game = () => {
   const {
@@ -94,6 +94,8 @@ export const Game = () => {
     maxHands,
     maxDiscards,
     currentState,
+    round,
+    reqScore,
     setCurrentState,
     endRound,
     shopBeras,
@@ -203,7 +205,9 @@ export const Game = () => {
 
   const useAnimatedCounter = (value: number) => {
     const count = useMotionValue(0);
-    const rounded = useTransform(count, (latest) => Math.round(latest));
+    const rounded = useTransform(count, (latest) =>
+      Math.round(latest).toLocaleString()
+    );
 
     useEffect(() => {
       const controls = animate(count, value, {
@@ -226,7 +230,27 @@ export const Game = () => {
     if (!value || (unit !== Unit.CHIPS && unit !== Unit.MULT)) return <></>;
     return (
       <ScorePopup
+        type="card"
         initial={{ opacity: 0.5, y: "1vw", scale: 0.5 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: ANIMATION_MS / 3000 }}
+      >
+        {unit === Unit.CHIPS && <ChipScore>+{value}</ChipScore>}
+        {unit === Unit.MULT && <MultScore>×{value}</MultScore>}
+      </ScorePopup>
+    );
+  };
+
+  const renderBreakdownBera = (bera: BeraPosition) => {
+    const index = currentBreakdown?.beras.indexOf(bera.id);
+    if (!currentBreakdown || index == null || index === -1) return <></>;
+    const value = currentBreakdown.values[index];
+    const unit = currentBreakdown.units[index];
+    if (!value || (unit !== Unit.CHIPS && unit !== Unit.MULT)) return <></>;
+    return (
+      <ScorePopup
+        type="bera"
+        initial={{ opacity: 0.5, y: "-1vw", scale: 0.5 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: ANIMATION_MS / 3000 }}
       >
@@ -250,21 +274,27 @@ export const Game = () => {
           </ResetButton>
 
           <BentoBox>
-            <BigBlindHeader>BIG BLIND</BigBlindHeader>
-            <BigBlindContent>
+            <RoundHeader>ROUND {round}</RoundHeader>
+            <RoundContent>
               <FlexRow style={{ justifyContent: "space-between" }}>
                 <div>
                   <div>Score at least</div>
-                  <BigBlindTarget>450</BigBlindTarget>
+                  <ScoreTarget>{reqScore.toLocaleString()}</ScoreTarget>
                 </div>
                 <div>to earn $$$$</div>
               </FlexRow>
-            </BigBlindContent>
+            </RoundContent>
           </BentoBox>
 
           <BentoBox style={{ padding: "1vw" }}>
             <div>Round score</div>
-            <ScoreValue>{useAnimatedCounter(score)}</ScoreValue>
+            <ScoreValue>
+              {useAnimatedCounter(
+                score ||
+                  currentBreakdown?.chips ||
+                  0 * (currentBreakdown?.mult || 0)
+              )}
+            </ScoreValue>
           </BentoBox>
 
           <HandScoreContainer>
@@ -316,6 +346,7 @@ export const Game = () => {
                       BERA_STATS[bera.bera].values[0].toString()
                     )}
                   </span>
+                  {renderBreakdownBera(bera)}
                 </ShopItem>
               ))}
             </DeckContainer>
@@ -456,8 +487,16 @@ export const Game = () => {
                           className="hand-card"
                           card={card}
                           isSelected={selectedCards.includes(card.id)}
-                          onSelect={toggleSelectedCard}
+                          onSelect={(id) => {
+                            if (!selectedCards.includes(id)) {
+                              if (selectedCards.length >= 5) {
+                                return;
+                              }
+                            }
+                            toggleSelectedCard(id);
+                          }}
                         />
+                        {renderBreakdownCard(card)}
                       </CardSlot>
                     ))}
                   </AnimatePresence>
