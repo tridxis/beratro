@@ -47,8 +47,8 @@ export class Calculator {
       options
     );
 
-    totalMult *= mult;
-    totalChips += chips;
+    totalMult = mult;
+    totalChips = chips;
 
     state.playingBeras
       .filter((bera) => BERA_STATS[bera.bera].action === BeraAction.INDEP)
@@ -74,8 +74,8 @@ export class Calculator {
       inHandBreakdowns,
     } = this.triggerInHandCards(inHandCards, state, totalChips, totalMult);
 
-    totalMult *= inHandMult;
-    totalChips += inHandChips;
+    totalMult = inHandMult;
+    totalChips = inHandChips;
 
     return {
       score: totalChips * totalMult,
@@ -127,7 +127,7 @@ export class Calculator {
         state.modifyGold(value);
         break;
       case BeraType.MUL_MULT:
-        unit = Unit.MULT;
+        unit = Unit.X_MULT;
         totalMult *= value;
         break;
       case BeraType.GEN_FLOWER:
@@ -239,8 +239,8 @@ export class Calculator {
             options,
           });
           if (result) {
-            mult = mult * result.totalMult;
-            chips = chips + result.totalChips;
+            mult = result.totalMult;
+            chips = result.totalChips;
           }
         });
     }
@@ -276,8 +276,8 @@ export class Calculator {
             options,
           });
           if (result) {
-            mult *= result.totalMult;
-            chips += result.totalChips;
+            mult = result.totalMult;
+            chips = result.totalChips;
           }
         });
     }

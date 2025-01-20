@@ -73,11 +73,14 @@ export const MEMES = Object.values(Meme);
 export enum Unit {
   CHIPS = "CHIPS",
   MULT = "MULT",
+  X_MULT = "X_MULT",
   GOLD = "GOLD",
   MEME = "MEME",
   FLOWER = "FLOWER",
   STICKER = "STICKER",
 }
+
+type MultType = Unit.MULT | Unit.X_MULT;
 
 export enum CardRank {
   TWO = "2",

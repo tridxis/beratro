@@ -159,7 +159,12 @@ export const Game = () => {
       }
       playSelectedCards();
 
-      const { score, pokerHand, playingBreakdowns, inHandBreakdowns } = play();
+      const {
+        score: currentScore,
+        pokerHand,
+        playingBreakdowns,
+        inHandBreakdowns,
+      } = play();
       console.log(playingBreakdowns);
       console.log(inHandBreakdowns);
 
@@ -169,6 +174,8 @@ export const Game = () => {
       // Animate breakdowns first
       const allBreakdowns = [...playingBreakdowns, ...inHandBreakdowns];
       let currentIndex = 0;
+      setCurrentBreakdown(allBreakdowns[currentIndex]);
+      currentIndex++;
 
       const breakdownInterval = setInterval(() => {
         if (currentIndex < allBreakdowns.length) {
@@ -178,14 +185,14 @@ export const Game = () => {
           clearInterval(breakdownInterval);
 
           // After breakdowns finish, set the final score
-          addScore(score);
+          addScore(currentScore);
 
           // Clear individual scores and reset display after original timeout
           setTimeout(() => {
             setCurrentBreakdown(null);
             setLastPlayedIndex(null);
             pokerHandRef.current = null;
-            if (score >= 1) {
+            if (score >= reqScore) {
               setCurrentState(GameState.ROUND_ENDED);
             }
           }, ANIMATION_MS * 3);
@@ -222,41 +229,65 @@ export const Game = () => {
     return rounded;
   };
 
-  const renderBreakdownCard = (card: CardPosition) => {
-    const index = currentBreakdown?.cards.indexOf(card.id);
-    if (!currentBreakdown || index == null || index === -1) return <></>;
-    const value = currentBreakdown.values[index];
-    const unit = currentBreakdown.units[index];
-    if (!value || (unit !== Unit.CHIPS && unit !== Unit.MULT)) return <></>;
+  const renderBreakdownScore = (
+    id: string,
+    type: "card" | "bera",
+    ids: string[],
+    values: number[],
+    units: Unit[]
+  ) => {
+    const index = ids.indexOf(id);
+    if (index === -1) return <></>;
+    const value = values[index];
+    const unit = units[index];
+    if (
+      !value ||
+      (unit !== Unit.CHIPS && unit !== Unit.MULT && unit !== Unit.X_MULT)
+    ) {
+      return <></>;
+    }
+
     return (
       <ScorePopup
-        type="card"
-        initial={{ opacity: 0.5, y: "1vw", scale: 0.5 }}
+        type={type}
+        initial={{
+          opacity: 0.5,
+          y: type === "card" ? "1vw" : "-1vw",
+          scale: 0.5,
+        }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: ANIMATION_MS / 3000 }}
       >
         {unit === Unit.CHIPS && <ChipScore>+{value}</ChipScore>}
-        {unit === Unit.MULT && <MultScore>×{value}</MultScore>}
+        {(unit === Unit.MULT || unit === Unit.X_MULT) && (
+          <MultScore>
+            {unit === Unit.X_MULT ? "×" : "+"}
+            {value}
+          </MultScore>
+        )}
       </ScorePopup>
     );
   };
 
+  const renderBreakdownCard = (card: CardPosition) => {
+    if (!currentBreakdown) return <></>;
+    return renderBreakdownScore(
+      card.id.toString(),
+      "card",
+      currentBreakdown.cards.map((card) => card.toString()),
+      currentBreakdown.values,
+      currentBreakdown.units
+    );
+  };
+
   const renderBreakdownBera = (bera: BeraPosition) => {
-    const index = currentBreakdown?.beras.indexOf(bera.id);
-    if (!currentBreakdown || index == null || index === -1) return <></>;
-    const value = currentBreakdown.values[index];
-    const unit = currentBreakdown.units[index];
-    if (!value || (unit !== Unit.CHIPS && unit !== Unit.MULT)) return <></>;
-    return (
-      <ScorePopup
-        type="bera"
-        initial={{ opacity: 0.5, y: "-1vw", scale: 0.5 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: ANIMATION_MS / 3000 }}
-      >
-        {unit === Unit.CHIPS && <ChipScore>+{value}</ChipScore>}
-        {unit === Unit.MULT && <MultScore>×{value}</MultScore>}
-      </ScorePopup>
+    if (!currentBreakdown) return <></>;
+    return renderBreakdownScore(
+      bera.id.toString(),
+      "bera",
+      currentBreakdown.beras.map((bera) => bera.toString()),
+      currentBreakdown.values,
+      currentBreakdown.units
     );
   };
 

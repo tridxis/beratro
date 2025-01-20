@@ -18,7 +18,13 @@ import { BERA_STATS } from "@/utils/beraStats";
 import { shuffleCards } from "@/utils/cards";
 
 const getRoundReqScore = (round: number) => {
-  return Math.round(165 * Math.exp(0.2 * round));
+  // Using exponential growth: base * e^(k * round)
+  // Solving for k using round 1 = 200 and round 20 = 1000000
+  // 200 = base * e^k
+  // 1000000 = base * e^(20k)
+  // k ≈ 0.3
+  // base ≈ 148
+  return Math.round(148 * Math.exp(0.3 * round));
 };
 
 export const useGameStore = create<GameStore>()(
@@ -109,6 +115,8 @@ export const useGameStore = create<GameStore>()(
             usedMemes: [],
             score: 0,
             gold: 0,
+            round: 1,
+            reqScore: getRoundReqScore(1),
             boosters: [],
             currentState: GameState.BERAS_PICKING,
           }));
