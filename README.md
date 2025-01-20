@@ -256,6 +256,17 @@ Still need to test, so I will play some games then fixing bugs before continuing
 
 See tmr 🍀
 
+## Day 19
+
+I'm testing round leveling with formula: base * e^(20k) with k ≈ 0.3 & base ≈ 148
+
+Today I also make UI for Bera breakdowns, logic for round ended & correct the breakdowns in calculation formula
+
+Test more and test more tomorrow. And add real gold too
+
+Seey 🍀
+
+
 
 
 
