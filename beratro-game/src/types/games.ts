@@ -66,4 +66,5 @@ export type CalculationOption = {
   breakdown?: boolean;
   isInHand?: boolean;
   isScored?: boolean;
+  retrigger?: boolean;
 };

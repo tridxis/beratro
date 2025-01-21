@@ -397,6 +397,11 @@ export const MultScore = styled(BaseScore)`
   background: ${RED_COLOR};
 `;
 
+export const RetriggerScore = styled(BaseScore)`
+  background: ${GREEN_COLOR};
+  color: ${WHITE_COLOR};
+`;
+
 export const HandCardsArea = styled.div`
   display: flex;
   align-items: center;

@@ -68,6 +68,7 @@ import {
   EndInfoContainer,
   EndInfoText,
   ScoreAtLeastTag,
+  RetriggerScore,
 } from "./Game.styles";
 import { BLUE_COLOR, GOLD_COLOR, RED_COLOR } from "@/utils/colors";
 import { CardPosition } from "@/types/cards";
@@ -110,8 +111,6 @@ export const Game = () => {
     gold,
     nextRound,
   } = state;
-
-  console.log(deckCards);
 
   const { play } = useCalculator();
 
@@ -211,6 +210,7 @@ export const Game = () => {
       // Update total score after all individual scores are shown
       // Animate breakdowns first
       const allBreakdowns = [...playingBreakdowns, ...inHandBreakdowns];
+      console.log("allBreakdowns", allBreakdowns);
       let currentIndex = 0;
       setCurrentBreakdown(allBreakdowns[currentIndex]);
       currentIndex++;
@@ -283,7 +283,10 @@ export const Game = () => {
     const unit = units[index];
     if (
       !value ||
-      (unit !== Unit.CHIPS && unit !== Unit.MULT && unit !== Unit.X_MULT)
+      (unit !== Unit.CHIPS &&
+        unit !== Unit.MULT &&
+        unit !== Unit.X_MULT &&
+        unit !== Unit.RETRIGGER)
     ) {
       return <></>;
     }
@@ -297,6 +300,12 @@ export const Game = () => {
           scale: 0.5,
         }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{
+          opacity: 0,
+          y: type === "card" ? "1vw" : "-1vw",
+          scale: 0.5,
+          transition: { duration: ANIMATION_MS / 3000 },
+        }}
         transition={{ duration: ANIMATION_MS / 3000 }}
       >
         {unit === Unit.CHIPS && <ChipScore>+{value}</ChipScore>}
@@ -306,9 +315,12 @@ export const Game = () => {
             {value}
           </MultScore>
         )}
+        {unit === Unit.RETRIGGER && <RetriggerScore>Retrigger</RetriggerScore>}
       </ScorePopup>
     );
   };
+
+  console.log("currentBreakdown", currentBreakdown);
 
   const renderBreakdownCard = (card: CardPosition) => {
     if (!currentBreakdown) return <></>;

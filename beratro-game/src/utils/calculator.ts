@@ -39,7 +39,11 @@ export class Calculator {
     const pokerHand = this.identifyPokerHand(playedCards);
     let totalMult = pokerHand.mult;
     let totalChips = pokerHand.chips;
-    const { chips, mult, playingBreakdowns } = this.triggerScoredCards(
+    const {
+      chips,
+      mult,
+      breakdowns: playingBreakdowns,
+    } = this.triggerScoredCards(
       pokerHand.scoredCards,
       state,
       totalChips,
@@ -71,7 +75,7 @@ export class Calculator {
     const {
       chips: inHandChips,
       mult: inHandMult,
-      inHandBreakdowns,
+      breakdowns: inHandBreakdowns,
     } = this.triggerInHandCards(inHandCards, state, totalChips, totalMult);
 
     totalMult = inHandMult;
@@ -139,32 +143,46 @@ export class Calculator {
       case BeraType.GEN_MEME:
         state.addBooster(MEMES[value]);
         break;
-      case BeraType.RETRIGGER:
-        cards.forEach((card) => {
-          let result;
-          if (options?.isScored) {
-            result = this.triggerScoredCards(
-              [card],
-              state,
-              totalChips,
-              totalMult,
-              options
-            );
-          } else if (options?.isInHand) {
-            result = this.triggerInHandCards(
-              [card],
-              state,
-              totalChips,
-              totalMult,
-              options
-            );
-          }
-          if (result) {
-            totalChips += result.chips;
-            totalMult *= result.mult;
-          }
-        });
+      case BeraType.RETRIGGER: {
+        let result;
+        if (options?.isScored) {
+          result = this.triggerScoredCards(
+            cards,
+            state,
+            totalChips,
+            totalMult,
+            { ...options, retrigger: true }
+          );
+          console.log("result", result);
+        } else if (options?.isInHand) {
+          result = this.triggerInHandCards(
+            cards,
+            state,
+            totalChips,
+            totalMult,
+            { ...options, retrigger: true }
+          );
+        }
+        if (result) {
+          totalChips = result.chips;
+          totalMult = result.mult;
+          breakdowns.push(
+            ...[
+              {
+                cards: [],
+                beras: [bera.id],
+                values: [1],
+                units: [Unit.RETRIGGER],
+                chips: 0,
+                mult: 0,
+              },
+              ...result.breakdowns,
+            ]
+          );
+          console.log("a", breakdowns);
+        }
         break;
+      }
       case BeraType.INCREASE_CHIPS:
         state.modifyCards({ chips: value });
         break;
@@ -188,7 +206,7 @@ export class Calculator {
         mult: totalMult,
       });
     }
-    return { totalChips, totalMult };
+    return { totalChips, totalMult, breakdowns };
   }
 
   private static triggerScoredCards(
@@ -200,9 +218,10 @@ export class Calculator {
   ): {
     chips: number;
     mult: number;
-    playingBreakdowns: Breakdown[];
+    breakdowns: Breakdown[];
   } {
-    const playingBreakdowns: Breakdown[] = [];
+    console.log("again", options, chips);
+    const breakdowns: Breakdown[] = [];
     for (let i = 0; i < cards.length; i++) {
       const card = cards[i];
       let value = 0;
@@ -216,7 +235,7 @@ export class Calculator {
       }
       chips += value;
       if (options?.breakdown) {
-        playingBreakdowns.push({
+        breakdowns.push({
           cards: [card.id],
           beras: [],
           values: [value],
@@ -226,17 +245,25 @@ export class Calculator {
         });
       }
 
+      console.log(breakdowns);
+
       state.playingBeras
-        .filter((bera) => BERA_STATS[bera.bera].action === BeraAction.ON_SCORED)
+        .filter(
+          (bera) =>
+            BERA_STATS[bera.bera].action === BeraAction.ON_SCORED &&
+            (options?.retrigger
+              ? BERA_STATS[bera.bera].type !== BeraType.RETRIGGER
+              : true)
+        )
         .forEach((bera) => {
           const result = this.triggerBera({
             bera,
             cards: [card],
             state,
-            breakdowns: playingBreakdowns,
+            breakdowns: breakdowns,
             totalChips: chips,
             totalMult: mult,
-            options,
+            options: { ...options, isScored: true },
           });
           if (result) {
             mult = result.totalMult;
@@ -245,7 +272,9 @@ export class Calculator {
         });
     }
 
-    return { chips, mult, playingBreakdowns };
+    console.log(chips, mult);
+
+    return { chips, mult, breakdowns };
   }
 
   private static triggerInHandCards(
@@ -257,23 +286,29 @@ export class Calculator {
   ): {
     chips: number;
     mult: number;
-    inHandBreakdowns: Breakdown[];
+    breakdowns: Breakdown[];
   } {
-    const inHandBreakdowns: Breakdown[] = [];
+    const breakdowns: Breakdown[] = [];
 
     for (let i = 0; i < cards.length; i++) {
       const card = cards[i];
       state.playingBeras
-        .filter((bera) => BERA_STATS[bera.bera].action === BeraAction.ON_HELD)
+        .filter(
+          (bera) =>
+            BERA_STATS[bera.bera].action === BeraAction.ON_HELD &&
+            (options?.retrigger
+              ? BERA_STATS[bera.bera].type !== BeraType.RETRIGGER
+              : true)
+        )
         .forEach((bera) => {
           const result = this.triggerBera({
             bera,
             cards: [card],
             state,
-            breakdowns: inHandBreakdowns,
+            breakdowns: breakdowns,
             totalChips: chips,
             totalMult: mult,
-            options,
+            options: { ...options, isInHand: true },
           });
           if (result) {
             mult = result.totalMult;
@@ -282,7 +317,7 @@ export class Calculator {
         });
     }
 
-    return { chips, mult, inHandBreakdowns };
+    return { chips, mult, breakdowns };
   }
 
   static identifyPokerHand(

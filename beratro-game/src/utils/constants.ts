@@ -78,6 +78,7 @@ export enum Unit {
   MEME = "MEME",
   FLOWER = "FLOWER",
   STICKER = "STICKER",
+  RETRIGGER = "RETRIGGER",
 }
 
 type MultType = Unit.MULT | Unit.X_MULT;

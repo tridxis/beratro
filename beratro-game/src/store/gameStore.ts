@@ -141,6 +141,7 @@ export const useGameStore = create<GameStore>()(
 
         sortByValue: () =>
           set((state) => ({
+            // maxHands: state.maxHands + 2,
             handCards: [...state.handCards]
               .sort((a, b) => {
                 return (CARD_RANKS[b.rank] || 0) - (CARD_RANKS[a.rank] || 0);

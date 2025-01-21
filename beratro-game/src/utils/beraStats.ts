@@ -404,7 +404,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     type: BeraType.RETRIGGER,
     action: BeraAction.ON_SCORED,
     trigger: (value: number, cards: CardPosition[]) => {
-      return cards[0].rank < CardRank.TEN ? value : 0;
+      return CARD_RANKS[cards[0].rank] < CARD_RANKS[CardRank.TEN] ? value : 0;
     },
   },
   [Bera.GIFT]: {
