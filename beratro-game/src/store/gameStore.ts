@@ -23,7 +23,7 @@ const getRoundReqScore = (round: number) => {
   // 200 = base * e^k
   // 1000000 = base * e^(20k)
   // k ≈ 0.3
-  // base ≈ 148
+  //
   return Math.round(148 * Math.exp(0.3 * round));
 };
 
@@ -53,6 +53,7 @@ export const useGameStore = create<GameStore>()(
         score: 0,
         gold: 0,
         round: 1,
+        roundGold: 4,
         reqScore: getRoundReqScore(1),
         boosters: [],
         currentState: GameState.BERAS_PICKING,
@@ -66,7 +67,12 @@ export const useGameStore = create<GameStore>()(
             return {
               gold: state.gold + goldEarned,
               handCards: [],
-              deckCards: initCards(),
+              deckCards: shuffleCards([
+                ...state.deckCards,
+                ...state.handCards,
+                ...state.playedHands.flat(),
+                ...state.discards.flat(),
+              ]),
               selectedCards: [],
               playedHands: [],
               discards: [],
@@ -301,10 +307,10 @@ export const useGameStore = create<GameStore>()(
           }),
         modifyCards: (value: { chips?: number; mult?: number }) =>
           set((state) => ({
-            handCards: state.handCards.map((card) =>
-              state.selectedCards.includes(card.id)
-                ? { ...card, ...value }
-                : card
+            playedHands: state.playedHands.map((hand, index) =>
+              index === state.playedHands.length - 1
+                ? hand.map((card) => ({ ...card, ...value }))
+                : hand
             ),
           })),
         nextRound: () => {

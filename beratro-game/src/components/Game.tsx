@@ -65,6 +65,9 @@ import {
   ShopItemGrid,
   ShopSection,
   BuyButton,
+  EndInfoContainer,
+  EndInfoText,
+  ScoreAtLeastTag,
 } from "./Game.styles";
 import { BLUE_COLOR, GOLD_COLOR, RED_COLOR } from "@/utils/colors";
 import { CardPosition } from "@/types/cards";
@@ -95,6 +98,7 @@ export const Game = () => {
     maxDiscards,
     currentState,
     round,
+    roundGold,
     reqScore,
     setCurrentState,
     endRound,
@@ -104,6 +108,8 @@ export const Game = () => {
     gold,
     nextRound,
   } = useGameStore();
+
+  console.log(deckCards);
 
   const { play } = useCalculator();
 
@@ -192,7 +198,9 @@ export const Game = () => {
             setCurrentBreakdown(null);
             setLastPlayedIndex(null);
             pokerHandRef.current = null;
-            if (score >= reqScore) {
+            console.log(score + currentScore);
+            console.log(reqScore);
+            if (score + currentScore >= reqScore) {
               setCurrentState(GameState.ROUND_ENDED);
             }
           }, ANIMATION_MS * 3);
@@ -290,6 +298,10 @@ export const Game = () => {
       currentBreakdown.units
     );
   };
+
+  const goldEarned = useMemo(() => {
+    return Math.floor(gold / 5) + roundGold + maxHands - playedHands.length;
+  }, [gold, roundGold, maxHands, playedHands.length]);
 
   return (
     <GameContainer>
@@ -446,37 +458,36 @@ export const Game = () => {
 
         {currentState === GameState.ROUND_ENDED && (
           <RoundEndContainer>
-            <CashOutButton onClick={() => endRound(5)}>
-              Cash Out: $5
+            <CashOutButton onClick={() => endRound(goldEarned)}>
+              Cash Out: ${goldEarned}
             </CashOutButton>
-
-            <FlexRow>
-              <CircleIcon>A</CircleIcon>
-              <ScoreText>12,000</ScoreText>
-              <RewardText>$$$$$</RewardText>
-            </FlexRow>
-
-            <Separator />
-
-            <FlexRow>
-              <span style={{ marginRight: "10px" }}>3</span>
-              <span>Remaining Hands ($1 each)</span>
-              <RewardText>$$$</RewardText>
-            </FlexRow>
-
-            {[1, 2].map((_, index) => (
-              <FlexRow key={index}>
-                <SquareIcon>S</SquareIcon>
-                <span>Defeat the Boss Blind</span>
-                <RewardText>$$$$$$$$$$$$$$$</RewardText>
+            <EndInfoContainer>
+              <FlexRow>
+                <ScoreAtLeastTag>Score as least</ScoreAtLeastTag>
+                <ScoreText>{reqScore.toLocaleString()}</ScoreText>
+                <RewardText>{"$".repeat(roundGold)}</RewardText>
               </FlexRow>
-            ))}
 
-            <FlexRow>
-              <span style={{ marginRight: "10px" }}>4</span>
-              <span>1 Interest per $5 (5 max)</span>
-              <RewardText>$$$$</RewardText>
-            </FlexRow>
+              <Separator />
+
+              <FlexRow>
+                <EndInfoText>Remaining Hands ($1 each)</EndInfoText>
+                <RewardText>
+                  {maxHands - playedHands.length > 0
+                    ? "$".repeat(maxHands - playedHands.length)
+                    : "-"}
+                </RewardText>
+              </FlexRow>
+
+              <FlexRow>
+                <EndInfoText>1 Interest per $5 (5 max)</EndInfoText>
+                <RewardText>
+                  {Math.floor(gold / 5) > 0
+                    ? "$".repeat(Math.floor(gold / 5))
+                    : "-"}
+                </RewardText>
+              </FlexRow>
+            </EndInfoContainer>
           </RoundEndContainer>
         )}
 

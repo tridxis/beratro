@@ -30,6 +30,7 @@ export interface GameStore {
   usedMemes: Meme[];
   score: number;
   round: number;
+  roundGold: number;
   reqScore: number;
   boosters: BoosterPosition[];
   currentState: GameState;
@@ -58,6 +59,7 @@ export interface GameStore {
   addBooster: (booster: Flower | Sticker | Meme) => void;
   addCardsToDeck: (cards: CardPosition[]) => void;
   modifyCards: (value: { chips?: number; mult?: number }) => void;
+  nextRound: () => void;
 }
 
 export type CalculationOption = {

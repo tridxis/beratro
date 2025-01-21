@@ -9,9 +9,11 @@ import {
   WHITE_COLOR,
   WOOD_COLOR,
   BLACK_COLOR,
+  GOLD_COLOR,
+  DARK_GOLD_COLOR,
 } from "@/utils/colors";
 import styled from "@emotion/styled";
-import { motion } from "framer-motion";
+import { color, motion } from "framer-motion";
 import { Reorder } from "framer-motion";
 import { AnimatedValueDisplay } from "./AnimatedValueDisplay";
 import Button from "./Button";
@@ -19,23 +21,37 @@ import { CARD_STYLES } from "@/utils/cardStyles";
 
 export const RoundEndContainer = styled.div`
   padding: 1vw;
-  background-color: ${FLOOR_COLOR};
-  border: 0.2vw solid ${FLOOR_BORDER_COLOR};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: ${WHITE_COLOR};
   border-radius: 8px;
   color: white;
   flex: 2;
+  gap: 2vw;
+  width: 44vw;
+  margin: auto;
 `;
 
 export const CashOutButton = styled(Button)`
-  background-color: #8b4513;
-  padding: 8px 16px;
-  border-radius: 8px;
+  background-color: ${DARK_GOLD_COLOR};
+  border-radius: 0.5vw;
   border: none;
   color: white;
-  font-size: 20px;
+  height: 5vw;
+  width: 20vw;
+  font-size: 2vw;
   font-weight: bold;
-  margin-bottom: 20px;
   cursor: pointer;
+`;
+
+export const EndInfoContainer = styled.div`
+  flex: 1;
+  width: 40vw;
+  gap: 0.5vw;
+  display: flex;
+  flex-direction: column;
 `;
 
 export const FlexRow = styled.div`
@@ -53,8 +69,17 @@ const IconBase = styled.div`
 `;
 
 export const CircleIcon = styled(IconBase)`
-  background-color: #3498db;
+  background-color: ${BLUE_COLOR};
   border-radius: 50%;
+`;
+
+export const ScoreAtLeastTag = styled.div`
+  background-color: ${BLUE_COLOR};
+  border-radius: 0.5vw;
+  padding: 0.2vw 0.5vw;
+  color: ${WHITE_COLOR};
+  font-size: 0.8vw;
+  margin-right: 0.5vw;
 `;
 
 export const SquareIcon = styled(IconBase)`
@@ -63,18 +88,26 @@ export const SquareIcon = styled(IconBase)`
 `;
 
 export const Separator = styled.hr`
-  border: 1px dotted #34495e;
+  border: 1px dashed ${WOOD_COLOR};
   margin: 15px 0;
 `;
 
 export const RewardText = styled.span`
   margin-left: auto;
-  color: #f1c40f;
+  color: ${DARK_GOLD_COLOR};
+  font-size: 1vw;
+  max-width: 20vw;
+  word-break: break-word;
+`;
+
+export const EndInfoText = styled.span`
+  color: ${BORDER_COLOR};
+  font-size: 1vw;
 `;
 
 export const ScoreText = styled.span`
-  color: #e74c3c;
-  font-size: 20px;
+  color: ${RED_COLOR};
+  font-size: 2vw;
   font-weight: bold;
 `;
 
