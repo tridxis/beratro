@@ -72,11 +72,13 @@ import {
 import { BLUE_COLOR, GOLD_COLOR, RED_COLOR } from "@/utils/colors";
 import { CardPosition } from "@/types/cards";
 import { AnimatedValueDisplay } from "./AnimatedValueDisplay";
-import { BERA_STATS } from "@/utils/beraStats";
+import { BERA_STATS, BeraAction, BeraType } from "@/utils/beraStats";
 import useCalculator from "@/hooks/useCalculator";
 import { BeraPosition } from "@/types/beras";
 
 export const Game = () => {
+  const state = useGameStore();
+
   const {
     handCards,
     selectedCards,
@@ -107,13 +109,17 @@ export const Game = () => {
     playingBeras,
     gold,
     nextRound,
-  } = useGameStore();
+  } = state;
 
   console.log(deckCards);
 
   const { play } = useCalculator();
 
   const [lastPlayedIndex, setLastPlayedIndex] = useState<number | null>(null);
+
+  const [bonusGolds, setBonusGolds] = useState<
+    { title: string; value: number }[]
+  >([]);
 
   const pokerHandRef = useRef<PokerHand | null>(null);
 
@@ -156,6 +162,32 @@ export const Game = () => {
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
+
+  const handleOnEndedBeras = () => {
+    playingBeras
+      .filter((bera) => BERA_STATS[bera.bera].action === BeraAction.ON_ENDED)
+      .forEach((bera) => {
+        const value = BERA_STATS[bera.bera].trigger(
+          BERA_STATS[bera.bera].values[0],
+          [],
+          state
+        );
+        switch (BERA_STATS[bera.bera].type) {
+          case BeraType.ADD_GOLD:
+            setBonusGolds((prev) => [
+              ...prev,
+              {
+                title: BERA_STATS[bera.bera].description.replace(
+                  "{{value}}",
+                  BERA_STATS[bera.bera].values[0].toString()
+                ),
+                value,
+              },
+            ]);
+            break;
+        }
+      });
+  };
 
   const handleAction = (action: "play" | "discard") => {
     if (action === "play") {
@@ -201,6 +233,7 @@ export const Game = () => {
             console.log(score + currentScore);
             console.log(reqScore);
             if (score + currentScore >= reqScore) {
+              handleOnEndedBeras();
               setCurrentState(GameState.ROUND_ENDED);
             }
           }, ANIMATION_MS * 3);
@@ -300,8 +333,14 @@ export const Game = () => {
   };
 
   const goldEarned = useMemo(() => {
-    return Math.floor(gold / 5) + roundGold + maxHands - playedHands.length;
-  }, [gold, roundGold, maxHands, playedHands.length]);
+    return (
+      Math.floor(gold / 5) +
+      roundGold +
+      maxHands -
+      playedHands.length +
+      bonusGolds.reduce((acc, curr) => acc + curr.value, 0)
+    );
+  }, [gold, roundGold, maxHands, playedHands.length, bonusGolds]);
 
   return (
     <GameContainer>
@@ -458,7 +497,12 @@ export const Game = () => {
 
         {currentState === GameState.ROUND_ENDED && (
           <RoundEndContainer>
-            <CashOutButton onClick={() => endRound(goldEarned)}>
+            <CashOutButton
+              onClick={() => {
+                endRound(goldEarned);
+                setBonusGolds([]);
+              }}
+            >
               Cash Out: ${goldEarned}
             </CashOutButton>
             <EndInfoContainer>
@@ -487,6 +531,13 @@ export const Game = () => {
                     : "-"}
                 </RewardText>
               </FlexRow>
+
+              {bonusGolds.map((gold, index) => (
+                <FlexRow key={`bonus-gold-${index}`}>
+                  <EndInfoText>{gold.title}</EndInfoText>
+                  <RewardText>{"$".repeat(gold.value)}</RewardText>
+                </FlexRow>
+              ))}
             </EndInfoContainer>
           </RoundEndContainer>
         )}

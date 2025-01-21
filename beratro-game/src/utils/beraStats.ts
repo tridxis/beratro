@@ -521,15 +521,14 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     values: [1, 2, 3],
     type: BeraType.ADD_GOLD,
     action: BeraAction.ON_ENDED,
-    trigger: (value: number, cards: CardPosition[], state: GameStore) => {
+    trigger: (value: number, _: CardPosition[], state: GameStore) => {
       const nines = [
         ...state.deckCards,
         ...state.discards.flat(),
         ...state.playedHands.flat(),
+        ...state.handCards,
       ].filter((card) => card.rank === CardRank.NINE).length;
-      return cards.filter((card) => card.rank === CardRank.NINE).length > 0
-        ? value * nines
-        : 0;
+      return value * nines;
     },
   },
   [Bera.SOCKS]: {
