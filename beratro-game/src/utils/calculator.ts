@@ -39,6 +39,26 @@ export class Calculator {
     const pokerHand = this.identifyPokerHand(playedCards);
     let totalMult = pokerHand.mult;
     let totalChips = pokerHand.chips;
+
+    state.playingBeras
+      .filter((bera) => BERA_STATS[bera.bera].action === BeraAction.ON_PLAYED)
+      .forEach((bera) => {
+        const { type, trigger, values } = BERA_STATS[bera.bera];
+        switch (type) {
+          case BeraType.MUL_MULT:
+            totalMult *= trigger(values[0], playedCards, state);
+            break;
+          case BeraType.ADD_GOLD:
+            state.modifyGold(trigger(values[0], playedCards, state));
+            break;
+          case BeraType.GEN_FLOWER:
+            state.addBooster(FLOWERS[trigger(values[0], playedCards, state)]);
+            break;
+          case BeraType.GEN_STICKER:
+            state.addBooster(STICKERS[trigger(values[0], playedCards, state)]);
+            break;
+        }
+      });
     const {
       chips,
       mult,
