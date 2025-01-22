@@ -397,6 +397,10 @@ export const MultScore = styled(BaseScore)`
   background: ${RED_COLOR};
 `;
 
+export const GoldScore = styled(BaseScore)`
+  background: ${DARK_GOLD_COLOR};
+`;
+
 export const RetriggerScore = styled(BaseScore)`
   background: ${GREEN_COLOR};
   color: ${WHITE_COLOR};

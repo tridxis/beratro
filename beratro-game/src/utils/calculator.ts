@@ -39,17 +39,26 @@ export class Calculator {
     const pokerHand = this.identifyPokerHand(playedCards);
     let totalMult = pokerHand.mult;
     let totalChips = pokerHand.chips;
-
+    const breakdowns: Breakdown[] = [];
     state.playingBeras
       .filter((bera) => BERA_STATS[bera.bera].action === BeraAction.ON_PLAYED)
       .forEach((bera) => {
         const { type, trigger, values } = BERA_STATS[bera.bera];
+        const value = trigger(values[0], playedCards, state);
         switch (type) {
           case BeraType.MUL_MULT:
-            totalMult *= trigger(values[0], playedCards, state);
+            totalMult *= value;
             break;
           case BeraType.ADD_GOLD:
-            state.modifyGold(trigger(values[0], playedCards, state));
+            state.modifyGold(value);
+            breakdowns.push({
+              cards: [],
+              beras: [bera.id],
+              values: [value],
+              units: [Unit.GOLD],
+              chips: 0,
+              mult: 0,
+            });
             break;
           case BeraType.GEN_FLOWER:
             state.addBooster(FLOWERS[trigger(values[0], playedCards, state)]);
@@ -71,6 +80,8 @@ export class Calculator {
       options
     );
 
+    breakdowns.push(...playingBreakdowns);
+
     totalMult = mult;
     totalChips = chips;
 
@@ -81,7 +92,7 @@ export class Calculator {
           bera,
           cards: pokerHand.scoredCards,
           state,
-          breakdowns: playingBreakdowns,
+          breakdowns,
           totalChips,
           totalMult,
           options,
@@ -103,7 +114,7 @@ export class Calculator {
 
     return {
       score: totalChips * totalMult,
-      playingBreakdowns,
+      playingBreakdowns: breakdowns,
       inHandBreakdowns,
       pokerHand: pokerHand,
     };

@@ -69,6 +69,7 @@ import {
   EndInfoText,
   ScoreAtLeastTag,
   RetriggerScore,
+  GoldScore,
 } from "./Game.styles";
 import { BLUE_COLOR, GOLD_COLOR, RED_COLOR } from "@/utils/colors";
 import { CardPosition } from "@/types/cards";
@@ -286,7 +287,8 @@ export const Game = () => {
       (unit !== Unit.CHIPS &&
         unit !== Unit.MULT &&
         unit !== Unit.X_MULT &&
-        unit !== Unit.RETRIGGER)
+        unit !== Unit.RETRIGGER &&
+        unit !== Unit.GOLD)
     ) {
       return <></>;
     }
@@ -316,6 +318,7 @@ export const Game = () => {
           </MultScore>
         )}
         {unit === Unit.RETRIGGER && <RetriggerScore>Retrigger</RetriggerScore>}
+        {unit === Unit.GOLD && <GoldScore>${value}</GoldScore>}
       </ScorePopup>
     );
   };
