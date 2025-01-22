@@ -18,13 +18,25 @@ import { BERA_STATS } from "@/utils/beraStats";
 import { shuffleCards } from "@/utils/cards";
 
 const getRoundReqScore = (round: number) => {
-  // Using exponential growth: base * e^(k * round)
-  // Solving for k using round 1 = 200 and round 20 = 1000000
-  // 200 = base * e^k
-  // 1000000 = base * e^(20k)
-  // k ≈ 0.3
-  //
-  return Math.round(148 * Math.exp(0.3 * round));
+  if (round <= 10) {
+    // Calculate base exponential value, adjusted to start at 300
+    const score = 220 * Math.exp(0.3 * round);
+
+    // For rounds 8-10, round to nearest 500
+    if (round >= 8) {
+      return Math.round(score / 500) * 500;
+    }
+    // For rounds 5-7, round to nearest 250
+    if (round >= 5) {
+      return Math.round(score / 250) * 250;
+    }
+    // For earlier rounds, round to nearest 50
+    return Math.round(score / 50) * 50;
+  }
+
+  // After round 10, round to nearest 1000
+  const score = 5000 * Math.exp(0.3 * (round - 10));
+  return Math.round(score / 1000) * 1000;
 };
 
 export const useGameStore = create<GameStore>()(
