@@ -266,6 +266,16 @@ Test more and test more tomorrow. And add real gold too
 
 Seey 🍀
 
+## Day 20
+
+Test to bug to test to bug to ... the moon
+
+Today I implement real gold system for game. And play with retrigger Beras & correct retrigger score & breakdown
+
+What's next tmr?
+
+Seey 🍀
+
 
 
 
