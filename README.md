@@ -276,8 +276,17 @@ What's next tmr?
 
 Seey 🍀
 
+## Day 21
 
+Today I realize that I'm not covering on played Beras 🙈
 
+So, yeah ... so ... make logic & breakdown for them
+
+Current leveling score is too boring, so I changed the leveling mechanism for more challenging. I think it's time to make booster pack. I farmed gold for nothing :'(
+
+Important news: I invited my bro (art) to join with this challenge and he said yes! Huuray
+
+Seey 🍀
 
 
 
