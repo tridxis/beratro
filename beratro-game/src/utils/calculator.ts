@@ -140,6 +140,7 @@ export class Calculator {
     | {
         totalChips: number;
         totalMult: number;
+        breakdowns: Breakdown[];
       }
     | undefined {
     const { values, trigger, type } = BERA_STATS[bera.bera];
@@ -184,7 +185,6 @@ export class Calculator {
             totalMult,
             { ...options, retrigger: true }
           );
-          console.log("result", result);
         } else if (options?.isInHand) {
           result = this.triggerInHandCards(
             cards,
@@ -210,7 +210,6 @@ export class Calculator {
               ...result.breakdowns,
             ]
           );
-          console.log("a", breakdowns);
         }
         break;
       }

@@ -1,3 +1,15 @@
+// TypeScript type for the stats
+export type BeraStats = {
+  name: string;
+  description: string;
+  cost: number;
+  rarity: BeraRarity;
+  values: [number, number, number]; // tuple of 3 numbers
+  type: BeraType;
+  action: BeraAction;
+  trigger: (value: number, cards: CardPosition[], state: GameStore) => number;
+};
+
 import { Bera, CARD_RANKS, CardRank, CardSuit } from "./constants";
 import { CardPosition } from "@/types/cards";
 import { countRanks, getRankCounts, isFlush, isStraight } from "./atomic";
@@ -254,17 +266,17 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
   },
   [Bera.AIRDROP]: {
     name: "Airdrop",
-    description: "Gains x{{value}} Mult for every A that is removed",
+    description: "Gains x{{value}} Mult for each A discarded this round",
     cost: 8,
     rarity: BeraRarity.RARE,
     values: [1, 1.5, 2],
     type: BeraType.MUL_MULT,
     action: BeraAction.INDEP,
     trigger: (value: number, cards: CardPosition[], state: GameStore) => {
-      const removedAces = state.removedCards
+      const discaredAces = state.discards
         .flat()
         .filter((card) => card.rank === CardRank.ACE);
-      return removedAces.length > 0 ? value * removedAces.length : 0;
+      return discaredAces.length > 0 ? 1 + value * discaredAces.length : 1;
     },
   },
   [Bera.CHIP]: {
@@ -443,8 +455,8 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
       return isStraight(cards).isValid ? value : 0;
     },
   },
-  [Bera.SMILE]: {
-    name: "Smile",
+  [Bera.STAMMER]: {
+    name: "Stammer",
     description: "Retrigger all card held in hand abilities {{value}} times",
     cost: 7,
     rarity: BeraRarity.UNCOMMON,
@@ -551,35 +563,22 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
   },
   [Bera.X]: {
     name: "X",
-    description:
-      "Earn ${{value}} for each discarded [rank], rank changes every round",
+    description: "{{value}} in 3 chance to earn $1 for each discarded card",
     cost: 4,
     rarity: BeraRarity.COMMON,
-    values: [5, 7, 10],
+    values: [1, 2, 3],
     type: BeraType.ADD_GOLD,
     action: BeraAction.ON_DISCARD,
     trigger: (value: number, cards: CardPosition[]) => {
       // from 2 to A
-      const randomRank =
-        Object.values(CARD_RANKS)[
-          Math.floor(Math.random() * Object.values(CARD_RANKS).length)
-        ];
-      const validCards = cards.filter(
-        (card) => CARD_RANKS[card.rank] === randomRank
-      );
-      return validCards.length > 0 ? value * validCards.length : 0;
+      // const randomRank =
+      //   Object.values(CARD_RANKS)[
+      //     Math.floor(Math.random() * Object.values(CARD_RANKS).length)
+      //   ];
+      // const validCards = cards.filter(
+      //   (card) => CARD_RANKS[card.rank] === randomRank
+      // );
+      return Math.random() < 1 / value ? 1 : 0;
     },
   },
-};
-
-// TypeScript type for the stats
-export type BeraStats = {
-  name: string;
-  description: string;
-  cost: number;
-  rarity: BeraRarity;
-  values: [number, number, number]; // tuple of 3 numbers
-  type: BeraType;
-  action: BeraAction;
-  trigger: (value: number, cards: CardPosition[], state: GameStore) => number;
 };

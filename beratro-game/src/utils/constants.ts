@@ -28,7 +28,7 @@ export enum Bera {
   FISH = "FISH",
   BAKER = "BAKER",
   CRAWL = "CRAWL",
-  SMILE = "SMILE",
+  STAMMER = "STAMMER",
   STAR = "STAR",
   DROOL = "DROOL",
   SLEEP = "SLEEP",
@@ -44,10 +44,18 @@ export enum Bera {
 }
 
 export enum Flower {
-  NONE = "NONE",
-  FLOWER_1 = "FLOWER_1",
-  FLOWER_2 = "FLOWER_2",
-  FLOWER_3 = "FLOWER_3",
+  TULIP = "TULIP", // High card
+  POPPY = "POPPY", // Pair
+  JASMINE = "JASMINE", // Two pai
+  TRILLIUM = "TRILLIUM", // Three of a kind
+  LAVENDER = "LAVENDER", // Straight
+  DAISY = "DAISY", // Flush
+  VIOLET = "VIOLET", // Full house
+  CLOVER = "CLOVER", // Four of a kind
+  ORCHID = "ORCHID", // Straigh Flush
+  LOTUS = "LOTUS", // Flush Five
+  BLOSSOM = "BLOSSOM", // Five of a kind
+  SUNFLOWER = "SUNFLOWER", // Flush house
 }
 
 export const FLOWERS = Object.values(Flower);
