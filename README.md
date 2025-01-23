@@ -288,6 +288,18 @@ Important news: I invited my bro (art) to join with this challenge and he said y
 
 Seey 🍀
 
+## Day 22
+
+We're preparing assets to draw Beras 🐻
+
+I find 12 flowers in tune with poker hands, and implement to the data.
+
+I also rework some Beras for easily adapting with the game play
+
+I'm wondering how to sell booster packs properly. Tomorrow I'll try to approach a few options to see which one is more wow
+
+Seey 🍀
+
 
 
 
