@@ -6,11 +6,11 @@ export type BeraStats = {
   rarity: BeraRarity;
   values: [number, number, number]; // tuple of 3 numbers
   type: BeraType;
-  action: BeraAction;
+  action: GameAction;
   trigger: (value: number, cards: CardPosition[], state: GameStore) => number;
 };
 
-import { Bera, CARD_RANKS, CardRank, CardSuit } from "./constants";
+import { Bera, CARD_RANKS, CardRank, CardSuit, GameAction } from "./constants";
 import { CardPosition } from "@/types/cards";
 import { countRanks, getRankCounts, isFlush, isStraight } from "./atomic";
 import { GameStore } from "@/types/games";
@@ -31,17 +31,6 @@ export enum BeraType {
   REMOVE_CARDS = "REMOVE_CARDS",
 }
 
-export enum BeraAction {
-  INDEP = "INDEP",
-  ON_HELD = "ON_HELD",
-  ON_PLAYED = "ON_PLAYED",
-  ON_DISCARD = "ON_DISCARD",
-  ON_SCORED = "ON_SCORED",
-  ON_REMOVED = "ON_REMOVED",
-  ON_ADDED = "ON_ADDED",
-  ON_ENDED = "ON_ENDED",
-}
-
 export enum BeraRarity {
   COMMON = "COMMON",
   UNCOMMON = "UNCOMMON",
@@ -58,7 +47,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.COMMON,
     values: [4, 8, 16],
     type: BeraType.ADD_MULT,
-    action: BeraAction.INDEP,
+    action: GameAction.INDEP,
     trigger: (value: number) => {
       return value;
     },
@@ -70,7 +59,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.COMMON,
     values: [3, 4, 5],
     type: BeraType.ADD_MULT,
-    action: BeraAction.ON_SCORED,
+    action: GameAction.ON_SCORED,
     trigger: (value: number, cards: CardPosition[]) => {
       return cards[0].suit === CardSuit.HEARTS ? value : 0;
     },
@@ -83,7 +72,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.COMMON,
     values: [3, 4, 5],
     type: BeraType.ADD_MULT,
-    action: BeraAction.ON_SCORED,
+    action: GameAction.ON_SCORED,
     trigger: (value: number, cards: CardPosition[]) => {
       return cards[0].suit === CardSuit.DIAMONDS ? value : 0;
     },
@@ -95,7 +84,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.COMMON,
     values: [3, 4, 5],
     type: BeraType.ADD_MULT,
-    action: BeraAction.ON_SCORED,
+    action: GameAction.ON_SCORED,
     trigger: (value: number, cards: CardPosition[]) => {
       return cards[0].suit === CardSuit.CLUBS ? value : 0;
     },
@@ -108,7 +97,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.COMMON,
     values: [3, 4, 5],
     type: BeraType.ADD_MULT,
-    action: BeraAction.ON_SCORED,
+    action: GameAction.ON_SCORED,
     trigger: (value: number, cards: CardPosition[]) => {
       return cards[0].suit === CardSuit.SPADES ? value : 0;
     },
@@ -120,7 +109,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.COMMON,
     values: [50, 75, 100],
     type: BeraType.ADD_CHIPS,
-    action: BeraAction.INDEP,
+    action: GameAction.INDEP,
     trigger: (value: number, cards: CardPosition[]) => {
       return countRanks(cards).includes(2) ? value : 0;
     },
@@ -132,7 +121,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.COMMON,
     values: [100, 150, 200],
     type: BeraType.ADD_CHIPS,
-    action: BeraAction.INDEP,
+    action: GameAction.INDEP,
     trigger: (value: number, cards: CardPosition[]) => {
       return countRanks(cards).includes(3) ? value : 0;
     },
@@ -144,7 +133,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.COMMON,
     values: [100, 150, 200],
     type: BeraType.ADD_CHIPS,
-    action: BeraAction.INDEP,
+    action: GameAction.INDEP,
     trigger: (value: number, cards: CardPosition[]) => {
       return isStraight(cards).isValid ? value : 0;
     },
@@ -156,7 +145,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.COMMON,
     values: [80, 120, 160],
     type: BeraType.ADD_CHIPS,
-    action: BeraAction.INDEP,
+    action: GameAction.INDEP,
     trigger: (value: number, cards: CardPosition[]) => {
       return isFlush(cards).isValid ? value : 0;
     },
@@ -168,7 +157,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.COMMON,
     values: [8, 12, 16],
     type: BeraType.ADD_MULT,
-    action: BeraAction.INDEP,
+    action: GameAction.INDEP,
     trigger: (value: number, cards: CardPosition[]) => {
       return countRanks(cards).includes(2) ? value : 0;
     },
@@ -180,7 +169,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.COMMON,
     values: [12, 16, 20],
     type: BeraType.ADD_MULT,
-    action: BeraAction.INDEP,
+    action: GameAction.INDEP,
     trigger: (value: number, cards: CardPosition[]) => {
       return countRanks(cards).includes(3) ? value : 0;
     },
@@ -192,7 +181,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.COMMON,
     values: [12, 16, 20],
     type: BeraType.ADD_MULT,
-    action: BeraAction.INDEP,
+    action: GameAction.INDEP,
     trigger: (value: number, cards: CardPosition[]) => {
       return isStraight(cards).isValid ? value : 0;
     },
@@ -204,7 +193,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.COMMON,
     values: [10, 15, 20],
     type: BeraType.ADD_MULT,
-    action: BeraAction.INDEP,
+    action: GameAction.INDEP,
     trigger: (value: number, cards: CardPosition[]) => {
       return isFlush(cards).isValid ? value : 0;
     },
@@ -217,7 +206,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.RARE,
     values: [100, 150, 200],
     type: BeraType.ADD_CHIPS,
-    action: BeraAction.ON_SCORED,
+    action: GameAction.ON_SCORED,
     trigger: (value: number, cards: CardPosition[]) => {
       return cards.every((card) => card.rank === CardRank.TEN) ? value : 0;
     },
@@ -230,7 +219,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.RARE,
     values: [3, 4, 5],
     type: BeraType.MUL_MULT,
-    action: BeraAction.INDEP,
+    action: GameAction.INDEP,
     trigger: (value: number, cards: CardPosition[]) => {
       const rankCounts = getRankCounts(cards);
       return rankCounts[CARD_RANKS[CardRank.JACK]] >= 3 ? value : 0;
@@ -244,7 +233,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.RARE,
     values: [3, 2, 1],
     type: BeraType.GEN_FLOWER,
-    action: BeraAction.ON_SCORED,
+    action: GameAction.ON_SCORED,
     trigger: (value: number, cards: CardPosition[]) => {
       if (cards[0].rank === CardRank.QUEEN) {
         // Get array of flower IDs from FLOWER_STATS
@@ -265,7 +254,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.RARE,
     values: [1.5, 2, 2.5],
     type: BeraType.MUL_MULT,
-    action: BeraAction.ON_HELD,
+    action: GameAction.ON_HELD,
     trigger: (value: number, cards: CardPosition[]) => {
       return cards[0].rank === CardRank.KING ? value : 0;
     },
@@ -277,7 +266,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.RARE,
     values: [1, 1.5, 2],
     type: BeraType.MUL_MULT,
-    action: BeraAction.INDEP,
+    action: GameAction.INDEP,
     trigger: (value: number, cards: CardPosition[], state: GameStore) => {
       const discaredAces = state.discards
         .flat()
@@ -292,7 +281,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.COMMON,
     values: [20, 30, 40],
     type: BeraType.ADD_MULT,
-    action: BeraAction.INDEP,
+    action: GameAction.INDEP,
     trigger: (value: number, cards: CardPosition[]) => {
       return cards.length <= 3 ? value : 0;
     },
@@ -304,7 +293,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.UNCOMMON,
     values: [2, 3, 4],
     type: BeraType.MUL_MULT,
-    action: BeraAction.INDEP,
+    action: GameAction.INDEP,
     trigger: (value: number, cards: CardPosition[]) => {
       return cards.length === 4 ? value : 0;
     },
@@ -316,7 +305,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.UNCOMMON,
     values: [1, 2, 3],
     type: BeraType.ADD_GOLD,
-    action: BeraAction.ON_HELD,
+    action: GameAction.ON_HELD,
     trigger: (value: number, cards: CardPosition[]) => {
       return cards[0].rank === CardRank.ACE ? value : 0;
     },
@@ -328,7 +317,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.UNCOMMON,
     values: [2, 3, 5],
     type: BeraType.ADD_GOLD,
-    action: BeraAction.ON_HELD,
+    action: GameAction.ON_HELD,
     trigger: (value: number) => {
       return value;
     },
@@ -340,7 +329,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.COMMON,
     values: [30, 40, 50],
     type: BeraType.ADD_CHIPS,
-    action: BeraAction.INDEP,
+    action: GameAction.INDEP,
     trigger: (value: number, cards: CardPosition[], state: GameStore) => {
       return state.maxDiscards - state.discards.length > 0
         ? value * (state.maxDiscards - state.discards.length)
@@ -355,7 +344,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.COMMON,
     values: [3, 2, 1],
     type: BeraType.ADD_GOLD,
-    action: BeraAction.ON_HELD,
+    action: GameAction.ON_HELD,
     trigger: (value: number) => {
       return Math.random() < 1 / value ? value : 0;
     },
@@ -367,7 +356,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.UNCOMMON,
     values: [0.1, 0.2, 0.3],
     type: BeraType.MUL_MULT,
-    action: BeraAction.INDEP,
+    action: GameAction.INDEP,
     trigger: (value: number, cards: CardPosition[], state: GameStore) => {
       const times = state.usedFlowers.length;
       return times > 0 ? 1 + value * times : 1;
@@ -380,7 +369,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.UNCOMMON,
     values: [50, 75, 100],
     type: BeraType.ADD_CHIPS,
-    action: BeraAction.INDEP,
+    action: GameAction.INDEP,
     trigger: (value: number, cards: CardPosition[], state: GameStore) => {
       return state.addedCards.length > 0
         ? value * state.addedCards.flat().length
@@ -394,7 +383,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.UNCOMMON,
     values: [20, 30, 40],
     type: BeraType.ADD_MULT,
-    action: BeraAction.INDEP,
+    action: GameAction.INDEP,
     trigger: (value: number, cards: CardPosition[]) => {
       return cards.every((card) => !isFaceCard(card)) ? value : 0;
     },
@@ -406,7 +395,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.UNCOMMON,
     values: [2, 3, 4],
     type: BeraType.MUL_MULT,
-    action: BeraAction.INDEP,
+    action: GameAction.INDEP,
     trigger: (value: number, cards: CardPosition[], state: GameStore) => {
       return state.discards.length > 0
         ? value * state.discards.flat().length
@@ -420,7 +409,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.UNCOMMON,
     values: [1, 2, 3],
     type: BeraType.RETRIGGER,
-    action: BeraAction.ON_SCORED,
+    action: GameAction.ON_SCORED,
     trigger: (value: number, cards: CardPosition[]) => {
       return CARD_RANKS[cards[0].rank] < CARD_RANKS[CardRank.TEN] ? value : 0;
     },
@@ -432,7 +421,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.COMMON,
     values: [4, 8, 12],
     type: BeraType.ADD_GOLD,
-    action: BeraAction.ON_ENDED,
+    action: GameAction.ON_ENDED,
     trigger: (value: number) => value,
   },
   [Bera.MAGNET]: {
@@ -443,7 +432,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.UNCOMMON,
     values: [1, 2, 3],
     type: BeraType.GEN_STICKER,
-    action: BeraAction.ON_PLAYED,
+    action: GameAction.ON_PLAYED,
     trigger: (value: number, cards: CardPosition[]) => {
       // TODO: random sticker
       return isFlush(cards).isValid && Math.random() < 1 / value ? 1 : 0;
@@ -456,7 +445,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.UNCOMMON,
     values: [5, 10, 15],
     type: BeraType.ADD_GOLD,
-    action: BeraAction.ON_PLAYED,
+    action: GameAction.ON_PLAYED,
     trigger: (value: number, cards: CardPosition[]) => {
       return isStraight(cards).isValid ? value : 0;
     },
@@ -468,7 +457,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.UNCOMMON,
     values: [1, 2, 3],
     type: BeraType.RETRIGGER,
-    action: BeraAction.ON_HELD,
+    action: GameAction.ON_HELD,
     trigger: (value: number) => {
       return value;
     },
@@ -480,7 +469,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.UNCOMMON,
     values: [0.25, 0.5, 0.75],
     type: BeraType.MUL_MULT,
-    action: BeraAction.INDEP,
+    action: GameAction.INDEP,
     trigger: (value: number, cards: CardPosition[], state: GameStore) => {
       return state.playingBeras.length > 0
         ? 1 +
@@ -496,7 +485,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.COMMON,
     values: [2, 3, 4],
     type: BeraType.MUL_MULT,
-    action: BeraAction.ON_PLAYED,
+    action: GameAction.ON_PLAYED,
     trigger: (value: number, cards: CardPosition[]) => {
       return isFaceCard(cards[0]) ? value : 0;
     },
@@ -509,7 +498,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.RARE,
     values: [1, 2, 3],
     type: BeraType.REMOVE_CARDS,
-    action: BeraAction.ON_DISCARD,
+    action: GameAction.ON_DISCARD,
     trigger: (value: number, cards: CardPosition[]) => {
       return cards.every(
         (card) => CARD_RANKS[card.rank] < CARD_RANKS[CardRank.TEN]
@@ -526,7 +515,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.UNCOMMON,
     values: [5, 10, 15],
     type: BeraType.INCREASE_CHIPS,
-    action: BeraAction.ON_SCORED,
+    action: GameAction.ON_SCORED,
     trigger: (value: number) => {
       return value;
     },
@@ -538,7 +527,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.UNCOMMON,
     values: [1, 2, 3],
     type: BeraType.ADD_GOLD,
-    action: BeraAction.ON_ENDED,
+    action: GameAction.ON_ENDED,
     trigger: (value: number, _: CardPosition[], state: GameStore) => {
       const nines = [
         ...state.deckCards,
@@ -556,7 +545,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.UNCOMMON,
     values: [0.1, 0.2, 0.3],
     type: BeraType.MUL_MULT,
-    action: BeraAction.INDEP,
+    action: GameAction.INDEP,
     trigger: (value: number, cards: CardPosition[], state: GameStore) => {
       let count = 0;
       state.playedHands.forEach((hand) => {
@@ -574,7 +563,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.COMMON,
     values: [1, 2, 3],
     type: BeraType.ADD_GOLD,
-    action: BeraAction.ON_DISCARD,
+    action: GameAction.ON_DISCARD,
     trigger: (value: number, cards: CardPosition[]) => {
       // from 2 to A
       // const randomRank =

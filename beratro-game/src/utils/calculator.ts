@@ -8,9 +8,10 @@ import {
   MEMES,
   STICKERS,
   Unit,
+  GameAction,
 } from "@/utils/constants";
 import { Breakdown, type PokerHand } from "@/types/hands";
-import { BERA_STATS, BeraAction, BeraType } from "./beraStats";
+import { BERA_STATS, BeraType } from "./beraStats";
 import { getRankCounts, isFlush, isStraight } from "./atomic";
 import { CalculationOption, GameStore } from "@/types/games";
 import { BeraPosition } from "@/types/beras";
@@ -41,7 +42,7 @@ export class Calculator {
     let totalChips = pokerHand.chips;
     const breakdowns: Breakdown[] = [];
     state.playingBeras
-      .filter((bera) => BERA_STATS[bera.bera].action === BeraAction.ON_PLAYED)
+      .filter((bera) => BERA_STATS[bera.bera].action === GameAction.ON_PLAYED)
       .forEach((bera) => {
         const { type, trigger, values } = BERA_STATS[bera.bera];
         const value = trigger(values[0], playedCards, state);
@@ -86,7 +87,7 @@ export class Calculator {
     totalChips = chips;
 
     state.playingBeras
-      .filter((bera) => BERA_STATS[bera.bera].action === BeraAction.INDEP)
+      .filter((bera) => BERA_STATS[bera.bera].action === GameAction.INDEP)
       .forEach((bera) => {
         const result = this.triggerBera({
           bera,
@@ -280,7 +281,7 @@ export class Calculator {
       state.playingBeras
         .filter(
           (bera) =>
-            BERA_STATS[bera.bera].action === BeraAction.ON_SCORED &&
+            BERA_STATS[bera.bera].action === GameAction.ON_SCORED &&
             (options?.retrigger
               ? BERA_STATS[bera.bera].type !== BeraType.RETRIGGER
               : true)
@@ -325,7 +326,7 @@ export class Calculator {
       state.playingBeras
         .filter(
           (bera) =>
-            BERA_STATS[bera.bera].action === BeraAction.ON_HELD &&
+            BERA_STATS[bera.bera].action === GameAction.ON_HELD &&
             (options?.retrigger
               ? BERA_STATS[bera.bera].type !== BeraType.RETRIGGER
               : true)

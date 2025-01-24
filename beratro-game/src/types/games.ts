@@ -1,4 +1,4 @@
-import { Bera, Flower, Meme, Sticker } from "@/utils/constants";
+import { Bera, Flower, HandType, Meme, Sticker } from "@/utils/constants";
 import { BoosterPosition, CardPosition } from "./cards";
 import { BeraPosition } from "./beras";
 
@@ -34,6 +34,7 @@ export interface GameStore {
   reqScore: number;
   boosters: BoosterPosition[];
   currentState: GameState;
+  lastHandType: HandType | null;
   setCurrentState: (state: GameState) => void;
   reset: () => void;
   setHandCards: (cards: CardPosition[]) => void;
@@ -45,6 +46,7 @@ export interface GameStore {
   reorderCards: (newOrder: number[]) => void;
   dealCards: (count?: number) => void;
   playSelectedCards: () => void;
+  setLastHandType: (handType: HandType) => void;
   discardSelectedCards: () => void;
   setMaxHands: (value: number) => void;
   setMaxDiscards: (value: number) => void;

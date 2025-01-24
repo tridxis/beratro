@@ -1,5 +1,17 @@
 export const ANIMATION_MS = 360;
 
+export enum GameAction {
+  INDEP = "INDEP",
+  ON_HELD = "ON_HELD",
+  ON_PLAYED = "ON_PLAYED",
+  ON_DISCARD = "ON_DISCARD",
+  ON_SCORED = "ON_SCORED",
+  ON_REMOVED = "ON_REMOVED",
+  ON_ADDED = "ON_ADDED",
+  ON_ENDED = "ON_ENDED",
+  ON_RETRIGGERED = "ON_RETRIGGERED",
+}
+
 export enum Bera {
   BABY = "BABY",
   HEART = "HEART",
@@ -61,10 +73,19 @@ export enum Flower {
 export const FLOWERS = Object.values(Flower);
 
 export enum Sticker {
-  NONE = "NONE",
-  STICKER_1 = "STICKER_1",
-  STICKER_2 = "STICKER_2",
-  STICKER_3 = "STICKER_3",
+  STRAWBERRY = "STRAWBERRY", // add mult
+  BLUEBERRY = "BLUEBERRY", // add chips
+  CHILLI = "CHILLI", // mul mult when score
+  TOMATO = "TOMATO", // mul mult when in hand
+  BANANA = "BANANA", // wild card
+  BEE = "BEE", // earn 3$ when score
+  FLOG = "FLOG", // create meme when discard
+  BUTTERFLY = "BUTTERFLY", // create the final hand flower when in hand
+  PANDA = "PANDA", // retrigger
+  EARTH = "EARTH", // add mult (bera)
+  WATER = "WATER", // add chips (bera)
+  FIRE = "FIRE", // mul mult (bera)
+  AIR = "AIR", // 0 slot (bera)
 }
 
 export const STICKERS = Object.values(Sticker);
@@ -72,7 +93,7 @@ export const STICKERS = Object.values(Sticker);
 export enum Meme {
   THIS = "THIS", // convert 1 to 1
   WASTED = "WASTED", // remove 2
-  STRONG_BONK = "STRONG_BONK", // increase level of 2
+  STRONG_BONK = "STRONG_BONK", // increase 1 level of 2
   SILLY_DRAGON = "SILLY_DRAGON", // convert 3 to 1 in 3
   SPIDER_POINTING = "SPIDER_POINTING", // clone 1
   HEART_TRIGGED = "HEART_TRIGGED", // convert 3 to Heart
@@ -80,8 +101,9 @@ export enum Meme {
   GALAXY_BRAIN = "GALAXY_BRAIN", // convert 3 to Club
   SEAGULL = "SEAGULL", // convert 3 to Diamond
   BEAR_SUIT = "BEAR_SUIT", // Sell value Beras to $
-  BALLOON = "BALLOON", // Double gold, max 20
-  LAST_PLACE = "LAST_PLACE", // randomly remove 5, get 20$
+  BALLOON = "BALLOON", // Double gold, max $20
+  LAST_PLACE = "LAST_PLACE", // randomly remove 3, get 10$
+  PEPE = "PEPE", // copy previous meme
 }
 
 export const MEMES = Object.values(Meme);

@@ -74,7 +74,7 @@ import {
 import { BLUE_COLOR, GOLD_COLOR, RED_COLOR } from "@/utils/colors";
 import { CardPosition } from "@/types/cards";
 import { AnimatedValueDisplay } from "./AnimatedValueDisplay";
-import { BERA_STATS, BeraAction, BeraType } from "@/utils/beraStats";
+import { BERA_STATS, GameAction, BeraType } from "@/utils/beraStats";
 import useCalculator from "@/hooks/useCalculator";
 import { BeraPosition } from "@/types/beras";
 
@@ -110,6 +110,7 @@ export const Game = () => {
     buyBera,
     playingBeras,
     gold,
+    setLastHandType
     nextRound,
   } = state;
 
@@ -165,7 +166,7 @@ export const Game = () => {
 
   const handleOnEndedBeras = () => {
     playingBeras
-      .filter((bera) => BERA_STATS[bera.bera].action === BeraAction.ON_ENDED)
+      .filter((bera) => BERA_STATS[bera.bera].action === GameAction.ON_ENDED)
       .forEach((bera) => {
         const value = BERA_STATS[bera.bera].trigger(
           BERA_STATS[bera.bera].values[0],
@@ -207,7 +208,7 @@ export const Game = () => {
       console.log(inHandBreakdowns);
 
       pokerHandRef.current = pokerHand;
-
+      setLastHandType(pokerHand.handType);
       // Update total score after all individual scores are shown
       // Animate breakdowns first
       const allBreakdowns = [...playingBreakdowns, ...inHandBreakdowns];

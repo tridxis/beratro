@@ -12,6 +12,7 @@ import {
   Meme,
   DEFAULT_MAX_BOOSTERS,
   DEFAULT_MAX_BERAS,
+  HandType,
 } from "@/utils/constants";
 import { initCards, initBeras } from "@/utils/seeds";
 import { BERA_STATS } from "@/utils/beraStats";
@@ -69,7 +70,7 @@ export const useGameStore = create<GameStore>()(
         reqScore: getRoundReqScore(1),
         boosters: [],
         currentState: GameState.BERAS_PICKING,
-
+        lastHandType: null,
         endRound: (goldEarned: number) =>
           set((state) => {
             // Take top 3 beras from deck for shop
@@ -221,7 +222,8 @@ export const useGameStore = create<GameStore>()(
               playedHands: [...state.playedHands, selectedHandCards],
             };
           }),
-
+        setLastHandType: (handType: HandType) =>
+          set((state) => ({ lastHandType: handType })),
         discardSelectedCards: () =>
           set((state) => {
             const selectedHandCards = state.handCards.filter((card) =>
