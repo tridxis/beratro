@@ -300,6 +300,15 @@ I'm wondering how to sell booster packs properly. Tomorrow I'll try to approach 
 
 Seey 🍀
 
+## Day 23
+
+Today I spent almost time to making the Meme & Sicker list
+
+I also finish the stats for stickers
+
+About booster pack, I think I will increase the number of cards when leveling up (mechanism I will decide later)
+
+Seey  🍀
 
 
 
