@@ -70,10 +70,18 @@ export enum Sticker {
 export const STICKERS = Object.values(Sticker);
 
 export enum Meme {
-  NONE = "NONE",
-  MEME_1 = "MEME_1",
-  MEME_2 = "MEME_2",
-  MEME_3 = "MEME_3",
+  THIS = "THIS", // convert 1 to 1
+  WASTED = "WASTED", // remove 2
+  STRONG_BONK = "STRONG_BONK", // increase level of 2
+  SILLY_DRAGON = "SILLY_DRAGON", // convert 3 to 1 in 3
+  SPIDER_POINTING = "SPIDER_POINTING", // clone 1
+  HEART_TRIGGED = "HEART_TRIGGED", // convert 3 to Heart
+  DARKER = "DARKER", // convert 3 to Spade
+  GALAXY_BRAIN = "GALAXY_BRAIN", // convert 3 to Club
+  SEAGULL = "SEAGULL", // convert 3 to Diamond
+  BEAR_SUIT = "BEAR_SUIT", // Sell value Beras to $
+  BALLOON = "BALLOON", // Double gold, max 20
+  LAST_PLACE = "LAST_PLACE", // randomly remove 5, get 20$
 }
 
 export const MEMES = Object.values(Meme);

@@ -15,6 +15,7 @@ import { CardPosition } from "@/types/cards";
 import { countRanks, getRankCounts, isFlush, isStraight } from "./atomic";
 import { GameStore } from "@/types/games";
 import { isFaceCard } from "./cards";
+import { FLOWER_STATS } from "./flowerStats";
 
 export enum BeraType {
   ADD_CHIPS = "ADD_CHIPS",
@@ -246,8 +247,13 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     action: BeraAction.ON_SCORED,
     trigger: (value: number, cards: CardPosition[]) => {
       if (cards[0].rank === CardRank.QUEEN) {
-        // TODO: random flower
-        return Math.random() < 1 / value ? 1 : 0;
+        // Get array of flower IDs from FLOWER_STATS
+        const flowerIds = Object.values(FLOWER_STATS).map(
+          (flower) => flower.id
+        );
+        const randomFlowerId =
+          flowerIds[Math.floor(Math.random() * flowerIds.length)];
+        return Math.random() < 1 / value ? randomFlowerId : 0;
       }
       return 0;
     },
