@@ -1,4 +1,11 @@
-import { Bera, Flower, HandType, Meme, Sticker } from "@/utils/constants";
+import {
+  Bera,
+  BoosterPack,
+  Flower,
+  HandType,
+  Meme,
+  Sticker,
+} from "@/utils/constants";
 import { BoosterPosition, CardPosition } from "./cards";
 import { BeraPosition } from "./beras";
 
@@ -58,12 +65,21 @@ export interface GameStore {
   removeCards: (cards?: CardPosition[]) => void;
   useBooster: (booster: BoosterPosition) => void;
   modifyGold: (value: number) => void;
-  addBooster: (booster: Flower | Sticker | Meme) => void;
+  addBooster: (
+    booster: Flower | Sticker | Meme,
+    boosterType: "flower" | "sticker" | "meme"
+  ) => void;
   addCardsToDeck: (cards: CardPosition[]) => void;
   addCardsToHand: (cards: CardPosition[]) => void;
   modifyCards: (value: { chips?: number; mult?: number }) => void;
   convertCards: (ids: number[], card: Partial<CardPosition>) => void;
   nextRound: () => void;
+  selectedPack: {
+    boosterPack: BoosterPack;
+    items: (CardPosition | BoosterPosition)[];
+  } | null;
+  buyPack: (boosterPack: BoosterPack) => void;
+  pickItemsFromPack: (items: (CardPosition | BoosterPosition)[]) => void;
 }
 
 export type CalculationOption = {

@@ -13,10 +13,13 @@ import {
   DEFAULT_MAX_BOOSTERS,
   DEFAULT_MAX_BERAS,
   HandType,
+  BoosterPack,
+  BOOSTER_PACK_INFO,
 } from "@/utils/constants";
 import { initCards, initBeras } from "@/utils/seeds";
 import { BERA_STATS } from "@/utils/beraStats";
 import { shuffleCards } from "@/utils/cards";
+import { STICKER_STATS, StickerRarity } from "@/utils/stickerStats";
 
 const getRoundReqScore = (round: number) => {
   if (round <= 10) {
@@ -42,7 +45,7 @@ const getRoundReqScore = (round: number) => {
 
 export const useGameStore = create<GameStore>()(
   persist(
-    (set) => {
+    (set, get) => {
       const { gameBeras, deckBeras } = initBeras();
       return {
         gameBeras,
@@ -71,9 +74,10 @@ export const useGameStore = create<GameStore>()(
         boosters: [],
         currentState: GameState.BERAS_PICKING,
         lastHandType: null,
+        selectedPack: null,
+
         endRound: (goldEarned: number) =>
           set((state) => {
-            // Take top 3 beras from deck for shop
             const shopBeras = state.deckBeras.slice(0, 3);
             const remainingDeckBeras = state.deckBeras.slice(3);
 
@@ -85,7 +89,7 @@ export const useGameStore = create<GameStore>()(
                 ...state.handCards,
                 ...state.playedHands.flat(),
                 ...state.discards.flat(),
-              ]),
+              ]) as CardPosition[],
               selectedCards: [],
               playedHands: [],
               discards: [],
@@ -276,9 +280,10 @@ export const useGameStore = create<GameStore>()(
           }),
         addCardsToDeck: (cards: CardPosition[]) =>
           set((state) => {
-            // Add cards to both deck and tracking array
             const newDeckCards = [...state.deckCards, ...cards];
-            const shuffledDeckCards = shuffleCards(newDeckCards);
+            const shuffledDeckCards = shuffleCards(
+              newDeckCards
+            ) as CardPosition[];
             return {
               deckCards: shuffledDeckCards,
               addedCards: [...state.addedCards, cards],
@@ -292,13 +297,13 @@ export const useGameStore = create<GameStore>()(
           })),
         useBooster: (booster: BoosterPosition) =>
           set((state) => {
-            if (booster.booster in Flower) {
+            if (booster.boosterType === "flower") {
               return {
                 usedFlowers: [...state.usedFlowers, booster.booster as Flower],
                 boosters: state.boosters.filter((b) => b.id !== booster.id),
               };
             }
-            if (booster.booster in Sticker) {
+            if (booster.boosterType === "sticker") {
               return {
                 usedStickers: [
                   ...state.usedStickers,
@@ -307,7 +312,7 @@ export const useGameStore = create<GameStore>()(
                 boosters: state.boosters.filter((b) => b.id !== booster.id),
               };
             }
-            if (booster.booster in Meme) {
+            if (booster.boosterType === "meme") {
               return {
                 usedMemes: [...state.usedMemes, booster.booster as Meme],
                 boosters: state.boosters.filter((b) => b.id !== booster.id),
@@ -319,7 +324,10 @@ export const useGameStore = create<GameStore>()(
           set((state) => ({
             gold: state.gold + value,
           })),
-        addBooster: (booster: Flower | Sticker | Meme) =>
+        addBooster: (
+          booster: Flower | Sticker | Meme,
+          boosterType: "flower" | "sticker" | "meme"
+        ) =>
           set((state) => {
             const nextIndex = state.boosters.length;
             if (nextIndex >= state.maxBoosters) return state;
@@ -330,7 +338,8 @@ export const useGameStore = create<GameStore>()(
                   id: nextIndex,
                   index: nextIndex,
                   booster,
-                },
+                  boosterType,
+                } as BoosterPosition,
               ],
             };
           }),
@@ -343,23 +352,113 @@ export const useGameStore = create<GameStore>()(
             ),
           })),
         nextRound: () => {
-          set((state) => {
-            return {
-              score: 0,
-              round: state.round + 1,
-              reqScore: getRoundReqScore(state.round + 1),
-              currentState: GameState.PLAYING,
-              playedHands: [],
-              discards: [],
-              deckCards: shuffleCards([
-                ...state.deckCards,
-                ...state.handCards,
-                ...state.discards.flat(),
-                ...state.playedHands.flat(),
-              ]),
-            };
-          });
+          set((state) => ({
+            score: 0,
+            round: state.round + 1,
+            reqScore: getRoundReqScore(state.round + 1),
+            currentState: GameState.PLAYING,
+            playedHands: [],
+            discards: [],
+            deckCards: shuffleCards([
+              ...state.deckCards,
+              ...state.handCards,
+              ...state.discards.flat(),
+              ...state.playedHands.flat(),
+            ]) as CardPosition[],
+          }));
         },
+        buyPack: (boosterPack: BoosterPack) => {
+          const { price, items } = BOOSTER_PACK_INFO[boosterPack];
+          const { gold } = get();
+          if (gold < price) return;
+
+          // Generate available items to pick from
+          const cards = shuffleCards(initCards()); // All 52 standard cards
+          const stickers = Object.entries(STICKER_STATS)
+            .map(([key, stat]) => {
+              if (stat.rarity === StickerRarity.UNCOMMON) {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+                return Array(2).fill(key);
+              } else if (stat.rarity === StickerRarity.RARE) {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+                return Array(1).fill(key);
+              }
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+              return Array(4).fill(key);
+            })
+            .flat()
+            .map(
+              (sticker: string, index) =>
+                ({
+                  id: index + cards.length + 1,
+                  index: index + cards.length + 1,
+                  booster: sticker,
+                  boosterType: "sticker",
+                } as BoosterPosition)
+            );
+          const flowers = Object.values(Flower)
+            .map((flower) => {
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+              return Array(4).fill(flower);
+            })
+            .flat()
+            .map(
+              (flower: string, index) =>
+                ({
+                  id: index + cards.length + stickers.length + 1,
+                  index: index + cards.length + stickers.length + 1,
+                  booster: flower,
+                  boosterType: "flower",
+                } as BoosterPosition)
+            );
+          const memes = Object.values(Meme)
+            .map((meme) => {
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+              return Array(4).fill(meme);
+            })
+            .flat()
+            .map(
+              (meme: string, index) =>
+                ({
+                  id:
+                    index + cards.length + stickers.length + flowers.length + 1,
+                  index:
+                    index + cards.length + stickers.length + flowers.length + 1,
+                  booster: meme,
+                  boosterType: "meme",
+                } as BoosterPosition)
+            );
+
+          // Combine all items and shuffle
+          const allItems = shuffleCards([
+            ...cards,
+            ...stickers,
+            ...flowers,
+            ...memes,
+          ]);
+
+          // Take first 5 items to show
+          const packItems = allItems.slice(0, items);
+
+          set((state) => ({
+            gold: state.gold - price,
+            selectedPack: { boosterPack, items: packItems },
+          }));
+        },
+        pickItemsFromPack: (items: (CardPosition | BoosterPosition)[]) =>
+          set((state) => {
+            if (!state.selectedPack) return state;
+
+            return {
+              boosters: [
+                ...state.boosters,
+                ...items
+                  .filter((item): item is BoosterPosition => "booster" in item)
+                  .slice(0, state.maxBoosters - state.boosters.length),
+              ],
+              selectedPack: null, // Clear selected pack after picking
+            };
+          }),
       };
     },
     {

@@ -4,7 +4,16 @@ import { useGameStore } from "@/store/gameStore";
 import { DisplayCard } from "./cards/DisplayCard";
 import DraggableCard from "./cards/DraggableCard";
 import { Calculator } from "@/utils/calculator";
-import { ANIMATION_MS, Bera, HandType, Unit } from "@/utils/constants";
+import {
+  ANIMATION_MS,
+  Bera,
+  BOOSTER_PACK_INFO,
+  BOOSTER_PACKS,
+  GameAction,
+  HandType,
+  PACKS,
+  Unit,
+} from "@/utils/constants";
 import { Breakdown, PokerHand } from "@/types/hands";
 import { useMotionValue, useTransform, animate } from "framer-motion";
 import { GameState } from "@/types/games";
@@ -72,11 +81,12 @@ import {
   GoldScore,
 } from "./Game.styles";
 import { BLUE_COLOR, GOLD_COLOR, RED_COLOR } from "@/utils/colors";
-import { CardPosition } from "@/types/cards";
+import { BoosterPosition, CardPosition } from "@/types/cards";
 import { AnimatedValueDisplay } from "./AnimatedValueDisplay";
-import { BERA_STATS, GameAction, BeraType } from "@/utils/beraStats";
+import { BERA_STATS, BeraType } from "@/utils/beraStats";
 import useCalculator from "@/hooks/useCalculator";
 import { BeraPosition } from "@/types/beras";
+import { Booster } from "./cards/Booster";
 
 export const Game = () => {
   const state = useGameStore();
@@ -110,8 +120,11 @@ export const Game = () => {
     buyBera,
     playingBeras,
     gold,
-    setLastHandType
+    setLastHandType,
     nextRound,
+    selectedPack,
+    buyPack,
+    pickItemsFromPack,
   } = state;
 
   const { play } = useCalculator();
@@ -458,56 +471,79 @@ export const Game = () => {
 
         {currentState === GameState.SHOPPING && (
           <ShopContainer>
-            <ShopItemsGrid>
-              <ShopSection>
-                <ShopItemGrid>
-                  <ShopButtonGrid>
-                    <ShopButton
-                      variant="primary"
-                      onClick={() => {
-                        nextRound();
-                        dealCards();
-                      }}
-                    >
-                      Next Round
-                    </ShopButton>
-                    <ShopButton variant="secondary">Reroll $5</ShopButton>
-                  </ShopButtonGrid>
+            {!selectedPack ? (
+              <ShopItemsGrid>
+                <ShopSection>
+                  <ShopItemGrid>
+                    <ShopButtonGrid>
+                      <ShopButton
+                        variant="primary"
+                        onClick={() => {
+                          nextRound();
+                          dealCards();
+                        }}
+                      >
+                        Next Round
+                      </ShopButton>
+                      <ShopButton variant="secondary">Reroll $5</ShopButton>
+                    </ShopButtonGrid>
 
-                  {shopBeras.map((bera, index) => (
-                    <ShopItem key={`pack-${index}`}>
-                      <PriceTag>${BERA_STATS[bera.bera].cost}</PriceTag>
-                      {BERA_STATS[bera.bera].name}
-                      <span>
-                        {BERA_STATS[bera.bera].description.replace(
-                          "{{value}}",
-                          BERA_STATS[bera.bera].values[0].toString()
-                        )}
-                      </span>
-                      <BuyButton onClick={() => buyBera(bera.id)}>
-                        Buy
-                      </BuyButton>
-                    </ShopItem>
-                  ))}
-                </ShopItemGrid>
-              </ShopSection>
+                    {shopBeras.map((bera, index) => (
+                      <ShopItem key={`pack-${index}`}>
+                        <PriceTag>${BERA_STATS[bera.bera].cost}</PriceTag>
+                        {BERA_STATS[bera.bera].name}
+                        <span>
+                          {BERA_STATS[bera.bera].description.replace(
+                            "{{value}}",
+                            BERA_STATS[bera.bera].values[0].toString()
+                          )}
+                        </span>
+                        <BuyButton onClick={() => buyBera(bera.id)}>
+                          Buy
+                        </BuyButton>
+                      </ShopItem>
+                    ))}
+                  </ShopItemGrid>
+                </ShopSection>
 
-              <ShopSection>
-                <ShopItemGrid>
-                  <div></div>
-                  {[
-                    { name: "Basic Pack", price: "$4" },
-                    { name: "Premium Pack", price: "$8" },
-                    { name: "Ultra Pack", price: "$12" },
-                  ].map((item, index) => (
-                    <ShopItem key={`pack-${index}`}>
-                      <PriceTag>{item.price}</PriceTag>
-                      {item.name}
-                    </ShopItem>
+                <ShopSection>
+                  <ShopItemGrid>
+                    <div></div>
+                    {BOOSTER_PACKS.map((item, index) => (
+                      <ShopItem key={`pack-${index}`}>
+                        <PriceTag>${item.price}</PriceTag>
+                        {item.name}
+                        <BuyButton
+                          onClick={() => buyPack(item.type)}
+                          disabled={gold < item.price}
+                        >
+                          Buy
+                        </BuyButton>
+                      </ShopItem>
+                    ))}
+                  </ShopItemGrid>
+                </ShopSection>
+              </ShopItemsGrid>
+            ) : (
+              <div>
+                <h3>
+                  Please select{" "}
+                  {BOOSTER_PACK_INFO[selectedPack.boosterPack].pick} items
+                  below:
+                </h3>
+                <CardRow isLastPlayed={false}>
+                  {selectedPack.items.map((item) => (
+                    <CardWrapper key={item.id} index={item.index}>
+                      {(item as BoosterPosition).booster ? (
+                        <Booster item={item as BoosterPosition} />
+                      ) : (
+                        <DisplayCard card={item as CardPosition} />
+                      )}
+                    </CardWrapper>
                   ))}
-                </ShopItemGrid>
-              </ShopSection>
-            </ShopItemsGrid>
+                </CardRow>
+              </div>
+            )}
           </ShopContainer>
         )}
 

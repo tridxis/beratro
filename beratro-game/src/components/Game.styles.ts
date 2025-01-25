@@ -248,6 +248,10 @@ export const ShopContainer = styled.div`
   background-color: ${BLACK_COLOR};
   border-radius: 8px;
   flex: 2;
+  & h3 {
+    font-size: 1.5vw;
+    text-align: center;
+  }
 `;
 
 export const ShopButtonGrid = styled.div`
@@ -322,7 +326,7 @@ export const ShopItem = styled.div`
 
 export const ShopItemGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1vw;
 `;
 

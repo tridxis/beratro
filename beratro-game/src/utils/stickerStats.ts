@@ -3,12 +3,19 @@ import { CardPosition } from "@/types/cards";
 import { GameStore } from "@/types/games";
 import { FLOWER_STATS } from "./flowerStats";
 
+export enum StickerRarity {
+  COMMON = "COMMON",
+  UNCOMMON = "UNCOMMON",
+  RARE = "RARE",
+}
+
 export type StickerStats = {
   id: number;
   name: string;
   description: string;
   type: Unit;
   action: GameAction;
+  rarity: StickerRarity;
   trigger: (card: CardPosition, state: GameStore) => void;
 };
 
@@ -19,6 +26,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     description: "+50 Chips when this card is scored",
     type: Unit.CHIPS,
     action: GameAction.ON_SCORED,
+    rarity: StickerRarity.COMMON,
     trigger: () => 50,
   },
   [Sticker.STRAWBERRY]: {
@@ -27,6 +35,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     description: "+10 Mult when this card is scored",
     type: Unit.MULT,
     action: GameAction.ON_SCORED,
+    rarity: StickerRarity.COMMON,
     trigger: () => 10,
   },
 
@@ -36,6 +45,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     description: "x1.5 Mult when this card is scored",
     type: Unit.X_MULT,
     action: GameAction.ON_SCORED,
+    rarity: StickerRarity.UNCOMMON,
     trigger: () => 1.5,
   },
   [Sticker.TOMATO]: {
@@ -44,6 +54,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     description: "x1.5 Mult while this card stays in hand",
     type: Unit.X_MULT,
     action: GameAction.ON_HELD,
+    rarity: StickerRarity.UNCOMMON,
     trigger: () => 1.5,
   },
   [Sticker.BANANA]: {
@@ -51,7 +62,8 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     name: "Banana",
     description: "Is considered to be any suit",
     action: GameAction.INDEP,
-    type: Unit.WILD_CARD
+    type: Unit.WILD_CARD,
+    rarity: StickerRarity.COMMON,
     trigger: () => 1,
   },
   [Sticker.BEE]: {
@@ -60,14 +72,16 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     description: "Earn $3 when this card is scored",
     type: Unit.GOLD,
     action: GameAction.ON_SCORED,
+    rarity: StickerRarity.COMMON,
     trigger: () => 3,
   },
-  [Sticker.FLOG]: {
+  [Sticker.FROG]: {
     id: 7,
-    name: "Flog",
+    name: "Frog",
     description: "Create meme when this card is discarded",
     type: Unit.MEME,
     action: GameAction.ON_DISCARD,
+    rarity: StickerRarity.COMMON,
     trigger: () => 1,
   },
   [Sticker.BUTTERFLY]: {
@@ -77,6 +91,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
       "Create flower while this card stays in hand at the end of the round",
     type: Unit.FLOWER,
     action: GameAction.ON_ENDED,
+    rarity: StickerRarity.UNCOMMON,
     trigger: (card: CardPosition, state: GameStore) => {
       // Get the last played hand
       const lastHandType = state.lastHandType;
@@ -98,6 +113,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     description: "Retrigger this card 1 time",
     type: Unit.RETRIGGER,
     action: GameAction.ON_RETRIGGERED,
+    rarity: StickerRarity.RARE,
     trigger: () => 1,
   },
   [Sticker.EARTH]: {
@@ -106,6 +122,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     description: "+10 Mult when this card is scored",
     type: Unit.MULT,
     action: GameAction.ON_SCORED,
+    rarity: StickerRarity.COMMON,
     trigger: () => 10,
   },
   [Sticker.WATER]: {
@@ -114,6 +131,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     description: "+50 Chips when this card is scored",
     type: Unit.CHIPS,
     action: GameAction.ON_SCORED,
+    rarity: StickerRarity.COMMON,
     trigger: () => 50,
   },
   [Sticker.FIRE]: {
@@ -122,6 +140,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     description: "x1.5 Mult when this card is scored",
     type: Unit.X_MULT,
     action: GameAction.ON_SCORED,
+    rarity: StickerRarity.UNCOMMON,
     trigger: () => 1.5,
   },
   [Sticker.AIR]: {
@@ -130,6 +149,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     description: "Cost 0 slot",
     action: GameAction.INDEP,
     type: Unit.ZERO_SLOT,
+    rarity: StickerRarity.RARE,
     trigger: () => 1,
   },
 };

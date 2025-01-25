@@ -62,10 +62,16 @@ export class Calculator {
             });
             break;
           case BeraType.GEN_FLOWER:
-            state.addBooster(FLOWERS[trigger(values[0], playedCards, state)]);
+            state.addBooster(
+              FLOWERS[trigger(values[0], playedCards, state)],
+              "flower"
+            );
             break;
           case BeraType.GEN_STICKER:
-            state.addBooster(STICKERS[trigger(values[0], playedCards, state)]);
+            state.addBooster(
+              STICKERS[trigger(values[0], playedCards, state)],
+              "sticker"
+            );
             break;
         }
       });
@@ -168,13 +174,13 @@ export class Calculator {
         totalMult *= value;
         break;
       case BeraType.GEN_FLOWER:
-        state.addBooster(FLOWERS[value]);
+        state.addBooster(FLOWERS[value], "flower");
         break;
       case BeraType.GEN_STICKER:
-        state.addBooster(STICKERS[value]);
+        state.addBooster(STICKERS[value], "sticker");
         break;
       case BeraType.GEN_MEME:
-        state.addBooster(MEMES[value]);
+        state.addBooster(MEMES[value], "meme");
         break;
       case BeraType.RETRIGGER: {
         let result;

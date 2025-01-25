@@ -1,7 +1,9 @@
-import { CardPosition } from "@/types/cards";
+import { BoosterPosition, CardPosition } from "@/types/cards";
 import { CardRank } from "./constants";
 
-export function shuffleCards(cards: CardPosition[]): CardPosition[] {
+export function shuffleCards(
+  cards: (CardPosition | BoosterPosition)[]
+): (CardPosition | BoosterPosition)[] {
   const newCards = [...cards];
   // Fisher-Yates shuffle
   for (let i = newCards.length - 1; i > 0; i--) {

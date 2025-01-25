@@ -7,6 +7,7 @@ export const CARD_STYLES = {
     border: `0.1vw solid ${BORDER_COLOR}`,
     borderRadius: "0.5vw",
     backgroundColor: WHITE_COLOR,
+    color: BORDER_COLOR,
     boxShadow: "0 1px 2px rgba(0,0,0,0.15)",
     display: "flex",
     flexDirection: "column",

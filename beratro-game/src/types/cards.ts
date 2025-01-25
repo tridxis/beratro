@@ -13,5 +13,6 @@ export interface CardPosition {
 export interface BoosterPosition {
   id: number;
   booster: Flower | Sticker | Meme;
+  boosterType: "flower" | "sticker" | "meme";
   index: number;
 }

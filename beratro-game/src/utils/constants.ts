@@ -79,7 +79,7 @@ export enum Sticker {
   TOMATO = "TOMATO", // mul mult when in hand
   BANANA = "BANANA", // wild card
   BEE = "BEE", // earn 3$ when score
-  FLOG = "FLOG", // create meme when discard
+  FROG = "FROG", // create meme when discard
   BUTTERFLY = "BUTTERFLY", // create the final hand flower when in hand
   PANDA = "PANDA", // retrigger
   EARTH = "EARTH", // add mult (bera)
@@ -228,6 +228,46 @@ export const HAND_NAMES: Record<HandType, string> = {
   [HandType.Pair]: "Pair",
   [HandType.HighCard]: "High Card",
 };
+
+export enum BoosterPack {
+  BASIC = "BASIC",
+  PREMIUM = "PREMIUM",
+  ULTRA = "ULTRA",
+}
+
+export type BoosterPackInfo = {
+  type: BoosterPack;
+  name: string;
+  price: number;
+  items: number;
+  pick: number;
+};
+
+export const BOOSTER_PACK_INFO: Record<BoosterPack, BoosterPackInfo> = {
+  [BoosterPack.BASIC]: {
+    type: BoosterPack.BASIC,
+    name: "Basic Pack",
+    price: 4,
+    items: 5,
+    pick: 1,
+  },
+  [BoosterPack.PREMIUM]: {
+    type: BoosterPack.PREMIUM,
+    name: "Premium Pack",
+    price: 8,
+    items: 10,
+    pick: 2,
+  },
+  [BoosterPack.ULTRA]: {
+    type: BoosterPack.ULTRA,
+    name: "Ultra Pack",
+    price: 12,
+    items: 15,
+    pick: 3,
+  },
+};
+
+export const BOOSTER_PACKS = Object.values(BOOSTER_PACK_INFO);
 
 export const DEFAULT_MAX_HANDS = 4;
 export const DEFAULT_MAX_DISCARDS = 3;

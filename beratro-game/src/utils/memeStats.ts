@@ -218,7 +218,7 @@ export const MEME_STATS: Record<Meme, MemeStats> = {
     trigger: (state) => {
       const lastMeme = state.usedMemes[state.usedMemes.length - 1];
       if (!lastMeme) return false;
-      state.addBooster(lastMeme);
+      state.addBooster(lastMeme, "meme");
       return true;
     },
   },
