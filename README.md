@@ -310,6 +310,18 @@ About booster pack, I think I will increase the number of cards when leveling up
 
 Seey  🍀
 
+## Day 24
+
+I decide to go on with option showing 3 booster packs: Basic (5 items), Premium (10 items) and Ultra (15 items)
+
+Need to test more to balance them with the game
+
+Today I implement meme mechanism & make logic for buying booster pack (random from cards, stickers, memes, flowers pool)
+
+Tmr I will implement picking items & test around
+
+Seey 🍀
+
 
 
 
