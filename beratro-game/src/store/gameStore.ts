@@ -151,7 +151,14 @@ export const useGameStore = create<GameStore>()(
               ? state.selectedCards.filter((cardId) => cardId !== id)
               : [...state.selectedCards, id],
           })),
-
+        convertCards: (ids: number[], card: Partial<CardPosition>) =>
+          set((state: GameStore) => ({
+            handCards: state.handCards.map((c) =>
+              ids.includes(c.id)
+                ? { ...c, ...card, id: c.id, index: c.index }
+                : c
+            ),
+          })),
         sortByValue: () =>
           set((state) => ({
             // maxHands: state.maxHands + 2,
@@ -242,22 +249,29 @@ export const useGameStore = create<GameStore>()(
               discards: [...state.discards, selectedHandCards],
             };
           }),
-        removeSelectedCards: () =>
+        removeCards: (cs?: CardPosition[]) =>
           set((state) => {
-            const selectedHandCards = state.handCards.filter((card) =>
+            const selectedCards = state.handCards.filter((card) =>
               state.selectedCards.includes(card.id)
             );
+            const cards = !cs ? selectedCards : cs;
 
-            if (selectedHandCards.length === 0) return state;
+            if (cards.length === 0) return state;
 
             const remainingHandCards = state.handCards.filter(
-              (card) => !state.selectedCards.includes(card.id)
+              (card) => !cards.map((c) => c.id).includes(card.id)
             );
 
             return {
               handCards: remainingHandCards,
               selectedCards: [],
-              removedCards: [...state.removedCards, selectedHandCards],
+              removedCards: [...state.removedCards, cards],
+            };
+          }),
+        addCardsToHand: (cards: CardPosition[]) =>
+          set((state) => {
+            return {
+              handCards: [...state.handCards, ...cards],
             };
           }),
         addCardsToDeck: (cards: CardPosition[]) =>

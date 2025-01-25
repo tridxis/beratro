@@ -91,19 +91,19 @@ export enum Sticker {
 export const STICKERS = Object.values(Sticker);
 
 export enum Meme {
-  THIS = "THIS", // convert 1 to 1
-  WASTED = "WASTED", // remove 2
-  STRONG_BONK = "STRONG_BONK", // increase 1 level of 2
-  SILLY_DRAGON = "SILLY_DRAGON", // convert 3 to 1 in 3
-  SPIDER_POINTING = "SPIDER_POINTING", // clone 1
-  HEART_TRIGGED = "HEART_TRIGGED", // convert 3 to Heart
-  DARKER = "DARKER", // convert 3 to Spade
-  GALAXY_BRAIN = "GALAXY_BRAIN", // convert 3 to Club
-  SEAGULL = "SEAGULL", // convert 3 to Diamond
-  BEAR_SUIT = "BEAR_SUIT", // Sell value Beras to $
-  BALLOON = "BALLOON", // Double gold, max $20
-  LAST_PLACE = "LAST_PLACE", // randomly remove 3, get 10$
-  PEPE = "PEPE", // copy previous meme
+  THIS = "THIS", // Select 2 cards, convert the left card into the right card
+  WASTED = "WASTED", // Remove up to 2 selected cards
+  STRONG_BONK = "STRONG_BONK", // Increase rank of up to 2 selected cards by 1
+  SILLY_DRAGON = "SILLY_DRAGON", // Change 3 selected cards to random card in 3 cards
+  SPIDER_POINTING = "SPIDER_POINTING", // Clone 1 selected card
+  HEART_TRIGGED = "HEART_TRIGGED", // Convert up to 3 selected cards to Heart
+  DARKER = "DARKER", // Convert up to 3 cards to Spade
+  GALAXY_BRAIN = "GALAXY_BRAIN", // Convert up to 3 cards to Club
+  SEAGULL = "SEAGULL", // Convert up to 3 cards to Diamond
+  BEAR_SUIT = "BEAR_SUIT", // Give the total sell value of all current Jokers (Max of $50)
+  BALLOON = "BALLOON", // Double gold (Max of $20)
+  LAST_PLACE = "LAST_PLACE", // Remove randomly 3 cards in hand, get 10$
+  PEPE = "PEPE", // Create the last Meme Card used in this game
 }
 
 export const MEMES = Object.values(Meme);
@@ -117,6 +117,8 @@ export enum Unit {
   FLOWER = "FLOWER",
   STICKER = "STICKER",
   RETRIGGER = "RETRIGGER",
+  WILD_CARD = "WILD_CARD",
+  ZERO_SLOT = "ZERO_SLOT",
 }
 
 type MultType = Unit.MULT | Unit.X_MULT;

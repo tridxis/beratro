@@ -221,7 +221,7 @@ export class Calculator {
         state.modifyCards({ mult: value });
         break;
       case BeraType.REMOVE_CARDS:
-        state.removeSelectedCards();
+        state.removeCards();
         break;
       default:
         break;

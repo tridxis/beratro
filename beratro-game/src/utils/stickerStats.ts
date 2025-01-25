@@ -7,7 +7,7 @@ export type StickerStats = {
   id: number;
   name: string;
   description: string;
-  type?: Unit;
+  type: Unit;
   action: GameAction;
   trigger: (card: CardPosition, state: GameStore) => void;
 };
@@ -51,6 +51,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     name: "Banana",
     description: "Is considered to be any suit",
     action: GameAction.INDEP,
+    type: Unit.WILD_CARD
     trigger: () => 1,
   },
   [Sticker.BEE]: {
@@ -128,6 +129,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     name: "Air",
     description: "Cost 0 slot",
     action: GameAction.INDEP,
+    type: Unit.ZERO_SLOT,
     trigger: () => 1,
   },
 };

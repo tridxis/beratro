@@ -55,12 +55,14 @@ export interface GameStore {
   gold: number;
   endRound: (goldEarned: number) => void;
   buyBera: (id: number) => void;
-  removeSelectedCards: () => void;
+  removeCards: (cards?: CardPosition[]) => void;
   useBooster: (booster: BoosterPosition) => void;
   modifyGold: (value: number) => void;
   addBooster: (booster: Flower | Sticker | Meme) => void;
   addCardsToDeck: (cards: CardPosition[]) => void;
+  addCardsToHand: (cards: CardPosition[]) => void;
   modifyCards: (value: { chips?: number; mult?: number }) => void;
+  convertCards: (ids: number[], card: Partial<CardPosition>) => void;
   nextRound: () => void;
 }
 
