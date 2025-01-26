@@ -142,6 +142,8 @@ export const useGameStore = create<GameStore>()(
             reqScore: getRoundReqScore(1),
             boosters: [],
             currentState: GameState.BERAS_PICKING,
+            lastHandType: null,
+            selectedPack: null,
           }));
         },
 
