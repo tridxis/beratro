@@ -322,6 +322,16 @@ Tmr I will implement picking items & test around
 
 Seey 🍀
 
+## Day 25
+
+Today I add name & description for booster card & make the logic to pick item from booster pack. Then make the UI of boosters section
+
+Tmr I will make the logic for using booster & test some cases
+
+I think after 30 days, I will update read me 1 time a week
+
+Seey 🍀
+
 
 
 
