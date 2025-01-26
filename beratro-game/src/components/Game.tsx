@@ -124,7 +124,10 @@ export const Game = () => {
     nextRound,
     selectedPack,
     buyPack,
-    pickItemsFromPack,
+    pickItemFromPack,
+    boosters,
+    selectedBooster,
+    setSelectedBooster,
   } = state;
 
   const { play } = useCalculator();
@@ -171,6 +174,18 @@ export const Game = () => {
           instance.setIsSelected(false);
         }
       });
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest(".booster-card")) {
+        setSelectedBooster(null);
+      }
     };
 
     document.addEventListener("click", handleClickOutside);
@@ -464,8 +479,22 @@ export const Game = () => {
             <DeckDescription>{playingBeras.length}/5</DeckDescription>
           </DeckSection>
           <MemesSection>
-            <DeckContainer>Memes Here!</DeckContainer>
-            <DeckDescription>0/2</DeckDescription>
+            <DeckContainer>
+              {boosters.map((booster, index) => (
+                <Booster
+                  key={`booster-${index}`}
+                  item={booster}
+                  isSelected={selectedBooster?.id === booster.id}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedBooster(
+                      selectedBooster?.id === booster.id ? null : booster
+                    );
+                  }}
+                />
+              ))}
+            </DeckContainer>
+            <DeckDescription>{boosters.length}/2</DeckDescription>
           </MemesSection>
         </DeckAreaContainer>
 
@@ -533,7 +562,11 @@ export const Game = () => {
                 </h3>
                 <CardRow isLastPlayed={false}>
                   {selectedPack.items.map((item) => (
-                    <CardWrapper key={item.id} index={item.index}>
+                    <CardWrapper
+                      key={item.id}
+                      index={item.index}
+                      onClick={() => pickItemFromPack(item)}
+                    >
                       {(item as BoosterPosition).booster ? (
                         <Booster item={item as BoosterPosition} />
                       ) : (

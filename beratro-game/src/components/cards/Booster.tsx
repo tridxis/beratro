@@ -7,12 +7,23 @@ import { STICKER_STATS } from "@/utils/stickerStats";
 import { Flower, HAND_NAMES, Sticker } from "@/utils/constants";
 import { Meme } from "@/utils/constants";
 import { BLACK_COLOR, WOOD_COLOR } from "@/utils/colors";
+import { BoosterButtonContainer, SellButton, UseButton } from "../Game.styles";
 
 interface BoosterProps {
   item: BoosterPosition;
+  isSelected?: boolean;
+  onClick?: (e: React.MouseEvent) => void;
+  onUse?: () => void;
+  onSell?: () => void;
 }
 
-export const Booster: React.FC<BoosterProps> = ({ item }) => {
+export const Booster = ({
+  item,
+  isSelected,
+  onClick,
+  onUse,
+  onSell,
+}: BoosterProps) => {
   const { booster, boosterType } = item;
 
   const { name, description } = (() => {
@@ -34,15 +45,26 @@ export const Booster: React.FC<BoosterProps> = ({ item }) => {
   })();
 
   return (
-    <div
-      style={{
-        ...CARD_STYLES.container,
-        textAlign: "center",
-        padding: "1vw",
-      }}
-    >
-      <div style={{ fontSize: "1.2em", color: BLACK_COLOR }}>{name}</div>
-      <div style={{ fontSize: "0.8em", color: WOOD_COLOR }}>{description}</div>
+    <div className="booster-card" onClick={onClick}>
+      <div
+        style={{
+          ...CARD_STYLES.container,
+          textAlign: "center",
+          padding: "1vw",
+          cursor: "pointer",
+        }}
+      >
+        <div style={{ fontSize: "1.2em", color: BLACK_COLOR }}>{name}</div>
+        <div style={{ fontSize: "0.8em", color: WOOD_COLOR }}>
+          {description}
+        </div>
+      </div>
+      {isSelected && (
+        <BoosterButtonContainer onClick={(e) => e.stopPropagation()}>
+          <UseButton onClick={onUse}>Use</UseButton>
+          <SellButton onClick={onSell}>Sell</SellButton>
+        </BoosterButtonContainer>
+      )}
     </div>
   );
 };

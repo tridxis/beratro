@@ -75,6 +75,7 @@ export const useGameStore = create<GameStore>()(
         currentState: GameState.BERAS_PICKING,
         lastHandType: null,
         selectedPack: null,
+        selectedBooster: null,
 
         endRound: (goldEarned: number) =>
           set((state) => {
@@ -144,6 +145,7 @@ export const useGameStore = create<GameStore>()(
             currentState: GameState.BERAS_PICKING,
             lastHandType: null,
             selectedPack: null,
+            selectedBooster: null,
           }));
         },
 
@@ -444,23 +446,42 @@ export const useGameStore = create<GameStore>()(
 
           set((state) => ({
             gold: state.gold - price,
-            selectedPack: { boosterPack, items: packItems },
+            selectedPack: { boosterPack, items: packItems, picked: 0 },
           }));
         },
-        pickItemsFromPack: (items: (CardPosition | BoosterPosition)[]) =>
+        pickItemFromPack: (item: CardPosition | BoosterPosition) =>
           set((state) => {
             if (!state.selectedPack) return state;
 
+            const picked = state.selectedPack.picked + 1;
+
+            const updated: GameStore = {};
+
+            // check if item is card (not having booster) add to deck
+
+            if (!("booster" in item)) {
+              updated.deckCards = shuffleCards([
+                ...state.deckCards,
+                {
+                  ...item,
+                  index: state.deckCards.length,
+                  id: state.deckCards.length,
+                },
+              ]) as CardPosition[];
+            } else {
+              updated.boosters = [...state.boosters, item];
+            }
+
             return {
-              boosters: [
-                ...state.boosters,
-                ...items
-                  .filter((item): item is BoosterPosition => "booster" in item)
-                  .slice(0, state.maxBoosters - state.boosters.length),
-              ],
-              selectedPack: null, // Clear selected pack after picking
+              ...updated,
+              selectedPack:
+                picked < BOOSTER_PACK_INFO[state.selectedPack.boosterPack].pick
+                  ? { ...state.selectedPack, picked }
+                  : null, // Clear selected pack after picking
             };
           }),
+        setSelectedBooster: (booster: BoosterPosition | null) =>
+          set({ selectedBooster: booster }),
       };
     },
     {

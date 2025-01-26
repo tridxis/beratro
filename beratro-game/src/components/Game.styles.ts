@@ -297,6 +297,39 @@ export const BuyButton = styled(Button)`
   }
 `;
 
+export const BoosterButtonContainer = styled.div`
+  position: absolute;
+  bottom: -1vw;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.5vw;
+  z-index: 10;
+
+  & button {
+    padding: 0.5vw;
+    &:hover:not(:disabled) {
+      padding-top: 0.4vw;
+      padding-bottom: 0.6vw;
+    }
+
+    &:active:not(:disabled) {
+      padding-top: 0.45vw;
+      padding-bottom: 0.55vw;
+    }
+  }
+`;
+
+export const UseButton = styled(Button)`
+  background-color: ${BLUE_COLOR};
+  color: ${WHITE_COLOR};
+`;
+
+export const SellButton = styled(Button)`
+  background-color: ${RED_COLOR};
+  color: ${WHITE_COLOR};
+`;
+
 export const ShopItemsGrid = styled.div`
   display: block;
   gap: 1vw;

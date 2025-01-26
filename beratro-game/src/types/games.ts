@@ -77,9 +77,12 @@ export interface GameStore {
   selectedPack: {
     boosterPack: BoosterPack;
     items: (CardPosition | BoosterPosition)[];
+    picked: number;
   } | null;
   buyPack: (boosterPack: BoosterPack) => void;
-  pickItemsFromPack: (items: (CardPosition | BoosterPosition)[]) => void;
+  pickItemFromPack: (item: CardPosition | BoosterPosition) => void;
+  selectedBooster: BoosterPosition | null;
+  setSelectedBooster: (booster: BoosterPosition | null) => void;
 }
 
 export type CalculationOption = {
