@@ -17,6 +17,7 @@ export type StickerStats = {
   rarity: StickerRarity;
   trigger: (state: GameStore) => void;
   kind: "fruit" | "animal" | "bera";
+  emoji: string;
 };
 
 export const STICKER_STATS: Record<Sticker, StickerStats> = {
@@ -29,6 +30,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     rarity: StickerRarity.COMMON,
     kind: "fruit",
     trigger: () => 50,
+    emoji: "🫐",
   },
   [Sticker.STRAWBERRY]: {
     id: 2,
@@ -39,6 +41,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     rarity: StickerRarity.COMMON,
     kind: "fruit",
     trigger: () => 10,
+    emoji: "🍓",
   },
 
   [Sticker.CHILLI]: {
@@ -50,6 +53,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     rarity: StickerRarity.UNCOMMON,
     kind: "fruit",
     trigger: () => 1.5,
+    emoji: "🌶️",
   },
   [Sticker.TOMATO]: {
     id: 4,
@@ -60,6 +64,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     rarity: StickerRarity.UNCOMMON,
     kind: "fruit",
     trigger: () => 1.5,
+    emoji: "🍅",
   },
   [Sticker.BANANA]: {
     id: 5,
@@ -70,6 +75,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     rarity: StickerRarity.COMMON,
     kind: "fruit",
     trigger: () => 1,
+    emoji: "🍌",
   },
   [Sticker.BEE]: {
     id: 6,
@@ -80,6 +86,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     rarity: StickerRarity.COMMON,
     kind: "animal",
     trigger: () => 3,
+    emoji: "🐝",
   },
   [Sticker.FROG]: {
     id: 7,
@@ -90,6 +97,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     rarity: StickerRarity.COMMON,
     kind: "animal",
     trigger: () => 1,
+    emoji: "🐸",
   },
   [Sticker.BUTTERFLY]: {
     id: 8,
@@ -114,6 +122,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
 
       return flower.id;
     },
+    emoji: "🌸",
   },
   [Sticker.PANDA]: {
     id: 9,
@@ -124,6 +133,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     rarity: StickerRarity.RARE,
     kind: "animal",
     trigger: () => 1,
+    emoji: "🐼",
   },
   [Sticker.EARTH]: {
     id: 10,
@@ -134,6 +144,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     rarity: StickerRarity.COMMON,
     kind: "bera",
     trigger: () => 10,
+    emoji: "🪨",
   },
   [Sticker.WATER]: {
     id: 11,
@@ -144,6 +155,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     rarity: StickerRarity.COMMON,
     kind: "bera",
     trigger: () => 50,
+    emoji: "💧",
   },
   [Sticker.FIRE]: {
     id: 12,
@@ -154,6 +166,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     rarity: StickerRarity.UNCOMMON,
     kind: "bera",
     trigger: () => 1.5,
+    emoji: "🔥",
   },
   [Sticker.AIR]: {
     id: 13,
@@ -164,6 +177,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     rarity: StickerRarity.RARE,
     kind: "bera",
     trigger: () => 1,
+    emoji: "🍃",
   },
 };
 

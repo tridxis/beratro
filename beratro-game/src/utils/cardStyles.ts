@@ -1,4 +1,4 @@
-import { BORDER_COLOR, WHITE_COLOR } from "./colors";
+import { BORDER_COLOR, WHITE_COLOR, WOOD_COLOR } from "./colors";
 
 export const CARD_STYLES = {
   container: {
@@ -24,6 +24,21 @@ export const CARD_STYLES = {
     lineHeight: "1.2vw",
     fontWeight: "bold",
   },
+  fruitSticker: {
+    position: "absolute",
+    top: "0.2vw",
+    right: "0.2vw",
+    fontSize: "1.2vw",
+    lineHeight: "1.2vw",
+    fontWeight: "bold",
+    background: BORDER_COLOR,
+    width: "1.8vw",
+    height: "1.8vw",
+    borderRadius: "50%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   suit: {
     fontSize: "2vw",
     lineHeight: "2w",
@@ -36,5 +51,20 @@ export const CARD_STYLES = {
     lineHeight: "1.2vw",
     fontWeight: "bold",
     transform: "rotate(180deg)",
+  },
+  animalSticker: {
+    position: "absolute",
+    bottom: "0.2vw",
+    left: "0.2vw",
+    fontSize: "1.2vw",
+    lineHeight: "1.2vw",
+    fontWeight: "bold",
+    background: BORDER_COLOR,
+    width: "1.8vw",
+    height: "1.8vw",
+    borderRadius: "50%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
 } as const;

@@ -7,7 +7,7 @@ import { STICKER_STATS } from "@/utils/stickerStats";
 import { Flower, HAND_NAMES, Sticker } from "@/utils/constants";
 import { Meme } from "@/utils/constants";
 import { BLACK_COLOR, WOOD_COLOR } from "@/utils/colors";
-import { BoosterButtonContainer, SellButton, UseButton } from "../Game.styles";
+import { BottomButtonContainer, SellButton, UseButton } from "../Game.styles";
 
 interface BoosterProps {
   item: BoosterPosition;
@@ -45,7 +45,11 @@ export const Booster = ({
   })();
 
   return (
-    <div className="booster-card" onClick={onClick}>
+    <div
+      style={{ position: "relative" }}
+      className="booster-card"
+      onClick={onClick}
+    >
       <div
         style={{
           ...CARD_STYLES.container,
@@ -60,10 +64,24 @@ export const Booster = ({
         </div>
       </div>
       {isSelected && (
-        <BoosterButtonContainer onClick={(e) => e.stopPropagation()}>
-          <UseButton onClick={onUse}>Use</UseButton>
-          <SellButton onClick={onSell}>Sell</SellButton>
-        </BoosterButtonContainer>
+        <BottomButtonContainer onClick={(e) => e.stopPropagation()}>
+          <UseButton
+            onClick={(e) => {
+              e.stopPropagation();
+              onUse?.();
+            }}
+          >
+            Use
+          </UseButton>
+          <SellButton
+            onClick={(e) => {
+              e.stopPropagation();
+              onSell?.();
+            }}
+          >
+            Sell
+          </SellButton>
+        </BottomButtonContainer>
       )}
     </div>
   );

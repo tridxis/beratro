@@ -73,6 +73,9 @@ import {
   ScoreAtLeastTag,
   RetriggerScore,
   GoldScore,
+  BottomButtonContainer,
+  SellButton,
+  StickerItem,
 } from "./Game.styles";
 import { BLUE_COLOR, GOLD_COLOR, RED_COLOR } from "@/utils/colors";
 import { BoosterPosition, CardPosition } from "@/types/cards";
@@ -80,6 +83,7 @@ import { BERA_STATS, BeraType } from "@/utils/beraStats";
 import useCalculator from "@/hooks/useCalculator";
 import { BeraPosition } from "@/types/beras";
 import { Booster } from "./cards/Booster";
+import { STICKER_STATS } from "@/utils/stickerStats";
 
 export const Game = () => {
   const state = useGameStore();
@@ -121,6 +125,9 @@ export const Game = () => {
     selectedBooster,
     setSelectedBooster,
     activateBooster,
+    handLevels,
+    selectedBera,
+    setSelectedBera,
   } = state;
 
   const { play } = useCalculator();
@@ -178,6 +185,8 @@ export const Game = () => {
       const target = e.target as HTMLElement;
       if (!target.closest(".booster-card")) {
         setSelectedBooster(null);
+      } else if (!target.closest(".bera-item")) {
+        setSelectedBera(null);
       }
     };
 
@@ -345,7 +354,10 @@ export const Game = () => {
     );
   };
 
-  console.log("currentBreakdown", currentBreakdown);
+  console.log("playingBeras", playingBeras);
+  console.log("handCards", handCards);
+  console.log("handLevels", handLevels);
+  console.log("deckCards", deckCards);
 
   const renderBreakdownCard = (card: CardPosition) => {
     if (!currentBreakdown) return <></>;
@@ -457,7 +469,19 @@ export const Game = () => {
           <DeckSection>
             <DeckContainer>
               {playingBeras.map((bera, index) => (
-                <ShopItem key={`playing-bera-${index}`}>
+                <ShopItem
+                  key={`playing-bera-${index}`}
+                  className="bera-item"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedBera(selectedBera === bera.id ? null : bera.id);
+                  }}
+                >
+                  {!!bera.sticker && (
+                    <StickerItem>
+                      {STICKER_STATS[bera.sticker].emoji}
+                    </StickerItem>
+                  )}
                   {BERA_STATS[bera.bera].name}
                   <span>
                     {BERA_STATS[bera.bera].description.replace(
@@ -466,6 +490,18 @@ export const Game = () => {
                     )}
                   </span>
                   {renderBreakdownBera(bera)}
+                  {selectedBera === bera.id && (
+                    <BottomButtonContainer onClick={(e) => e.stopPropagation()}>
+                      <SellButton
+                        onClick={() => {
+                          // Handle remove action
+                          console.log("Remove bera", bera);
+                        }}
+                      >
+                        Sell
+                      </SellButton>
+                    </BottomButtonContainer>
+                  )}
                 </ShopItem>
               ))}
             </DeckContainer>
@@ -478,6 +514,9 @@ export const Game = () => {
                   key={`booster-${index}`}
                   item={booster}
                   isSelected={selectedBooster?.id === booster.id}
+                  onUse={() => {
+                    activateBooster(booster);
+                  }}
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedBooster(
@@ -561,12 +600,7 @@ export const Game = () => {
                       onClick={() => pickItemFromPack(item)}
                     >
                       {(item as BoosterPosition).booster ? (
-                        <Booster
-                          item={item as BoosterPosition}
-                          onUse={() => {
-                            activateBooster(item as BoosterPosition);
-                          }}
-                        />
+                        <Booster item={item as BoosterPosition} />
                       ) : (
                         <DisplayCard card={item as CardPosition} />
                       )}

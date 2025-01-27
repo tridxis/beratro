@@ -4,9 +4,10 @@ import { Reorder } from "framer-motion";
 import { useRef } from "react";
 import { CARD_STYLES } from "@/utils/cardStyles";
 import { BLACK_COLOR, RED_COLOR } from "@/utils/colors";
+import { STICKER_STATS } from "@/utils/stickerStats";
 
 const DraggableCard = ({
-  card: { id, suit, rank },
+  card: { id, suit, rank, animalSticker, fruitSticker },
   isSelected,
   onSelect,
 }: {
@@ -70,8 +71,19 @@ const DraggableCard = ({
       }}
     >
       <div style={CARD_STYLES.topRank}>{rank}</div>
+
       <div style={CARD_STYLES.suit}>{SUIT_SYMBOLS[suit]}</div>
       <div style={CARD_STYLES.bottomRank}>{rank}</div>
+      {!!fruitSticker && (
+        <div style={CARD_STYLES.fruitSticker}>
+          {STICKER_STATS[fruitSticker].emoji}
+        </div>
+      )}
+      {!!animalSticker && (
+        <div style={CARD_STYLES.animalSticker}>
+          {STICKER_STATS[animalSticker].emoji}
+        </div>
+      )}
     </Reorder.Item>
   );
 };

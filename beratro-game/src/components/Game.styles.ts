@@ -297,7 +297,7 @@ export const BuyButton = styled(Button)`
   }
 `;
 
-export const BoosterButtonContainer = styled.div`
+export const BottomButtonContainer = styled.div`
   position: absolute;
   bottom: -1vw;
   left: 50%;
@@ -355,6 +355,23 @@ export const ShopItem = styled.div`
     display: block;
     font-size: 0.5vw;
   }
+`;
+
+export const StickerItem = styled.div`
+  position: absolute;
+  top: 0.2vw;
+  left: 0.2vw;
+  right: 0.2vw;
+  font-size: 1.5vw;
+  text-align: center;
+  background: ${BORDER_COLOR};
+  width: 1.8vw;
+  height: 1.8vw;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
 `;
 
 export const ShopItemGrid = styled.div`

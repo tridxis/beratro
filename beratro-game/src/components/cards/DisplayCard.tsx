@@ -2,13 +2,14 @@ import { CardPosition } from "@/types/cards";
 import { CardSuit, SUIT_SYMBOLS } from "@/utils/constants";
 import React from "react";
 import { CARD_STYLES } from "@/utils/cardStyles";
+import { STICKER_STATS } from "@/utils/stickerStats";
 
 interface DisplayCardProps {
   card: CardPosition;
 }
 
 export const DisplayCard: React.FC<DisplayCardProps> = ({ card }) => {
-  const { rank, suit } = card;
+  const { rank, suit, fruitSticker, animalSticker } = card;
 
   return (
     <div
@@ -22,6 +23,16 @@ export const DisplayCard: React.FC<DisplayCardProps> = ({ card }) => {
       <div style={CARD_STYLES.topRank}>{rank}</div>
       <div style={CARD_STYLES.suit}>{SUIT_SYMBOLS[suit]}</div>
       <div style={CARD_STYLES.bottomRank}>{rank}</div>
+      {!!fruitSticker && (
+        <div style={CARD_STYLES.fruitSticker}>
+          {STICKER_STATS[fruitSticker].emoji}
+        </div>
+      )}
+      {!!animalSticker && (
+        <div style={CARD_STYLES.animalSticker}>
+          {STICKER_STATS[animalSticker].emoji}
+        </div>
+      )}
     </div>
   );
 };
