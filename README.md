@@ -332,6 +332,18 @@ I think after 30 days, I will update read me 1 time a week
 
 Seey 🍀
 
+## Day 26
+
+Hmm... too many thing to do with memes, stickers and flowers. I need to solve it one by one 💪
+
+Today I modify use booster function to modify cards / bera / gold... as new state when a stickers, memes, flowers is used
+
+And also make simple UIs for sticker on the card
+
+Tmr I will play some games then implement stickers & memes case by case
+
+Seey 🍀
+
 
 
 
