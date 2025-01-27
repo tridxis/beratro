@@ -42,6 +42,8 @@ export interface GameStore {
   boosters: BoosterPosition[];
   currentState: GameState;
   lastHandType: HandType | null;
+  handLevels: { [key: string]: number };
+  selectedBera: number | null;
   setCurrentState: (state: GameState) => void;
   reset: () => void;
   setHandCards: (cards: CardPosition[]) => void;
@@ -63,7 +65,7 @@ export interface GameStore {
   endRound: (goldEarned: number) => void;
   buyBera: (id: number) => void;
   removeCards: (cards?: CardPosition[]) => void;
-  useBooster: (booster: BoosterPosition) => void;
+  activateBooster: (booster: BoosterPosition) => void;
   modifyGold: (value: number) => void;
   addBooster: (
     booster: Flower | Sticker | Meme,
@@ -83,6 +85,7 @@ export interface GameStore {
   pickItemFromPack: (item: CardPosition | BoosterPosition) => void;
   selectedBooster: BoosterPosition | null;
   setSelectedBooster: (booster: BoosterPosition | null) => void;
+  setSelectedBera: (bera: number | null) => void;
 }
 
 export type CalculationOption = {

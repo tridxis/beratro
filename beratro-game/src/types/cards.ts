@@ -8,6 +8,8 @@ export interface CardPosition {
   chips?: number;
   mult?: number;
   xMult?: number;
+  animalSticker?: Sticker;
+  fruitSticker?: Sticker;
 }
 
 export interface BoosterPosition {

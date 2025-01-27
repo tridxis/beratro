@@ -1,4 +1,4 @@
-import { AnimatePresence, motion, Reorder } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState, useMemo } from "react";
 import { useGameStore } from "@/store/gameStore";
 import { DisplayCard } from "./cards/DisplayCard";
@@ -6,12 +6,9 @@ import DraggableCard from "./cards/DraggableCard";
 import { Calculator } from "@/utils/calculator";
 import {
   ANIMATION_MS,
-  Bera,
   BOOSTER_PACK_INFO,
   BOOSTER_PACKS,
   GameAction,
-  HandType,
-  PACKS,
   Unit,
 } from "@/utils/constants";
 import { Breakdown, PokerHand } from "@/types/hands";
@@ -21,8 +18,6 @@ import {
   RoundEndContainer,
   CashOutButton,
   FlexRow,
-  CircleIcon,
-  SquareIcon,
   Separator,
   RewardText,
   ScoreText,
@@ -32,7 +27,6 @@ import {
   RoundHeader,
   RoundContent,
   ScoreTarget,
-  ScoreBox,
   ScoreValue,
   StatsGrid,
   StatBox,
@@ -82,7 +76,6 @@ import {
 } from "./Game.styles";
 import { BLUE_COLOR, GOLD_COLOR, RED_COLOR } from "@/utils/colors";
 import { BoosterPosition, CardPosition } from "@/types/cards";
-import { AnimatedValueDisplay } from "./AnimatedValueDisplay";
 import { BERA_STATS, BeraType } from "@/utils/beraStats";
 import useCalculator from "@/hooks/useCalculator";
 import { BeraPosition } from "@/types/beras";
@@ -107,7 +100,6 @@ export const Game = () => {
     addScore,
     discards,
     deckCards,
-    removedCards,
     maxHands,
     maxDiscards,
     currentState,
@@ -128,6 +120,7 @@ export const Game = () => {
     boosters,
     selectedBooster,
     setSelectedBooster,
+    activateBooster,
   } = state;
 
   const { play } = useCalculator();
@@ -568,7 +561,12 @@ export const Game = () => {
                       onClick={() => pickItemFromPack(item)}
                     >
                       {(item as BoosterPosition).booster ? (
-                        <Booster item={item as BoosterPosition} />
+                        <Booster
+                          item={item as BoosterPosition}
+                          onUse={() => {
+                            activateBooster(item as BoosterPosition);
+                          }}
+                        />
                       ) : (
                         <DisplayCard card={item as CardPosition} />
                       )}

@@ -1,5 +1,4 @@
 import { GameAction, Sticker, Unit } from "./constants";
-import { CardPosition } from "@/types/cards";
 import { GameStore } from "@/types/games";
 import { FLOWER_STATS } from "./flowerStats";
 
@@ -16,7 +15,8 @@ export type StickerStats = {
   type: Unit;
   action: GameAction;
   rarity: StickerRarity;
-  trigger: (card: CardPosition, state: GameStore) => void;
+  trigger: (state: GameStore) => void;
+  kind: "fruit" | "animal" | "bera";
 };
 
 export const STICKER_STATS: Record<Sticker, StickerStats> = {
@@ -27,6 +27,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     type: Unit.CHIPS,
     action: GameAction.ON_SCORED,
     rarity: StickerRarity.COMMON,
+    kind: "fruit",
     trigger: () => 50,
   },
   [Sticker.STRAWBERRY]: {
@@ -36,6 +37,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     type: Unit.MULT,
     action: GameAction.ON_SCORED,
     rarity: StickerRarity.COMMON,
+    kind: "fruit",
     trigger: () => 10,
   },
 
@@ -46,6 +48,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     type: Unit.X_MULT,
     action: GameAction.ON_SCORED,
     rarity: StickerRarity.UNCOMMON,
+    kind: "fruit",
     trigger: () => 1.5,
   },
   [Sticker.TOMATO]: {
@@ -55,6 +58,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     type: Unit.X_MULT,
     action: GameAction.ON_HELD,
     rarity: StickerRarity.UNCOMMON,
+    kind: "fruit",
     trigger: () => 1.5,
   },
   [Sticker.BANANA]: {
@@ -64,6 +68,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     action: GameAction.INDEP,
     type: Unit.WILD_CARD,
     rarity: StickerRarity.COMMON,
+    kind: "fruit",
     trigger: () => 1,
   },
   [Sticker.BEE]: {
@@ -73,6 +78,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     type: Unit.GOLD,
     action: GameAction.ON_SCORED,
     rarity: StickerRarity.COMMON,
+    kind: "animal",
     trigger: () => 3,
   },
   [Sticker.FROG]: {
@@ -82,6 +88,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     type: Unit.MEME,
     action: GameAction.ON_DISCARD,
     rarity: StickerRarity.COMMON,
+    kind: "animal",
     trigger: () => 1,
   },
   [Sticker.BUTTERFLY]: {
@@ -92,7 +99,8 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     type: Unit.FLOWER,
     action: GameAction.ON_ENDED,
     rarity: StickerRarity.UNCOMMON,
-    trigger: (card: CardPosition, state: GameStore) => {
+    kind: "animal",
+    trigger: (state: GameStore) => {
       // Get the last played hand
       const lastHandType = state.lastHandType;
 
@@ -114,6 +122,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     type: Unit.RETRIGGER,
     action: GameAction.ON_RETRIGGERED,
     rarity: StickerRarity.RARE,
+    kind: "animal",
     trigger: () => 1,
   },
   [Sticker.EARTH]: {
@@ -123,6 +132,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     type: Unit.MULT,
     action: GameAction.ON_SCORED,
     rarity: StickerRarity.COMMON,
+    kind: "bera",
     trigger: () => 10,
   },
   [Sticker.WATER]: {
@@ -132,6 +142,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     type: Unit.CHIPS,
     action: GameAction.ON_SCORED,
     rarity: StickerRarity.COMMON,
+    kind: "bera",
     trigger: () => 50,
   },
   [Sticker.FIRE]: {
@@ -141,6 +152,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     type: Unit.X_MULT,
     action: GameAction.ON_SCORED,
     rarity: StickerRarity.UNCOMMON,
+    kind: "bera",
     trigger: () => 1.5,
   },
   [Sticker.AIR]: {
@@ -150,6 +162,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     action: GameAction.INDEP,
     type: Unit.ZERO_SLOT,
     rarity: StickerRarity.RARE,
+    kind: "bera",
     trigger: () => 1,
   },
 };

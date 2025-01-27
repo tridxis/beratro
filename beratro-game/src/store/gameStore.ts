@@ -20,6 +20,8 @@ import { initCards, initBeras } from "@/utils/seeds";
 import { BERA_STATS } from "@/utils/beraStats";
 import { shuffleCards } from "@/utils/cards";
 import { STICKER_STATS, StickerRarity } from "@/utils/stickerStats";
+import { FLOWER_STATS } from "@/utils/flowerStats";
+import { MEME_STATS } from "@/utils/memeStats";
 
 const getRoundReqScore = (round: number) => {
   if (round <= 10) {
@@ -76,6 +78,8 @@ export const useGameStore = create<GameStore>()(
         lastHandType: null,
         selectedPack: null,
         selectedBooster: null,
+        handLevels: {},
+        selectedBera: null,
 
         endRound: (goldEarned: number) =>
           set((state) => {
@@ -299,16 +303,47 @@ export const useGameStore = create<GameStore>()(
           set((state) => ({
             score: state.score + points,
           })),
-        useBooster: (booster: BoosterPosition) =>
+        activateBooster: (booster: BoosterPosition) =>
           set((state) => {
             if (booster.boosterType === "flower") {
+              const hand = FLOWER_STATS[booster.booster as Flower].hand;
               return {
                 usedFlowers: [...state.usedFlowers, booster.booster as Flower],
                 boosters: state.boosters.filter((b) => b.id !== booster.id),
+                handLevels: {
+                  ...state.handLevels,
+                  [hand]: (state.handLevels[hand] || 1) + 1,
+                },
               };
             }
             if (booster.boosterType === "sticker") {
+              const sticker = STICKER_STATS[booster.booster as Sticker];
+              const updated: GameStore = {};
+              if (sticker.kind === "bera") {
+                const bera = state.playingBeras.find(
+                  (b) => b.id === state.selectedBera
+                );
+                if (bera == null) return state;
+                bera.sticker = booster.booster as Sticker;
+                updated.playingBeras = state.playingBeras;
+                // update sticker to bera card
+              } else {
+                if (state.selectedCards.length !== 1) return state;
+                const card = state.handCards.find(
+                  (c) => c.id === state.selectedCards[0]
+                );
+                if (card == null) return state;
+                if (sticker.kind === "animal") {
+                  card.animalSticker = booster.booster as Sticker;
+                } else {
+                  card.fruitSticker = booster.booster as Sticker;
+                }
+                updated.handCards = state.handCards;
+              }
+
+              // find the card that is selected then update its
               return {
+                ...updated,
                 usedStickers: [
                   ...state.usedStickers,
                   booster.booster as Sticker,
@@ -317,6 +352,8 @@ export const useGameStore = create<GameStore>()(
               };
             }
             if (booster.boosterType === "meme") {
+              const meme = MEME_STATS[booster.booster as Meme];
+              meme.trigger(state);
               return {
                 usedMemes: [...state.usedMemes, booster.booster as Meme],
                 boosters: state.boosters.filter((b) => b.id !== booster.id),
@@ -482,6 +519,7 @@ export const useGameStore = create<GameStore>()(
           }),
         setSelectedBooster: (booster: BoosterPosition | null) =>
           set({ selectedBooster: booster }),
+        setSelectedBera: (bera: number | null) => set({ selectedBera: bera }),
       };
     },
     {
