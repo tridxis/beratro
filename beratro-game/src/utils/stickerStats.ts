@@ -15,7 +15,7 @@ export type StickerStats = {
   type: Unit;
   action: GameAction;
   rarity: StickerRarity;
-  trigger: (state: GameStore) => void;
+  trigger: (state: GameStore) => number;
   kind: "fruit" | "animal" | "bera";
   emoji: string;
 };

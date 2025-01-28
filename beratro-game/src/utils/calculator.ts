@@ -15,6 +15,7 @@ import { BERA_STATS, BeraType } from "./beraStats";
 import { getRankCounts, isFlush, isStraight } from "./atomic";
 import { CalculationOption, GameStore } from "@/types/games";
 import { BeraPosition } from "@/types/beras";
+import { STICKER_STATS } from "./stickerStats";
 
 export class Calculator {
   static calculate(
@@ -271,6 +272,22 @@ export class Calculator {
         value = CARD_RANKS[card.rank];
       }
       chips += value;
+      if (card.fruitSticker) {
+        const sticker = STICKER_STATS[card.fruitSticker];
+        if (sticker.action === GameAction.ON_SCORED) {
+          switch (sticker.type) {
+            case Unit.CHIPS:
+              chips += sticker.trigger(state);
+              break;
+            case Unit.MULT:
+              mult += sticker.trigger(state);
+              break;
+            case Unit.X_MULT:
+              mult *= sticker.trigger(state);
+              break;
+          }
+        }
+      }
       if (options?.breakdown) {
         breakdowns.push({
           cards: [card.id],
