@@ -344,6 +344,15 @@ Tmr I will play some games then implement stickers & memes case by case
 
 Seey 🍀
 
+## Day 27
+
+Today I'm litle busy so just making the mechanism of all stickers
+
+Tmr I will continue play around & test & fix the incorrect parts in mechanism
+
+Seey 🍀
+
+
 
 
 
