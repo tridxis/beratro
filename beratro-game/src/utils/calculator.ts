@@ -9,6 +9,7 @@ import {
   STICKERS,
   Unit,
   GameAction,
+  Sticker,
 } from "@/utils/constants";
 import { Breakdown, type PokerHand } from "@/types/hands";
 import { BERA_STATS, BeraType } from "./beraStats";
@@ -108,6 +109,9 @@ export class Calculator {
         if (result) {
           totalMult = result.totalMult;
           totalChips = result.totalChips;
+          if (options?.breakdown) {
+            breakdowns.push(...result.breakdowns);
+          }
         }
       });
 
@@ -155,7 +159,7 @@ export class Calculator {
     const value = trigger(values[0], cards, state);
 
     if (!value) return;
-    let unit: Unit;
+    let unit: Unit | null = null;
 
     switch (type) {
       case BeraType.ADD_CHIPS:
@@ -191,7 +195,7 @@ export class Calculator {
             state,
             totalChips,
             totalMult,
-            { ...options, retrigger: true }
+            { ...options, beraRetrigger: true }
           );
         } else if (options?.isInHand) {
           result = this.triggerInHandCards(
@@ -199,7 +203,7 @@ export class Calculator {
             state,
             totalChips,
             totalMult,
-            { ...options, retrigger: true }
+            { ...options, beraRetrigger: true }
           );
         }
         if (result) {
@@ -275,16 +279,40 @@ export class Calculator {
       if (card.fruitSticker) {
         const sticker = STICKER_STATS[card.fruitSticker];
         if (sticker.action === GameAction.ON_SCORED) {
+          let unit: Unit | null = null;
+          let value = 0;
           switch (sticker.type) {
             case Unit.CHIPS:
-              chips += sticker.trigger(state);
+              value = sticker.trigger(state);
+              chips += value;
+              unit = Unit.CHIPS;
               break;
             case Unit.MULT:
-              mult += sticker.trigger(state);
+              value = sticker.trigger(state);
+              mult += value;
+              unit = Unit.MULT;
               break;
             case Unit.X_MULT:
-              mult *= sticker.trigger(state);
+              value = sticker.trigger(state);
+              mult *= value;
+              unit = Unit.X_MULT;
               break;
+            case Unit.GOLD:
+              value = sticker.trigger(state);
+              state.modifyGold(value);
+              unit = Unit.GOLD;
+              break;
+          }
+
+          if (options?.breakdown && unit != null) {
+            breakdowns.push({
+              cards: [card.id],
+              beras: [],
+              values: [value],
+              units: [unit],
+              chips,
+              mult,
+            });
           }
         }
       }
@@ -299,13 +327,11 @@ export class Calculator {
         });
       }
 
-      console.log(breakdowns);
-
       state.playingBeras
         .filter(
           (bera) =>
             BERA_STATS[bera.bera].action === GameAction.ON_SCORED &&
-            (options?.retrigger
+            (options?.beraRetrigger
               ? BERA_STATS[bera.bera].type !== BeraType.RETRIGGER
               : true)
         )
@@ -350,7 +376,7 @@ export class Calculator {
         .filter(
           (bera) =>
             BERA_STATS[bera.bera].action === GameAction.ON_HELD &&
-            (options?.retrigger
+            (options?.beraRetrigger
               ? BERA_STATS[bera.bera].type !== BeraType.RETRIGGER
               : true)
         )
@@ -369,6 +395,24 @@ export class Calculator {
             chips = result.totalChips;
           }
         });
+      if (card.fruitSticker === Sticker.TOMATO) {
+        mult *= 1.5;
+      } else if (
+        card.animalSticker === Sticker.PANDA &&
+        !options?.cardRetrigger
+      ) {
+        const result = this.triggerInHandCards([card], state, chips, mult, {
+          ...options,
+          cardRetrigger: true,
+        });
+        if (result) {
+          chips = result.chips;
+          mult = result.mult;
+          if (options?.breakdown) {
+            breakdowns.push(...result.breakdowns);
+          }
+        }
+      }
     }
 
     return { chips, mult, breakdowns };

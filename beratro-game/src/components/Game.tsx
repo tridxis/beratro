@@ -9,6 +9,7 @@ import {
   BOOSTER_PACK_INFO,
   BOOSTER_PACKS,
   GameAction,
+  Sticker,
   Unit,
 } from "@/utils/constants";
 import { Breakdown, PokerHand } from "@/types/hands";
@@ -128,6 +129,7 @@ export const Game = () => {
     handLevels,
     selectedBera,
     setSelectedBera,
+    modifyGold,
   } = state;
 
   const { play } = useCalculator();
@@ -220,6 +222,26 @@ export const Game = () => {
       });
   };
 
+  const handleOnEndedCards = () => {
+    const cards = handCards.filter(
+      (card) =>
+        !selectedCards.includes(card.id) &&
+        !!card.animalSticker &&
+        STICKER_STATS[card.animalSticker].action === GameAction.ON_ENDED
+    );
+    cards.forEach((card) => {
+      const sticker = STICKER_STATS[card.animalSticker as Sticker];
+      switch (sticker.type) {
+        case Unit.GOLD:
+          sticker.trigger(state);
+          break;
+        case Unit.FLOWER:
+          sticker.trigger(state);
+          break;
+      }
+    });
+  };
+
   const handleAction = (action: "play" | "discard") => {
     if (action === "play") {
       if (playedHands.length >= maxHands) {
@@ -266,6 +288,7 @@ export const Game = () => {
             console.log(reqScore);
             if (score + currentScore >= reqScore) {
               handleOnEndedBeras();
+              handleOnEndedCards();
               setCurrentState(GameState.ROUND_ENDED);
             }
           }, ANIMATION_MS * 3);
@@ -278,6 +301,17 @@ export const Game = () => {
         alert(`Maximum of ${maxDiscards} discards reached!`);
         return;
       }
+      const cards = selectedCards.map(
+        (id) => handCards.find((card) => card.id === id)!
+      );
+      cards.forEach((card) => {
+        if (card.animalSticker) {
+          const sticker = STICKER_STATS[card.animalSticker];
+          if (sticker.action === GameAction.ON_DISCARD) {
+            sticker.trigger(state);
+          }
+        }
+      });
       discardSelectedCards();
     }
     dealCards();

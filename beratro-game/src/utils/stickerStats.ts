@@ -1,6 +1,7 @@
-import { GameAction, Sticker, Unit } from "./constants";
+import { Flower, GameAction, MEMES, Sticker, Unit } from "./constants";
 import { GameStore } from "@/types/games";
-import { FLOWER_STATS } from "./flowerStats";
+import { FLOWER_STATS, FlowerStats } from "./flowerStats";
+import { Booster } from "@/components/cards/Booster";
 
 export enum StickerRarity {
   COMMON = "COMMON",
@@ -69,23 +70,26 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
   [Sticker.BANANA]: {
     id: 5,
     name: "Banana",
-    description: "Is considered to be any suit",
-    action: GameAction.INDEP,
-    type: Unit.WILD_CARD,
+    description: "Earn $3 when this card is scored",
+    type: Unit.GOLD,
+    action: GameAction.ON_SCORED,
     rarity: StickerRarity.COMMON,
     kind: "fruit",
-    trigger: () => 1,
+    trigger: () => 3,
     emoji: "🍌",
   },
   [Sticker.BEE]: {
     id: 6,
     name: "Bee",
-    description: "Earn $3 when this card is scored",
+    description: "Earn $3 when this card stays in hand at the end of the round",
+    action: GameAction.ON_ENDED,
     type: Unit.GOLD,
-    action: GameAction.ON_SCORED,
     rarity: StickerRarity.COMMON,
     kind: "animal",
-    trigger: () => 3,
+    trigger: (state) => {
+      state.modifyGold(3);
+      return 3;
+    },
     emoji: "🐝",
   },
   [Sticker.FROG]: {
@@ -96,7 +100,16 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     action: GameAction.ON_DISCARD,
     rarity: StickerRarity.COMMON,
     kind: "animal",
-    trigger: () => 1,
+    trigger: (state) => {
+      const randomMeme = MEMES[Math.floor(Math.random() * MEMES.length)];
+      state.activateBooster({
+        booster: randomMeme,
+        boosterType: "meme",
+        id: 0,
+        index: 0,
+      });
+      return 1;
+    },
     emoji: "🐸",
   },
   [Sticker.BUTTERFLY]: {
@@ -115,14 +128,21 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
       if (!lastHandType) return 0;
 
       // Get array of flower IDs from FLOWER_STATS
-      const flower = Object.values(FLOWER_STATS).find(
-        (flower) => flower.hand === lastHandType
-      );
+      const [flowerKey, flower] = Object.entries(FLOWER_STATS).find(
+        ([_, flower]) => flower.hand === lastHandType
+      ) as [string, FlowerStats];
       if (!flower) return 0;
+
+      state.activateBooster({
+        booster: flowerKey as Flower,
+        boosterType: "flower",
+        id: 0,
+        index: 0,
+      });
 
       return flower.id;
     },
-    emoji: "🌸",
+    emoji: "🦋",
   },
   [Sticker.PANDA]: {
     id: 9,
