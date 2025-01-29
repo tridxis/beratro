@@ -105,7 +105,7 @@ export const Game = () => {
     addScore,
     discards,
     deckCards,
-    getMaxHands,
+    maxHands,
     maxDiscards,
     currentState,
     round,
@@ -131,8 +131,6 @@ export const Game = () => {
     setSelectedBera,
     modifyGold,
   } = state;
-
-  const maxHands = useMemo(() => getMaxHands(), [playingBeras]);
 
   const { play } = useCalculator();
 

@@ -153,10 +153,10 @@ export const useGameStore = create<GameStore>()(
           }));
         },
 
-        getMaxHands: () => {
+        getHandSize: () => {
           const state = get();
           return (
-            state.maxHands +
+            8 +
             state.playingBeras
               .filter(
                 (bera) =>
@@ -235,7 +235,8 @@ export const useGameStore = create<GameStore>()(
 
         dealCards: (count?: number) =>
           set((state) => {
-            const availableSpace = state.getMaxHands() - state.handCards.length;
+            const availableSpace = state.getHandSize() - state.handCards.length;
+            console.log("availableSpace", availableSpace);
             const cardsToDeal = count ?? availableSpace;
 
             const dealtCards = state.deckCards.slice(0, cardsToDeal);

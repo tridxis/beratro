@@ -340,14 +340,23 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
   [Bera.HAT]: {
     name: "Hat",
     description:
-      "Each card held in hand has a 1 in {{value}} chance to give $1",
+      "Each card 2, 3, 4, 5 held in hand has a 1 in {{value}} chance to give $1",
     cost: 5,
     rarity: BeraRarity.COMMON,
     values: [3, 2, 1],
     type: BeraType.ADD_GOLD,
     action: GameAction.ON_HELD,
-    trigger: (value: number) => {
-      return Math.random() < 1 / value ? value : 0;
+    trigger: (value: number, cards: CardPosition[]) => {
+      return [
+        CardRank.TWO,
+        CardRank.THREE,
+        CardRank.FOUR,
+        CardRank.FIVE,
+      ].includes(cards[0].rank)
+        ? Math.random() < 1 / value
+          ? value
+          : 0
+        : 0;
     },
   },
   [Bera.LUSCIOUS]: {
