@@ -352,6 +352,20 @@ Tmr I will continue play around & test & fix the incorrect parts in mechanism
 
 Seey 🍀
 
+## Day 28
+
+Too many bugs found!!!
+
+And some beras have over-imba
+
+Today I spent almost time to play game then fix bugs & imbalance card
+
+I think I need spent around 1 week to do this stuff
+
+So there are nothing new today sorry
+
+Seey 🍀
+
 
 
 
