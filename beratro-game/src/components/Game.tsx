@@ -105,7 +105,7 @@ export const Game = () => {
     addScore,
     discards,
     deckCards,
-    maxHands,
+    getMaxHands,
     maxDiscards,
     currentState,
     round,
@@ -131,6 +131,8 @@ export const Game = () => {
     setSelectedBera,
     modifyGold,
   } = state;
+
+  const maxHands = useMemo(() => getMaxHands(), [playingBeras]);
 
   const { play } = useCalculator();
 
@@ -256,15 +258,12 @@ export const Game = () => {
         playingBreakdowns,
         inHandBreakdowns,
       } = play();
-      console.log(playingBreakdowns);
-      console.log(inHandBreakdowns);
 
       pokerHandRef.current = pokerHand;
       setLastHandType(pokerHand.handType);
       // Update total score after all individual scores are shown
       // Animate breakdowns first
       const allBreakdowns = [...playingBreakdowns, ...inHandBreakdowns];
-      console.log("allBreakdowns", allBreakdowns);
       let currentIndex = 0;
       setCurrentBreakdown(allBreakdowns[currentIndex]);
       currentIndex++;
@@ -284,8 +283,6 @@ export const Game = () => {
             setCurrentBreakdown(null);
             setLastPlayedIndex(null);
             pokerHandRef.current = null;
-            console.log(score + currentScore);
-            console.log(reqScore);
             if (score + currentScore >= reqScore) {
               handleOnEndedBeras();
               handleOnEndedCards();
@@ -301,10 +298,28 @@ export const Game = () => {
         alert(`Maximum of ${maxDiscards} discards reached!`);
         return;
       }
+
       const cards = selectedCards.map(
         (id) => handCards.find((card) => card.id === id)!
       );
       cards.forEach((card) => {
+        playingBeras
+          .filter(
+            (bera) => BERA_STATS[bera.bera].action === GameAction.ON_DISCARD
+          )
+          .forEach((bera) => {
+            const value = BERA_STATS[bera.bera].trigger(
+              BERA_STATS[bera.bera].values[0],
+              [],
+              state
+            );
+            console.log("value", value);
+            switch (BERA_STATS[bera.bera].type) {
+              case BeraType.ADD_GOLD:
+                modifyGold(value);
+                break;
+            }
+          });
         if (card.animalSticker) {
           const sticker = STICKER_STATS[card.animalSticker];
           if (sticker.action === GameAction.ON_DISCARD) {
@@ -388,10 +403,10 @@ export const Game = () => {
     );
   };
 
-  console.log("playingBeras", playingBeras);
-  console.log("handCards", handCards);
-  console.log("handLevels", handLevels);
-  console.log("deckCards", deckCards);
+  // console.log("playingBeras", playingBeras);
+  // console.log("handCards", handCards);
+  // console.log("handLevels", handLevels);
+  // console.log("deckCards", deckCards);
 
   const renderBreakdownCard = (card: CardPosition) => {
     if (!currentBreakdown) return <></>;
@@ -718,7 +733,10 @@ export const Game = () => {
                 <ReorderGroup
                   axis="x"
                   values={handCards.map((card) => card.index)}
-                  onReorder={(newOrder) => reorderCards(newOrder as number[])}
+                  onReorder={(newOrder) => {
+                    console.log("newOrder", newOrder);
+                    reorderCards(newOrder as number[]);
+                  }}
                 >
                   <AnimatePresence mode="popLayout" initial={true}>
                     {handCards.map((card, index) => (

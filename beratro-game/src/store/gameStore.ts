@@ -17,7 +17,7 @@ import {
   BOOSTER_PACK_INFO,
 } from "@/utils/constants";
 import { initCards, initBeras } from "@/utils/seeds";
-import { BERA_STATS } from "@/utils/beraStats";
+import { BERA_STATS, BeraType } from "@/utils/beraStats";
 import { shuffleCards } from "@/utils/cards";
 import { STICKER_STATS, StickerRarity } from "@/utils/stickerStats";
 import { FLOWER_STATS } from "@/utils/flowerStats";
@@ -153,6 +153,28 @@ export const useGameStore = create<GameStore>()(
           }));
         },
 
+        getMaxHands: () => {
+          const state = get();
+          return (
+            state.maxHands +
+            state.playingBeras
+              .filter(
+                (bera) =>
+                  BERA_STATS[bera.bera].type === BeraType.INCREASE_HAND_SIZE
+              )
+              .reduce(
+                (acc, bera) =>
+                  acc +
+                  BERA_STATS[bera.bera].trigger(
+                    BERA_STATS[bera.bera].values[0],
+                    [],
+                    state
+                  ),
+                0
+              )
+          );
+        },
+
         setHandCards: (handCards: CardPosition[]) => set({ handCards }),
         setDeckCards: (deckCards: CardPosition[]) => set({ deckCards }),
         setSelectedCards: (selectedCards: number[]) => set({ selectedCards }),
@@ -203,15 +225,17 @@ export const useGameStore = create<GameStore>()(
 
         reorderCards: (newOrder: number[]) =>
           set((state: GameStore) => ({
-            handCards: state.handCards.map((card) => ({
-              ...card,
-              index: newOrder.indexOf(card.id),
-            })),
+            handCards: state.handCards
+              .map((card) => ({
+                ...card,
+                index: newOrder.indexOf(card.id),
+              }))
+              .sort((a, b) => a.index - b.index),
           })),
 
         dealCards: (count?: number) =>
           set((state) => {
-            const availableSpace = 8 - state.handCards.length;
+            const availableSpace = state.getMaxHands() - state.handCards.length;
             const cardsToDeal = count ?? availableSpace;
 
             const dealtCards = state.deckCards.slice(0, cardsToDeal);

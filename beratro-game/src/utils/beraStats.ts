@@ -29,6 +29,7 @@ export enum BeraType {
   INCREASE_CHIPS = "INCREASE_CHIPS",
   INCREASE_MULT = "INCREASE_MULT",
   REMOVE_CARDS = "REMOVE_CARDS",
+  INCREASE_HAND_SIZE = "INCREASE_HAND_SIZE",
 }
 
 export enum BeraRarity {
@@ -316,8 +317,8 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     cost: 6,
     rarity: BeraRarity.UNCOMMON,
     values: [2, 3, 5],
-    type: BeraType.ADD_GOLD,
-    action: GameAction.ON_HELD,
+    type: BeraType.INCREASE_HAND_SIZE,
+    action: GameAction.INDEP,
     trigger: (value: number) => {
       return value;
     },
@@ -573,7 +574,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
       // const validCards = cards.filter(
       //   (card) => CARD_RANKS[card.rank] === randomRank
       // );
-      return Math.random() < 1 / value ? 1 : 0;
+      return Math.random() < value / 3 ? 1 : 0;
     },
   },
 };

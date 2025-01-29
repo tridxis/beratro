@@ -53,6 +53,7 @@ export class Calculator {
             totalMult *= value;
             break;
           case BeraType.ADD_GOLD:
+            console.log("add gold bera", value);
             state.modifyGold(value);
             breakdowns.push({
               cards: [],
@@ -101,7 +102,6 @@ export class Calculator {
           bera,
           cards: pokerHand.scoredCards,
           state,
-          breakdowns,
           totalChips,
           totalMult,
           options,
@@ -136,7 +136,6 @@ export class Calculator {
     bera,
     cards,
     state,
-    breakdowns,
     totalChips,
     totalMult,
     options,
@@ -144,7 +143,6 @@ export class Calculator {
     bera: BeraPosition;
     cards: CardPosition[];
     state: GameStore;
-    breakdowns: Breakdown[];
     totalChips: number;
     totalMult: number;
     options?: CalculationOption;
@@ -160,6 +158,7 @@ export class Calculator {
 
     if (!value) return;
     let unit: Unit | null = null;
+    const breakdowns: Breakdown[] = [];
 
     switch (type) {
       case BeraType.ADD_CHIPS:
@@ -172,6 +171,7 @@ export class Calculator {
         break;
       case BeraType.ADD_GOLD:
         unit = Unit.GOLD;
+        console.log("add gold trigger bera", value);
         state.modifyGold(value);
         break;
       case BeraType.MUL_MULT:
@@ -299,6 +299,7 @@ export class Calculator {
               break;
             case Unit.GOLD:
               value = sticker.trigger(state);
+              console.log("add gold trigger sticker", value);
               state.modifyGold(value);
               unit = Unit.GOLD;
               break;
@@ -340,7 +341,6 @@ export class Calculator {
             bera,
             cards: [card],
             state,
-            breakdowns: breakdowns,
             totalChips: chips,
             totalMult: mult,
             options: { ...options, isScored: true },
@@ -348,6 +348,9 @@ export class Calculator {
           if (result) {
             mult = result.totalMult;
             chips = result.totalChips;
+            if (options?.breakdown) {
+              breakdowns.push(...result.breakdowns);
+            }
           }
         });
     }
@@ -385,7 +388,6 @@ export class Calculator {
             bera,
             cards: [card],
             state,
-            breakdowns: breakdowns,
             totalChips: chips,
             totalMult: mult,
             options: { ...options, isInHand: true },
@@ -393,6 +395,9 @@ export class Calculator {
           if (result) {
             mult = result.totalMult;
             chips = result.totalChips;
+            if (options?.breakdown) {
+              breakdowns.push(...result.breakdowns);
+            }
           }
         });
       if (card.fruitSticker === Sticker.TOMATO) {

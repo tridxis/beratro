@@ -11,9 +11,7 @@ export function shuffleCards(
     [newCards[i], newCards[j]] = [newCards[j], newCards[i]];
     // Update index property if objects have it
     newCards[i].index = i;
-    newCards[i].id = i;
     newCards[j].index = j;
-    newCards[j].id = j;
   }
   return newCards;
 }

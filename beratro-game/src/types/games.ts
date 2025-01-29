@@ -29,6 +29,7 @@ export interface GameStore {
   removedCards: CardPosition[][];
   addedCards: CardPosition[][];
   maxHands: number;
+  getMaxHands: () => number;
   maxDiscards: number;
   maxBoosters: number;
   maxBeras: number;
