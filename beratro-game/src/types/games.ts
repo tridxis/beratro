@@ -23,7 +23,7 @@ export interface GameStore {
   deckBeras: BeraPosition[];
   handCards: CardPosition[];
   deckCards: CardPosition[];
-  selectedCards: number[];
+  selectedCards: string[];
   playedHands: CardPosition[][];
   discards: CardPosition[][];
   removedCards: CardPosition[][];
@@ -44,16 +44,16 @@ export interface GameStore {
   currentState: GameState;
   lastHandType: HandType | null;
   handLevels: { [key: string]: number };
-  selectedBera: number | null;
+  selectedBera: string | null;
   setCurrentState: (state: GameState) => void;
   reset: () => void;
   setHandCards: (cards: CardPosition[]) => void;
   setDeckCards: (cards: CardPosition[]) => void;
-  setSelectedCards: (selectedCards: number[]) => void;
-  toggleSelectedCard: (id: number) => void;
+  setSelectedCards: (selectedCards: string[]) => void;
+  toggleSelectedCard: (id: string) => void;
   sortByValue: () => void;
   sortBySuit: () => void;
-  reorderCards: (newOrder: number[]) => void;
+  reorderCards: (newOrder: string[]) => void;
   dealCards: (count?: number) => void;
   playSelectedCards: () => void;
   setLastHandType: (handType: HandType) => void;
@@ -64,7 +64,7 @@ export interface GameStore {
   shopBeras: BeraPosition[];
   gold: number;
   endRound: (goldEarned: number) => void;
-  buyBera: (id: number) => void;
+  buyBera: (id: string) => void;
   removeCards: (cards?: CardPosition[]) => void;
   activateBooster: (booster: BoosterPosition) => void;
   modifyGold: (value: number) => void;
@@ -75,7 +75,7 @@ export interface GameStore {
   addCardsToDeck: (cards: CardPosition[]) => void;
   addCardsToHand: (cards: CardPosition[]) => void;
   modifyCards: (value: { chips?: number; mult?: number }) => void;
-  convertCards: (ids: number[], card: Partial<CardPosition>) => void;
+  convertCards: (ids: string[], card: Partial<CardPosition>) => void;
   nextRound: () => void;
   selectedPack: {
     boosterPack: BoosterPack;
@@ -86,7 +86,7 @@ export interface GameStore {
   pickItemFromPack: (item: CardPosition | BoosterPosition) => void;
   selectedBooster: BoosterPosition | null;
   setSelectedBooster: (booster: BoosterPosition | null) => void;
-  setSelectedBera: (bera: number | null) => void;
+  setSelectedBera: (bera: string | null) => void;
 }
 
 export type CalculationOption = {

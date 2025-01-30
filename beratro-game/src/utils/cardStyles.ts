@@ -23,6 +23,10 @@ export const CARD_STYLES = {
     fontSize: "1.2vw",
     lineHeight: "1.2vw",
     fontWeight: "bold",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
   },
   fruitSticker: {
     position: "absolute",
@@ -51,6 +55,10 @@ export const CARD_STYLES = {
     lineHeight: "1.2vw",
     fontWeight: "bold",
     transform: "rotate(180deg)",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
   },
   animalSticker: {
     position: "absolute",
@@ -66,5 +74,13 @@ export const CARD_STYLES = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+  },
+  topSuit: {
+    fontSize: "0.8em",
+    marginLeft: "0.2em",
+  },
+  bottomSuit: {
+    fontSize: "0.8em",
+    marginLeft: "0.2em",
   },
 } as const;

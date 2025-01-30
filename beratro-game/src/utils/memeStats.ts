@@ -1,9 +1,10 @@
 import { BERA_STATS } from "./beraStats";
 import { Meme, CardSuit, CardRank, CARD_RANKS } from "./constants";
 import { GameStore } from "@/types/games";
+import { v4 as uuidv4 } from "uuid";
 
 export type MemeStats = {
-  id: number;
+  id: string;
   name: string;
   description: string;
   minTargets: number;
@@ -13,7 +14,7 @@ export type MemeStats = {
 
 export const MEME_STATS: Record<Meme, MemeStats> = {
   [Meme.THIS]: {
-    id: 1,
+    id: uuidv4(),
     name: "This",
     description: "Convert the left card into the right card",
     minTargets: 2,
@@ -26,7 +27,7 @@ export const MEME_STATS: Record<Meme, MemeStats> = {
     },
   },
   [Meme.WASTED]: {
-    id: 2,
+    id: uuidv4(),
     name: "Wasted",
     description: "Remove up to 2 selected cards",
     minTargets: 1,
@@ -39,7 +40,7 @@ export const MEME_STATS: Record<Meme, MemeStats> = {
     },
   },
   [Meme.STRONG_BONK]: {
-    id: 3,
+    id: uuidv4(),
     name: "Strong Bonk",
     description: "Increase rank of up to 2 selected cards by 1",
     minTargets: 1,
@@ -71,7 +72,7 @@ export const MEME_STATS: Record<Meme, MemeStats> = {
     },
   },
   [Meme.SILLY_DRAGON]: {
-    id: 4,
+    id: uuidv4(),
     name: "Silly Dragon",
     description: "Change 3 selected cards to random card in 3 cards",
     minTargets: 3,
@@ -88,7 +89,7 @@ export const MEME_STATS: Record<Meme, MemeStats> = {
     },
   },
   [Meme.SPIDER_POINTING]: {
-    id: 5,
+    id: uuidv4(),
     name: "Spider Pointing",
     description: "Clone 1 selected card",
     minTargets: 1,
@@ -99,21 +100,18 @@ export const MEME_STATS: Record<Meme, MemeStats> = {
         (card) => card.id === state.selectedCards[0]
       );
       if (!selectedCard) return false;
-      const newId =
-        [...state.deckCards, ...state.handCards, ...state.removedCards.flat()]
-          .length + 1;
       state.addCardsToHand([
         {
           ...selectedCard,
-          id: newId,
-          index: newId,
+          id: uuidv4(),
+          index: state.handCards[state.handCards.length - 1].index + 0.001,
         },
       ]);
       return true;
     },
   },
   [Meme.HEART_TRIGGED]: {
-    id: 6,
+    id: uuidv4(),
     name: "Heart Trigged",
     description: "Convert up to 3 selected cards to Heart",
     minTargets: 1,
@@ -126,7 +124,7 @@ export const MEME_STATS: Record<Meme, MemeStats> = {
     },
   },
   [Meme.DARKER]: {
-    id: 7,
+    id: uuidv4(),
     name: "Darker",
     description: "Convert up to 3 cards to Spade",
     minTargets: 1,
@@ -139,7 +137,7 @@ export const MEME_STATS: Record<Meme, MemeStats> = {
     },
   },
   [Meme.GALAXY_BRAIN]: {
-    id: 8,
+    id: uuidv4(),
     name: "Galaxy Brain",
     description: "Convert up to 3 cards to Club",
     minTargets: 1,
@@ -152,7 +150,7 @@ export const MEME_STATS: Record<Meme, MemeStats> = {
     },
   },
   [Meme.SEAGULL]: {
-    id: 9,
+    id: uuidv4(),
     name: "Seagull",
     description: "Convert up to 3 cards to Diamond",
     minTargets: 1,
@@ -165,7 +163,7 @@ export const MEME_STATS: Record<Meme, MemeStats> = {
     },
   },
   [Meme.BEAR_SUIT]: {
-    id: 10,
+    id: uuidv4(),
     name: "Bear Suit",
     description: "Give the total sell value of all current Beras (Max of $50)",
     minTargets: 0,
@@ -183,7 +181,7 @@ export const MEME_STATS: Record<Meme, MemeStats> = {
     },
   },
   [Meme.BALLOON]: {
-    id: 11,
+    id: uuidv4(),
     name: "Balloon",
     description: "Double gold (Max of $20)",
     minTargets: 0,
@@ -195,7 +193,7 @@ export const MEME_STATS: Record<Meme, MemeStats> = {
     },
   },
   [Meme.LAST_PLACE]: {
-    id: 12,
+    id: uuidv4(),
     name: "Last Place",
     description: "Remove randomly 3 cards in hand, get 10$",
     minTargets: 0,
@@ -210,7 +208,7 @@ export const MEME_STATS: Record<Meme, MemeStats> = {
     },
   },
   [Meme.PEPE]: {
-    id: 13,
+    id: uuidv4(),
     name: "Pepe",
     description: "Create the last Meme Card used in this game",
     minTargets: 0,

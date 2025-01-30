@@ -48,34 +48,49 @@ export class Calculator {
       .forEach((bera) => {
         const { type, trigger, values } = BERA_STATS[bera.bera];
         const value = trigger(values[0], playedCards, state);
-        switch (type) {
-          case BeraType.MUL_MULT:
-            totalMult *= value;
-            break;
-          case BeraType.ADD_GOLD:
-            console.log("add gold bera", value);
-            state.modifyGold(value);
-            breakdowns.push({
-              cards: [],
-              beras: [bera.id],
-              values: [value],
-              units: [Unit.GOLD],
-              chips: 0,
-              mult: 0,
-            });
-            break;
-          case BeraType.GEN_FLOWER:
-            state.addBooster(
-              FLOWERS[trigger(values[0], playedCards, state)],
-              "flower"
-            );
-            break;
-          case BeraType.GEN_STICKER:
-            state.addBooster(
-              STICKERS[trigger(values[0], playedCards, state)],
-              "sticker"
-            );
-            break;
+        if (value) {
+          switch (type) {
+            case BeraType.ADD_CHIPS:
+              totalChips += value;
+              breakdowns.push({
+                cards: [],
+                beras: [bera.id],
+                values: [value],
+                units: [Unit.CHIPS],
+                chips: totalChips,
+                mult: totalMult,
+              });
+              break;
+            case BeraType.MUL_MULT:
+              totalMult *= value;
+              breakdowns.push({
+                cards: [],
+                beras: [bera.id],
+                values: [value],
+                units: [Unit.X_MULT],
+                chips: totalChips,
+                mult: totalMult,
+              });
+              break;
+            case BeraType.ADD_GOLD:
+              console.log("add gold bera", value);
+              state.modifyGold(value);
+              breakdowns.push({
+                cards: [],
+                beras: [bera.id],
+                values: [value],
+                units: [Unit.GOLD],
+                chips: 0,
+                mult: 0,
+              });
+              break;
+            case BeraType.GEN_FLOWER:
+              state.addBooster(FLOWERS[value - 1], "flower");
+              break;
+            case BeraType.GEN_STICKER:
+              state.addBooster(STICKERS[value - 1], "sticker");
+              break;
+          }
         }
       });
     const {
@@ -119,7 +134,13 @@ export class Calculator {
       chips: inHandChips,
       mult: inHandMult,
       breakdowns: inHandBreakdowns,
-    } = this.triggerInHandCards(inHandCards, state, totalChips, totalMult);
+    } = this.triggerInHandCards(
+      inHandCards,
+      state,
+      totalChips,
+      totalMult,
+      options
+    );
 
     totalMult = inHandMult;
     totalChips = inHandChips;
@@ -276,6 +297,45 @@ export class Calculator {
         value = CARD_RANKS[card.rank];
       }
       chips += value;
+      if (card.chips) {
+        chips += card.chips;
+        if (options?.breakdown) {
+          breakdowns.push({
+            cards: [card.id],
+            beras: [],
+            values: [card.chips],
+            units: [Unit.CHIPS],
+            chips,
+            mult,
+          });
+        }
+      }
+      if (card.mult) {
+        mult += card.mult;
+        if (options?.breakdown) {
+          breakdowns.push({
+            cards: [card.id],
+            beras: [],
+            values: [card.mult],
+            units: [Unit.MULT],
+            chips,
+            mult,
+          });
+        }
+      }
+      if (card.xMult) {
+        mult *= card.xMult;
+        if (options?.breakdown) {
+          breakdowns.push({
+            cards: [card.id],
+            beras: [],
+            values: [card.xMult],
+            units: [Unit.X_MULT],
+            chips,
+            mult,
+          });
+        }
+      }
       if (card.fruitSticker) {
         const sticker = STICKER_STATS[card.fruitSticker];
         if (sticker.action === GameAction.ON_SCORED) {
@@ -402,6 +462,16 @@ export class Calculator {
         });
       if (card.fruitSticker === Sticker.TOMATO) {
         mult *= 1.5;
+        if (options?.breakdown) {
+          breakdowns.push({
+            cards: [card.id],
+            beras: [],
+            values: [1.5],
+            units: [Unit.X_MULT],
+            chips,
+            mult,
+          });
+        }
       } else if (
         card.animalSticker === Sticker.PANDA &&
         !options?.cardRetrigger

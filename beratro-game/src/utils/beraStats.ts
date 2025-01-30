@@ -10,7 +10,15 @@ export type BeraStats = {
   trigger: (value: number, cards: CardPosition[], state: GameStore) => number;
 };
 
-import { Bera, CARD_RANKS, CardRank, CardSuit, GameAction } from "./constants";
+import {
+  Bera,
+  CARD_RANKS,
+  CardRank,
+  CardSuit,
+  FLOWERS,
+  GameAction,
+  STICKERS,
+} from "./constants";
 import { CardPosition } from "@/types/cards";
 import { countRanks, getRankCounts, isFlush, isStraight } from "./atomic";
 import { GameStore } from "@/types/games";
@@ -207,7 +215,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     rarity: BeraRarity.RARE,
     values: [100, 150, 200],
     type: BeraType.ADD_CHIPS,
-    action: GameAction.ON_SCORED,
+    action: GameAction.ON_PLAYED,
     trigger: (value: number, cards: CardPosition[]) => {
       return cards.every((card) => card.rank === CardRank.TEN) ? value : 0;
     },
@@ -237,13 +245,9 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     action: GameAction.ON_SCORED,
     trigger: (value: number, cards: CardPosition[]) => {
       if (cards[0].rank === CardRank.QUEEN) {
-        // Get array of flower IDs from FLOWER_STATS
-        const flowerIds = Object.values(FLOWER_STATS).map(
-          (flower) => flower.id
-        );
-        const randomFlowerId =
-          flowerIds[Math.floor(Math.random() * flowerIds.length)];
-        return Math.random() < 1 / value ? randomFlowerId : 0;
+        return Math.random() < 1 / value
+          ? Math.floor(Math.random() * FLOWERS.length) + 1
+          : 0;
       }
       return 0;
     },
@@ -444,8 +448,10 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     type: BeraType.GEN_STICKER,
     action: GameAction.ON_PLAYED,
     trigger: (value: number, cards: CardPosition[]) => {
-      // TODO: random sticker
-      return isFlush(cards).isValid && Math.random() < 1 / value ? 1 : 0;
+      // TODO: random sticker];
+      return isFlush(cards).isValid && Math.random() < 1 / value
+        ? Math.floor(Math.random() * STICKERS.length) + 1
+        : 0;
     },
   },
   [Bera.BAKER]: {

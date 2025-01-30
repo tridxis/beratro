@@ -1,6 +1,7 @@
 import { CardPosition } from "@/types/cards";
 import { Bera, CardRank, CardSuit } from "./constants";
 import { BeraPosition } from "@/types/beras";
+import { v4 as uuidv4 } from "uuid";
 
 function generateSequentialIds(): number[] {
   // Create array of numbers from 1 to 52
@@ -24,7 +25,7 @@ export const initCards = (): CardPosition[] => {
   for (const suit of Object.values(CardSuit)) {
     for (const rank of Object.values(CardRank)) {
       cards.push({
-        id: shuffledIds[idIndex],
+        id: uuidv4(),
         suit,
         rank,
         index: shuffledIds[idIndex],

@@ -130,7 +130,10 @@ export const Game = () => {
     selectedBera,
     setSelectedBera,
     modifyGold,
+    setHandCards,
   } = state;
+
+  console.log(handCards);
 
   const { play } = useCalculator();
 
@@ -319,7 +322,9 @@ export const Game = () => {
             }
           });
         if (card.animalSticker) {
+          console.log("animal sticker", card.animalSticker);
           const sticker = STICKER_STATS[card.animalSticker];
+          console.log("sticker", sticker);
           if (sticker.action === GameAction.ON_DISCARD) {
             sticker.trigger(state);
           }
@@ -404,7 +409,7 @@ export const Game = () => {
   // console.log("playingBeras", playingBeras);
   // console.log("handCards", handCards);
   // console.log("handLevels", handLevels);
-  // console.log("deckCards", deckCards);
+  console.log("deckCards", deckCards);
 
   const renderBreakdownCard = (card: CardPosition) => {
     if (!currentBreakdown) return <></>;
@@ -427,6 +432,8 @@ export const Game = () => {
       currentBreakdown.units
     );
   };
+
+  console.log(handCards);
 
   const goldEarned = useMemo(() => {
     return (
@@ -730,10 +737,10 @@ export const Game = () => {
               <HandContainer>
                 <ReorderGroup
                   axis="x"
-                  values={handCards.map((card) => card.index)}
+                  values={handCards.map((card) => card.id)}
                   onReorder={(newOrder) => {
                     console.log("newOrder", newOrder);
-                    reorderCards(newOrder as number[]);
+                    reorderCards(newOrder as string[]);
                   }}
                 >
                   <AnimatePresence mode="popLayout" initial={true}>
@@ -749,9 +756,7 @@ export const Game = () => {
                           isSelected={selectedCards.includes(card.id)}
                           onSelect={(id) => {
                             if (!selectedCards.includes(id)) {
-                              if (selectedCards.length >= 5) {
-                                return;
-                              }
+                              if (selectedCards.length >= 5) return;
                             }
                             toggleSelectedCard(id);
                           }}

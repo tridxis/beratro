@@ -123,7 +123,7 @@ export const GameContainer = styled.div`
 `;
 
 export const LeftArea = styled.div`
-  flex: 1;
+  flex: 25% 0 0;
   padding: 0.5vw;
   overflow: hidden;
 `;
@@ -198,11 +198,14 @@ export const StatValue = styled.div<{ color: string }>`
 `;
 
 export const MainGameArea = styled.div`
-  flex: 3;
+  flex: 75% 0 0;
   padding: 0.5vw;
   display: flex;
   flex-direction: column;
   gap: 1vw;
+  & > div {
+    width: 100%;
+  }
 `;
 
 export const DeckAreaContainer = styled.div`
@@ -485,9 +488,8 @@ export const ReorderGroup = styled(Reorder.Group)`
 `;
 
 export const CardSlot = styled.div<{ index: number; totalCards: number }>`
-  margin-left: ${(props) =>
-    props.index > 0 ? `-${Math.min(10 + props.totalCards, 10)}px` : "0"};
   position: relative;
+  width: ${({ totalCards }) => `${50 / totalCards}vw`};
 `;
 
 export const ActionButtonsContainer = styled.div`

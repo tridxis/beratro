@@ -1,6 +1,5 @@
-import { Flower, HandType, Unit } from "@/utils/constants";
+import { HandType, Unit } from "@/utils/constants";
 import { CardPosition } from "./cards";
-import { BeraPosition } from "./beras";
 
 export type PokerHand = {
   handType: HandType;
@@ -10,8 +9,8 @@ export type PokerHand = {
 };
 
 export type Breakdown = {
-  cards: number[];
-  beras: number[];
+  cards: string[];
+  beras: string[];
   values: number[];
   units: Unit[];
   chips: number;

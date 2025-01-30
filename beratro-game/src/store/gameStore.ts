@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { BoosterPosition, type CardPosition } from "@/types/cards";
@@ -22,6 +23,7 @@ import { shuffleCards } from "@/utils/cards";
 import { STICKER_STATS, StickerRarity } from "@/utils/stickerStats";
 import { FLOWER_STATS } from "@/utils/flowerStats";
 import { MEME_STATS } from "@/utils/memeStats";
+import { v4 as uuidv4 } from "uuid";
 
 const getRoundReqScore = (round: number) => {
   if (round <= 10) {
@@ -104,8 +106,9 @@ export const useGameStore = create<GameStore>()(
             };
           }),
 
-        buyBera: (id: number) =>
+        buyBera: (id: string) =>
           set((state) => {
+            if (state.playingBeras.length >= state.maxBeras) return state;
             const bera = state.shopBeras.find((b) => b.id === id);
             if (!bera) return state;
 
@@ -177,15 +180,15 @@ export const useGameStore = create<GameStore>()(
 
         setHandCards: (handCards: CardPosition[]) => set({ handCards }),
         setDeckCards: (deckCards: CardPosition[]) => set({ deckCards }),
-        setSelectedCards: (selectedCards: number[]) => set({ selectedCards }),
+        setSelectedCards: (selectedCards: string[]) => set({ selectedCards }),
 
-        toggleSelectedCard: (id: number) =>
+        toggleSelectedCard: (id: string) =>
           set((state: GameStore) => ({
             selectedCards: state.selectedCards.includes(id)
               ? state.selectedCards.filter((cardId) => cardId !== id)
               : [...state.selectedCards, id],
           })),
-        convertCards: (ids: number[], card: Partial<CardPosition>) =>
+        convertCards: (ids: string[], card: Partial<CardPosition>) =>
           set((state: GameStore) => ({
             handCards: state.handCards.map((c) =>
               ids.includes(c.id)
@@ -223,7 +226,7 @@ export const useGameStore = create<GameStore>()(
               })),
           })),
 
-        reorderCards: (newOrder: number[]) =>
+        reorderCards: (newOrder: string[]) =>
           set((state: GameStore) => ({
             handCards: state.handCards
               .map((card) => ({
@@ -239,7 +242,12 @@ export const useGameStore = create<GameStore>()(
             console.log("availableSpace", availableSpace);
             const cardsToDeal = count ?? availableSpace;
 
-            const dealtCards = state.deckCards.slice(0, cardsToDeal);
+            const dealtCards = state.deckCards
+              .slice(0, cardsToDeal)
+              .map((card) => ({
+                ...card,
+                id: uuidv4(), // Generate new UUID for each dealt card
+              }));
             const remainingDeck = state.deckCards.slice(cardsToDeal);
 
             return {
@@ -401,7 +409,7 @@ export const useGameStore = create<GameStore>()(
               boosters: [
                 ...state.boosters,
                 {
-                  id: nextIndex,
+                  id: uuidv4(),
                   index: nextIndex,
                   booster,
                   boosterType,
@@ -439,57 +447,54 @@ export const useGameStore = create<GameStore>()(
           if (gold < price) return;
 
           // Generate available items to pick from
-          const cards = shuffleCards(initCards()); // All 52 standard cards
+          const cards = shuffleCards(initCards()).map((card) => ({
+            ...card,
+            id: uuidv4(), // Generate UUID for each card
+            index: card.index,
+          }));
+
           const stickers = Object.entries(STICKER_STATS)
             .map(([key, stat]) => {
               if (stat.rarity === StickerRarity.UNCOMMON) {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-return
                 return Array(2).fill(key);
               } else if (stat.rarity === StickerRarity.RARE) {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-return
                 return Array(1).fill(key);
               }
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-return
               return Array(4).fill(key);
             })
             .flat()
             .map(
               (sticker: string, index) =>
                 ({
-                  id: index + cards.length + 1,
-                  index: index + cards.length + 1,
+                  id: uuidv4(), // Only id uses UUID
+                  index: index + cards.length + 1, // Keep numeric index
                   booster: sticker,
                   boosterType: "sticker",
                 } as BoosterPosition)
             );
+
           const flowers = Object.values(Flower)
-            .map((flower) => {
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-              return Array(4).fill(flower);
-            })
+            .map((flower) => Array(4).fill(flower))
             .flat()
             .map(
               (flower: string, index) =>
                 ({
-                  id: index + cards.length + stickers.length + 1,
-                  index: index + cards.length + stickers.length + 1,
+                  id: uuidv4(), // Only id uses UUID
+                  index: index + cards.length + stickers.length + 1, // Keep numeric index
                   booster: flower,
                   boosterType: "flower",
                 } as BoosterPosition)
             );
+
           const memes = Object.values(Meme)
-            .map((meme) => {
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-              return Array(4).fill(meme);
-            })
+            .map((meme) => Array(4).fill(meme))
             .flat()
             .map(
               (meme: string, index) =>
                 ({
-                  id:
-                    index + cards.length + stickers.length + flowers.length + 1,
+                  id: uuidv4(), // Only id uses UUID
                   index:
-                    index + cards.length + stickers.length + flowers.length + 1,
+                    index + cards.length + stickers.length + flowers.length + 1, // Keep numeric index
                   booster: meme,
                   boosterType: "meme",
                 } as BoosterPosition)
@@ -519,15 +524,13 @@ export const useGameStore = create<GameStore>()(
 
             const updated: GameStore = {};
 
-            // check if item is card (not having booster) add to deck
-
             if (!("booster" in item)) {
               updated.deckCards = shuffleCards([
                 ...state.deckCards,
                 {
                   ...item,
                   index: state.deckCards.length,
-                  id: state.deckCards.length,
+                  id: uuidv4(), // Generate new UUID when adding to deck
                 },
               ]) as CardPosition[];
             } else {
@@ -544,7 +547,7 @@ export const useGameStore = create<GameStore>()(
           }),
         setSelectedBooster: (booster: BoosterPosition | null) =>
           set({ selectedBooster: booster }),
-        setSelectedBera: (bera: number | null) => set({ selectedBera: bera }),
+        setSelectedBera: (bera: string | null) => set({ selectedBera: bera }),
       };
     },
     {

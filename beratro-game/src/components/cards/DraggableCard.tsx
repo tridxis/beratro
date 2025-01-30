@@ -13,7 +13,7 @@ const DraggableCard = ({
 }: {
   card: CardPosition;
   isSelected: boolean;
-  onSelect: (id: number) => void;
+  onSelect: (id: string) => void;
   className: string;
 }) => {
   const isDragging = useRef(false);
@@ -70,10 +70,15 @@ const DraggableCard = ({
         duration: 0.1,
       }}
     >
-      <div style={CARD_STYLES.topRank}>{rank}</div>
-
+      <div style={CARD_STYLES.topRank}>
+        {rank}
+        <div style={CARD_STYLES.topSuit}>{SUIT_SYMBOLS[suit]}</div>
+      </div>
       <div style={CARD_STYLES.suit}>{SUIT_SYMBOLS[suit]}</div>
-      <div style={CARD_STYLES.bottomRank}>{rank}</div>
+      <div style={CARD_STYLES.bottomRank}>
+        {rank}
+        <div style={CARD_STYLES.bottomSuit}>{SUIT_SYMBOLS[suit]}</div>
+      </div>
       {!!fruitSticker && (
         <div style={CARD_STYLES.fruitSticker}>
           {STICKER_STATS[fruitSticker].emoji}

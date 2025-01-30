@@ -2,6 +2,7 @@ import { Flower, GameAction, MEMES, Sticker, Unit } from "./constants";
 import { GameStore } from "@/types/games";
 import { FLOWER_STATS, FlowerStats } from "./flowerStats";
 import { Booster } from "@/components/cards/Booster";
+import { v4 as uuidv4 } from "uuid";
 
 export enum StickerRarity {
   COMMON = "COMMON",
@@ -10,7 +11,7 @@ export enum StickerRarity {
 }
 
 export type StickerStats = {
-  id: number;
+  id: string;
   name: string;
   description: string;
   type: Unit;
@@ -23,7 +24,7 @@ export type StickerStats = {
 
 export const STICKER_STATS: Record<Sticker, StickerStats> = {
   [Sticker.BLUEBERRY]: {
-    id: 1,
+    id: uuidv4(),
     name: "Blueberry",
     description: "+50 Chips when this card is scored",
     type: Unit.CHIPS,
@@ -34,7 +35,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     emoji: "🫐",
   },
   [Sticker.STRAWBERRY]: {
-    id: 2,
+    id: uuidv4(),
     name: "Strawberry",
     description: "+10 Mult when this card is scored",
     type: Unit.MULT,
@@ -46,7 +47,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
   },
 
   [Sticker.CHILLI]: {
-    id: 3,
+    id: uuidv4(),
     name: "Chilli",
     description: "x1.5 Mult when this card is scored",
     type: Unit.X_MULT,
@@ -57,7 +58,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     emoji: "🌶️",
   },
   [Sticker.TOMATO]: {
-    id: 4,
+    id: uuidv4(),
     name: "Tomato",
     description: "x1.5 Mult while this card stays in hand",
     type: Unit.X_MULT,
@@ -68,7 +69,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     emoji: "🍅",
   },
   [Sticker.BANANA]: {
-    id: 5,
+    id: uuidv4(),
     name: "Banana",
     description: "Earn $3 when this card is scored",
     type: Unit.GOLD,
@@ -79,7 +80,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     emoji: "🍌",
   },
   [Sticker.BEE]: {
-    id: 6,
+    id: uuidv4(),
     name: "Bee",
     description: "Earn $3 when this card stays in hand at the end of the round",
     action: GameAction.ON_ENDED,
@@ -93,7 +94,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     emoji: "🐝",
   },
   [Sticker.FROG]: {
-    id: 7,
+    id: uuidv4(),
     name: "Frog",
     description: "Create meme when this card is discarded",
     type: Unit.MEME,
@@ -105,7 +106,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
       state.activateBooster({
         booster: randomMeme,
         boosterType: "meme",
-        id: 0,
+        id: uuidv4(),
         index: 0,
       });
       return 1;
@@ -113,7 +114,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     emoji: "🐸",
   },
   [Sticker.BUTTERFLY]: {
-    id: 8,
+    id: uuidv4(),
     name: "Butterfly",
     description:
       "Create flower while this card stays in hand at the end of the round",
@@ -122,21 +123,18 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     rarity: StickerRarity.UNCOMMON,
     kind: "animal",
     trigger: (state: GameStore) => {
-      // Get the last played hand
       const lastHandType = state.lastHandType;
-
       if (!lastHandType) return 0;
 
-      // Get array of flower IDs from FLOWER_STATS
       const [flowerKey, flower] = Object.entries(FLOWER_STATS).find(
-        ([_, flower]) => flower.hand === lastHandType
+        ([, flower]) => flower.hand === lastHandType
       ) as [string, FlowerStats];
       if (!flower) return 0;
 
       state.activateBooster({
         booster: flowerKey as Flower,
         boosterType: "flower",
-        id: 0,
+        id: uuidv4(),
         index: 0,
       });
 
@@ -145,7 +143,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     emoji: "🦋",
   },
   [Sticker.PANDA]: {
-    id: 9,
+    id: uuidv4(),
     name: "Panda",
     description: "Retrigger this card 1 time",
     type: Unit.RETRIGGER,
@@ -156,7 +154,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     emoji: "🐼",
   },
   [Sticker.EARTH]: {
-    id: 10,
+    id: uuidv4(),
     name: "Earth",
     description: "+10 Mult when this card is scored",
     type: Unit.MULT,
@@ -167,7 +165,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     emoji: "🪨",
   },
   [Sticker.WATER]: {
-    id: 11,
+    id: uuidv4(),
     name: "Water",
     description: "+50 Chips when this card is scored",
     type: Unit.CHIPS,
@@ -178,7 +176,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     emoji: "💧",
   },
   [Sticker.FIRE]: {
-    id: 12,
+    id: uuidv4(),
     name: "Fire",
     description: "x1.5 Mult when this card is scored",
     type: Unit.X_MULT,
@@ -189,7 +187,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     emoji: "🔥",
   },
   [Sticker.AIR]: {
-    id: 13,
+    id: uuidv4(),
     name: "Air",
     description: "Cost 0 slot",
     action: GameAction.INDEP,

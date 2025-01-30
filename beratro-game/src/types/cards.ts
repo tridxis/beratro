@@ -1,7 +1,7 @@
 import { CardRank, CardSuit, Flower, Meme, Sticker } from "@/utils/constants";
 
 export interface CardPosition {
-  id: number;
+  id: string;
   rank: CardRank;
   suit: CardSuit;
   index: number;
@@ -13,7 +13,7 @@ export interface CardPosition {
 }
 
 export interface BoosterPosition {
-  id: number;
+  id: string;
   booster: Flower | Sticker | Meme;
   boosterType: "flower" | "sticker" | "meme";
   index: number;
