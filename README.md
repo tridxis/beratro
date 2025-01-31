@@ -366,6 +366,16 @@ So there are nothing new today sorry
 
 Seey 🍀
 
+## Day 29
+
+Just play around then fix and fix
+
+From tomorrow I will update diary when having some important changes
+
+Today I changed all id from number to uuid to avoid duplicate
+
+Seey 🍀
+
 
 
 
