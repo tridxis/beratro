@@ -17,11 +17,11 @@ export const isStraight = (
 
   // Check for A-5 straight
   if (
-    sortedRanks[0] === CARD_RANKS[CardRank.ACE] &&
-    sortedRanks[1] === 2 &&
-    sortedRanks[2] === 3 &&
-    sortedRanks[3] === 4 &&
-    sortedRanks[4] === 5
+    sortedRanks[4] === CARD_RANKS[CardRank.ACE] &&
+    sortedRanks[0] === 2 &&
+    sortedRanks[1] === 3 &&
+    sortedRanks[2] === 4 &&
+    sortedRanks[3] === 5
   ) {
     return { isValid: true, scoredCards: cards };
   }

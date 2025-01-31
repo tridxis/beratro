@@ -1,7 +1,6 @@
 import { Flower, GameAction, MEMES, Sticker, Unit } from "./constants";
 import { GameStore } from "@/types/games";
 import { FLOWER_STATS, FlowerStats } from "./flowerStats";
-import { Booster } from "@/components/cards/Booster";
 import { v4 as uuidv4 } from "uuid";
 
 export enum StickerRarity {

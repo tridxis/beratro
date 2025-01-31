@@ -22,7 +22,10 @@ export const MEME_STATS: Record<Meme, MemeStats> = {
     trigger: (state) => {
       if (state.selectedCards.length !== 2) return false;
       const [left, right] = state.selectedCards;
-      state.convertCards([left], state.handCards[right]);
+      state.convertCards(
+        [left],
+        (state.handCards || []).find((card) => card.id === right) || {}
+      );
       return true;
     },
   },
