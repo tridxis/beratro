@@ -303,9 +303,11 @@ export const BuyButton = styled(Button)`
 export const BottomButtonContainer = styled.div`
   position: absolute;
   bottom: -1vw;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
   display: flex;
+  justify-content: center;
+  align-items: center;
   gap: 0.5vw;
   z-index: 10;
 
@@ -339,6 +341,7 @@ export const ShopItemsGrid = styled.div`
 `;
 
 export const ShopItem = styled.div`
+  cursor: pointer;
   background-color: ${CARD_STYLES.container.backgroundColor};
   border: ${CARD_STYLES.container.border};
   border-radius: 8px;

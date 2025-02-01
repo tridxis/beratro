@@ -7,6 +7,7 @@ export type BeraStats = {
   values: [number, number, number]; // tuple of 3 numbers
   type: BeraType;
   action: GameAction;
+  cumulative?: boolean;
   trigger: (value: number, cards: CardPosition[], state: GameStore) => number;
 };
 
@@ -272,6 +273,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     values: [1, 1.5, 2],
     type: BeraType.MUL_MULT,
     action: GameAction.INDEP,
+    cumulative: true,
     trigger: (value: number, cards: CardPosition[], state: GameStore) => {
       const discaredAces = state.discards
         .flat()
@@ -371,6 +373,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     values: [0.1, 0.2, 0.3],
     type: BeraType.MUL_MULT,
     action: GameAction.INDEP,
+    cumulative: true,
     trigger: (value: number, cards: CardPosition[], state: GameStore) => {
       const times = state.usedFlowers.length;
       return times > 0 ? 1 + value * times : 1;
@@ -384,6 +387,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     values: [50, 75, 100],
     type: BeraType.ADD_CHIPS,
     action: GameAction.INDEP,
+    cumulative: true,
     trigger: (value: number, cards: CardPosition[], state: GameStore) => {
       return state.addedCards.length > 0
         ? value * state.addedCards.flat().length
@@ -486,6 +490,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     values: [0.25, 0.5, 0.75],
     type: BeraType.MUL_MULT,
     action: GameAction.INDEP,
+    cumulative: true,
     trigger: (value: number, cards: CardPosition[], state: GameStore) => {
       return state.playingBeras.length > 0
         ? 1 +
@@ -532,6 +537,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     values: [5, 10, 15],
     type: BeraType.INCREASE_CHIPS,
     action: GameAction.ON_SCORED,
+    cumulative: true,
     trigger: (value: number) => {
       return value;
     },
@@ -562,6 +568,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     values: [0.1, 0.2, 0.3],
     type: BeraType.MUL_MULT,
     action: GameAction.INDEP,
+    cumulative: true,
     trigger: (value: number, cards: CardPosition[], state: GameStore) => {
       let count = 0;
       state.playedHands.forEach((hand) => {

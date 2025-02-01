@@ -82,6 +82,11 @@ export const useGameStore = create<GameStore>()(
         selectedBooster: null,
         handLevels: {},
         selectedBera: null,
+        boughtPacks: {
+          [BoosterPack.BASIC]: false,
+          [BoosterPack.PREMIUM]: false,
+          [BoosterPack.ULTRA]: false,
+        },
 
         endRound: (goldEarned: number) =>
           set((state) => {
@@ -153,6 +158,13 @@ export const useGameStore = create<GameStore>()(
             lastHandType: null,
             selectedPack: null,
             selectedBooster: null,
+            handLevels: {},
+            selectedBera: null,
+            boughtPacks: {
+              [BoosterPack.BASIC]: false,
+              [BoosterPack.PREMIUM]: false,
+              [BoosterPack.ULTRA]: false,
+            },
           }));
         },
 
@@ -242,13 +254,11 @@ export const useGameStore = create<GameStore>()(
             console.log("availableSpace", availableSpace);
             const cardsToDeal = count ?? availableSpace;
 
-            const dealtCards = state.deckCards
-              .slice(0, cardsToDeal)
-              .map((card) => ({
-                ...card,
-                id: uuidv4(), // Generate new UUID for each dealt card
-              }));
+            const dealtCards = state.deckCards.slice(0, cardsToDeal);
             const remainingDeck = state.deckCards.slice(cardsToDeal);
+
+            console.log("dealtCards", dealtCards);
+            console.log("remainingDeck", remainingDeck);
 
             return {
               handCards: [...state.handCards, ...dealtCards],
@@ -392,6 +402,8 @@ export const useGameStore = create<GameStore>()(
                 boosters: state.boosters.filter((b) => b.id !== booster.id),
               };
             }
+            state.selectedCards = [];
+            state.selectedBera = null;
             return state;
           }),
         modifyGold: (value: number) =>
@@ -433,6 +445,11 @@ export const useGameStore = create<GameStore>()(
             currentState: GameState.PLAYING,
             playedHands: [],
             discards: [],
+            boughtPacks: {
+              [BoosterPack.BASIC]: false,
+              [BoosterPack.PREMIUM]: false,
+              [BoosterPack.ULTRA]: false,
+            },
             deckCards: shuffleCards([
               ...state.deckCards,
               ...state.handCards,
@@ -442,9 +459,15 @@ export const useGameStore = create<GameStore>()(
           }));
         },
         buyPack: (boosterPack: BoosterPack) => {
+          const state = get();
           const { price, items } = BOOSTER_PACK_INFO[boosterPack];
-          const { gold } = get();
-          if (gold < price) return;
+
+          // Check if already bought this pack type
+          if (state.boughtPacks[boosterPack]) {
+            return;
+          }
+
+          if (state.gold < price) return;
 
           // Generate available items to pick from
           const cards = shuffleCards(initCards()).map((card) => ({
@@ -513,6 +536,10 @@ export const useGameStore = create<GameStore>()(
 
           set((state) => ({
             gold: state.gold - price,
+            boughtPacks: {
+              ...state.boughtPacks,
+              [boosterPack]: true,
+            },
             selectedPack: { boosterPack, items: packItems, picked: 0 },
           }));
         },
@@ -525,14 +552,16 @@ export const useGameStore = create<GameStore>()(
             const updated: GameStore = {};
 
             if (!("booster" in item)) {
+              const newCard: CardPosition = {
+                ...item,
+                index: state.deckCards.length,
+                id: uuidv4(), // Generate new UUID when adding to deck
+              };
               updated.deckCards = shuffleCards([
                 ...state.deckCards,
-                {
-                  ...item,
-                  index: state.deckCards.length,
-                  id: uuidv4(), // Generate new UUID when adding to deck
-                },
+                newCard,
               ]) as CardPosition[];
+              updated.addedCards = [...state.addedCards, [newCard]];
             } else {
               updated.boosters = [...state.boosters, item];
             }

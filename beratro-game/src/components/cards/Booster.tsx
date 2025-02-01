@@ -1,4 +1,5 @@
 import React from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { CARD_STYLES } from "@/utils/cardStyles";
 import { BoosterPosition } from "@/types/cards";
 import { MEME_STATS } from "@/utils/memeStats";
@@ -63,26 +64,41 @@ export const Booster = ({
           {description}
         </div>
       </div>
-      {isSelected && (
-        <BottomButtonContainer onClick={(e) => e.stopPropagation()}>
-          <UseButton
-            onClick={(e) => {
-              e.stopPropagation();
-              onUse?.();
-            }}
+      <AnimatePresence>
+        {isSelected && (
+          <BottomButtonContainer
+            as={motion.div}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.2 }}
+            onClick={(e) => e.stopPropagation()}
           >
-            Use
-          </UseButton>
-          <SellButton
-            onClick={(e) => {
-              e.stopPropagation();
-              onSell?.();
-            }}
-          >
-            Sell
-          </SellButton>
-        </BottomButtonContainer>
-      )}
+            <UseButton
+              as={motion.button}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onUse?.();
+              }}
+            >
+              Use
+            </UseButton>
+            <SellButton
+              as={motion.button}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onSell?.();
+              }}
+            >
+              Sell
+            </SellButton>
+          </BottomButtonContainer>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

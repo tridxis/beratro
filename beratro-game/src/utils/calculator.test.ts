@@ -86,7 +86,7 @@ describe("Calculator", () => {
       expect(result.playingBreakdowns).toContainEqual(
         expect.objectContaining({
           cards: ["1"],
-          values: [10],
+          values: [21],
           units: [Unit.CHIPS],
         })
       );
@@ -265,7 +265,7 @@ describe("Calculator", () => {
 
     it("should apply STAR bera effect based on bera levels", () => {
       mockGameStore.playingBeras = [
-        { bera: Bera.STAR, level: 0, id: "star", index: 0 },
+        { bera: Bera.STAR, level: 1, id: "star", index: 0 },
         { bera: Bera.BABY, level: 2, id: "baby", index: 1 },
         { bera: Bera.HEART, level: 1, id: "heart", index: 2 },
       ];
@@ -275,7 +275,7 @@ describe("Calculator", () => {
       expect(result.playingBreakdowns).toContainEqual(
         expect.objectContaining({
           beras: ["star"],
-          values: [1.75], // 1 + (0.25 * 3)
+          values: [2], // 1 + (0.25 * 4)
           units: [Unit.X_MULT],
         })
       );

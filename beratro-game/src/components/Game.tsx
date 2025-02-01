@@ -9,6 +9,7 @@ import {
   BOOSTER_PACK_INFO,
   BOOSTER_PACKS,
   GameAction,
+  HAND_VALUES,
   Sticker,
   Unit,
 } from "@/utils/constants";
@@ -85,6 +86,7 @@ import useCalculator from "@/hooks/useCalculator";
 import { BeraPosition } from "@/types/beras";
 import { Booster } from "./cards/Booster";
 import { STICKER_STATS } from "@/utils/stickerStats";
+import { motion } from "framer-motion";
 
 export const Game = () => {
   const state = useGameStore();
@@ -131,6 +133,7 @@ export const Game = () => {
     setSelectedBera,
     modifyGold,
     setHandCards,
+    boughtPacks,
   } = state;
 
   console.log(handCards);
@@ -445,6 +448,9 @@ export const Game = () => {
     );
   }, [gold, roundGold, maxHands, playedHands.length, bonusGolds]);
 
+  const pokerHand =
+    pokerHandRef.current?.handType || previewPokerHand?.handType;
+
   return (
     <GameContainer>
       <LeftArea>
@@ -483,18 +489,32 @@ export const Game = () => {
           </BentoBox>
 
           <HandScoreContainer>
-            <HandTypeText>
-              {pokerHandRef.current?.handType || previewPokerHand?.handType}
-            </HandTypeText>
-            <ScoreDisplay>
-              <ChipsDisplay
-                value={currentBreakdown?.chips || previewPokerHand?.chips || 0}
-              />
-              <span style={{ fontSize: "2vw" }}>×</span>
-              <MultiplierDisplay
-                value={currentBreakdown?.mult || previewPokerHand?.mult || 0}
-              />
-            </ScoreDisplay>
+            {!!pokerHand && (
+              <>
+                <HandTypeText>
+                  {pokerHand} Lvl {handLevels[pokerHand] || 1}
+                </HandTypeText>
+                <ScoreDisplay>
+                  <ChipsDisplay
+                    value={
+                      currentBreakdown?.chips ||
+                      (previewPokerHand?.chips || 0) +
+                        ((handLevels[pokerHand] || 1) - 1) *
+                          HAND_VALUES[pokerHand].chipsLvl
+                    }
+                  />
+                  <span style={{ fontSize: "2vw" }}>×</span>
+                  <MultiplierDisplay
+                    value={
+                      currentBreakdown?.mult ||
+                      (previewPokerHand?.mult || 0) +
+                        ((handLevels[pokerHand] || 1) - 1) *
+                          HAND_VALUES[pokerHand].multLvl
+                    }
+                  />
+                </ScoreDisplay>
+              </>
+            )}
           </HandScoreContainer>
 
           <StatsGrid>
@@ -541,21 +561,47 @@ export const Game = () => {
                     {BERA_STATS[bera.bera].description.replace(
                       "{{value}}",
                       BERA_STATS[bera.bera].values[0].toString()
+                    )}{" "}
+                    {BERA_STATS[bera.bera].cumulative && (
+                      <>
+                        (Current:{" "}
+                        {BERA_STATS[bera.bera].type === BeraType.MUL_MULT
+                          ? "×"
+                          : "+"}
+                        {BERA_STATS[bera.bera].trigger(
+                          BERA_STATS[bera.bera].values[0],
+                          [],
+                          state
+                        )}
+                        )
+                      </>
                     )}
                   </span>
                   {renderBreakdownBera(bera)}
-                  {selectedBera === bera.id && (
-                    <BottomButtonContainer onClick={(e) => e.stopPropagation()}>
-                      <SellButton
-                        onClick={() => {
-                          // Handle remove action
-                          console.log("Remove bera", bera);
-                        }}
+                  <AnimatePresence>
+                    {selectedBera === bera.id && (
+                      <BottomButtonContainer
+                        as={motion.div}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        transition={{ duration: 0.2 }}
+                        onClick={(e) => e.stopPropagation()}
                       >
-                        Sell
-                      </SellButton>
-                    </BottomButtonContainer>
-                  )}
+                        <SellButton
+                          as={motion.button}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => {
+                            // Handle remove action
+                            console.log("Remove bera", bera);
+                          }}
+                        >
+                          Sell
+                        </SellButton>
+                      </BottomButtonContainer>
+                    )}
+                  </AnimatePresence>
                 </ShopItem>
               ))}
             </DeckContainer>
@@ -624,18 +670,22 @@ export const Game = () => {
                 <ShopSection>
                   <ShopItemGrid>
                     <div></div>
-                    {BOOSTER_PACKS.map((item, index) => (
-                      <ShopItem key={`pack-${index}`}>
-                        <PriceTag>${item.price}</PriceTag>
-                        {item.name}
-                        <BuyButton
-                          onClick={() => buyPack(item.type)}
-                          disabled={gold < item.price}
-                        >
-                          Buy
-                        </BuyButton>
-                      </ShopItem>
-                    ))}
+                    {BOOSTER_PACKS.map((item, index) =>
+                      boughtPacks[item.type] ? (
+                        <div key={`pack-${index}`}></div>
+                      ) : (
+                        <ShopItem key={`pack-${index}`}>
+                          <PriceTag>${item.price}</PriceTag>
+                          {item.name}
+                          <BuyButton
+                            onClick={() => buyPack(item.type)}
+                            disabled={gold < item.price}
+                          >
+                            Buy
+                          </BuyButton>
+                        </ShopItem>
+                      )
+                    )}
                   </ShopItemGrid>
                 </ShopSection>
               </ShopItemsGrid>

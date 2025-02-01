@@ -40,8 +40,14 @@ export class Calculator {
     );
 
     const pokerHand = this.identifyPokerHand(playedCards);
-    let totalMult = pokerHand.mult;
-    let totalChips = pokerHand.chips;
+    let totalMult =
+      pokerHand.mult +
+      ((state.handLevels[pokerHand.handType] || 1) - 1) *
+        HAND_VALUES[pokerHand.handType].multLvl;
+    let totalChips =
+      pokerHand.chips +
+      ((state.handLevels[pokerHand.handType] || 1) - 1) *
+        HAND_VALUES[pokerHand.handType].chipsLvl;
     const breakdowns: Breakdown[] = [];
     state.playingBeras
       .filter((bera) => BERA_STATS[bera.bera].action === GameAction.ON_PLAYED)
@@ -297,18 +303,19 @@ export class Calculator {
         value = CARD_RANKS[card.rank];
       }
       chips += value;
+
       if (card.chips) {
         chips += card.chips;
-        if (options?.breakdown) {
-          breakdowns.push({
-            cards: [card.id],
-            beras: [],
-            values: [card.chips],
-            units: [Unit.CHIPS],
-            chips,
-            mult,
-          });
-        }
+      }
+      if (options?.breakdown) {
+        breakdowns.push({
+          cards: [card.id],
+          beras: [],
+          values: [value + (card.chips || 0)],
+          units: [Unit.CHIPS],
+          chips,
+          mult,
+        });
       }
       if (card.mult) {
         mult += card.mult;
@@ -376,16 +383,6 @@ export class Calculator {
             });
           }
         }
-      }
-      if (options?.breakdown) {
-        breakdowns.push({
-          cards: [card.id],
-          beras: [],
-          values: [value],
-          units: [Unit.CHIPS],
-          chips,
-          mult,
-        });
       }
 
       state.playingBeras
