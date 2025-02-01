@@ -134,6 +134,8 @@ export const Game = () => {
     modifyGold,
     setHandCards,
     boughtPacks,
+    sellBera,
+    sellBooster,
   } = state;
 
   console.log(handCards);
@@ -593,8 +595,7 @@ export const Game = () => {
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={() => {
-                            // Handle remove action
-                            console.log("Remove bera", bera);
+                            sellBera(bera.id);
                           }}
                         >
                           Sell
@@ -616,6 +617,9 @@ export const Game = () => {
                   isSelected={selectedBooster?.id === booster.id}
                   onUse={() => {
                     activateBooster(booster);
+                  }}
+                  onSell={() => {
+                    sellBooster(booster.id);
                   }}
                   onClick={(e) => {
                     e.stopPropagation();
@@ -699,6 +703,7 @@ export const Game = () => {
                 <CardRow isLastPlayed={false}>
                   {selectedPack.items.map((item) => (
                     <CardWrapper
+                      totalCards={selectedPack.items.length}
                       key={item.id}
                       index={item.index}
                       onClick={() => pickItemFromPack(item)}

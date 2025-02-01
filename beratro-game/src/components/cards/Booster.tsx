@@ -94,7 +94,7 @@ export const Booster = ({
                 onSell?.();
               }}
             >
-              Sell
+              Sell 2$
             </SellButton>
           </BottomButtonContainer>
         )}

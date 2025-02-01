@@ -423,8 +423,8 @@ export const CardRow = styled.div<{ isLastPlayed: boolean }>`
   transform: ${(props) => (props.isLastPlayed ? "scale(1.05)" : "scale(1)")};
 `;
 
-export const CardWrapper = styled.div<{ index: number }>`
-  margin-left: ${(props) => (props.index > 0 ? "2vw" : "0")};
+export const CardWrapper = styled.div<{ index: number; totalCards: number }>`
+  width: ${({ totalCards }) => `${50 / totalCards}vw`};
   position: relative;
   z-index: ${(props) => props.index};
 `;

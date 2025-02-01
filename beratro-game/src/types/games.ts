@@ -88,6 +88,8 @@ export interface GameStore {
   setSelectedBooster: (booster: BoosterPosition | null) => void;
   setSelectedBera: (bera: string | null) => void;
   boughtPacks: Record<BoosterPack, boolean>;
+  sellBera: (bera: string) => void;
+  sellBooster: (booster: string) => void;
 }
 
 export type CalculationOption = {

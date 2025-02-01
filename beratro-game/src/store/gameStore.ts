@@ -577,6 +577,34 @@ export const useGameStore = create<GameStore>()(
         setSelectedBooster: (booster: BoosterPosition | null) =>
           set({ selectedBooster: booster }),
         setSelectedBera: (bera: string | null) => set({ selectedBera: bera }),
+        sellBera: (id: string) =>
+          set((state) => {
+            const bera = state.playingBeras.find((b) => b.id === id);
+            if (!bera) return state;
+
+            // Get half the original cost back (rounded down)
+            const refund = Math.floor(BERA_STATS[bera.bera].cost / 2);
+
+            return {
+              playingBeras: state.playingBeras.filter((b) => b.id !== id),
+              gold: state.gold + refund,
+              selectedBera: null, // Clear selection after selling
+            };
+          }),
+        sellBooster: (id: string) =>
+          set((state) => {
+            const booster = state.boosters.find((b) => b.id === id);
+            if (!booster) return state;
+
+            // Fixed price of $2 for selling boosters
+            const refund = 2;
+
+            return {
+              boosters: state.boosters.filter((b) => b.id !== id),
+              gold: state.gold + refund,
+              selectedBooster: null, // Clear selection after selling
+            };
+          }),
       };
     },
     {
