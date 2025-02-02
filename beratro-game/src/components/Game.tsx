@@ -319,7 +319,6 @@ export const Game = () => {
               [],
               state
             );
-            console.log("value", value);
             switch (BERA_STATS[bera.bera].type) {
               case BeraType.ADD_GOLD:
                 modifyGold(value);
@@ -414,7 +413,7 @@ export const Game = () => {
   // console.log("playingBeras", playingBeras);
   // console.log("handCards", handCards);
   // console.log("handLevels", handLevels);
-  console.log("deckCards", deckCards);
+  // console.log("deckCards", deckCards);
 
   const renderBreakdownCard = (card: CardPosition) => {
     if (!currentBreakdown) return <></>;

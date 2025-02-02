@@ -254,6 +254,7 @@ export const useGameStore = create<GameStore>()(
           set((state) => {
             const availableSpace = state.getHandSize() - state.handCards.length;
             console.log("availableSpace", availableSpace);
+            console.log("state.deckCards", state.deckCards);
             const cardsToDeal = count ?? availableSpace;
 
             const dealtCards = state.deckCards.slice(0, cardsToDeal);
@@ -444,6 +445,7 @@ export const useGameStore = create<GameStore>()(
             round: state.round + 1,
             reqScore: getRoundReqScore(state.round + 1),
             currentState: GameState.PLAYING,
+            handCards: [],
             playedHands: [],
             discards: [],
             boughtPacks: {

@@ -67,7 +67,7 @@ export const initBeras = (): {
   selectedBeras.forEach((bera) => {
     for (let i = 0; i < 8; i++) {
       deckBeras.push({
-        id: shuffledIds[deckBeras.length],
+        id: uuidv4(),
         bera,
         index: shuffledIds[deckBeras.length],
         level: 1,

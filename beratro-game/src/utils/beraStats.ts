@@ -574,7 +574,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
       state.allPlayedHands.forEach((hand) => {
         const rankCounts = countRanks(hand);
         const pairs = rankCounts.filter((count) => count >= 2);
-        if (pairs.length === 2) {
+        if (pairs.length >= 2) {
           count++;
         }
       });
