@@ -25,6 +25,7 @@ export interface GameStore {
   deckCards: CardPosition[];
   selectedCards: string[];
   playedHands: CardPosition[][];
+  allPlayedHands: CardPosition[][];
   discards: CardPosition[][];
   removedCards: CardPosition[][];
   addedCards: CardPosition[][];

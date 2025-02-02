@@ -571,10 +571,12 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     cumulative: true,
     trigger: (value: number, cards: CardPosition[], state: GameStore) => {
       let count = 0;
-      state.playedHands.forEach((hand) => {
+      state.allPlayedHands.forEach((hand) => {
         const rankCounts = countRanks(hand);
         const pairs = rankCounts.filter((count) => count >= 2);
-        count += pairs.length;
+        if (pairs.length === 2) {
+          count++;
+        }
       });
       return 1 + count * value;
     },

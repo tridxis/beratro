@@ -60,6 +60,7 @@ export const useGameStore = create<GameStore>()(
         deckCards: initCards(),
         selectedCards: [],
         playedHands: [],
+        allPlayedHands: [],
         discards: [],
         removedCards: [],
         addedCards: [],
@@ -139,6 +140,7 @@ export const useGameStore = create<GameStore>()(
             deckCards: initCards(),
             selectedCards: [],
             playedHands: [],
+            allPlayedHands: [],
             discards: [],
             removedCards: [],
             addedCards: [],
@@ -282,10 +284,11 @@ export const useGameStore = create<GameStore>()(
               handCards: remainingHandCards,
               selectedCards: [],
               playedHands: [...state.playedHands, selectedHandCards],
+              allPlayedHands: [...state.allPlayedHands, selectedHandCards],
             };
           }),
         setLastHandType: (handType: HandType) =>
-          set((state) => ({ lastHandType: handType })),
+          set(() => ({ lastHandType: handType })),
         discardSelectedCards: () =>
           set((state) => {
             const selectedHandCards = state.handCards.filter((card) =>
@@ -361,7 +364,7 @@ export const useGameStore = create<GameStore>()(
             }
             if (booster.boosterType === "sticker") {
               const sticker = STICKER_STATS[booster.booster as Sticker];
-              const updated: GameStore = {};
+              const updated = { ...state };
               if (sticker.kind === "bera") {
                 const bera = state.playingBeras.find(
                   (b) => b.id === state.selectedBera
@@ -369,7 +372,6 @@ export const useGameStore = create<GameStore>()(
                 if (bera == null) return state;
                 bera.sticker = booster.booster as Sticker;
                 updated.playingBeras = state.playingBeras;
-                // update sticker to bera card
               } else {
                 if (state.selectedCards.length !== 1) return state;
                 const card = state.handCards.find(
@@ -384,7 +386,6 @@ export const useGameStore = create<GameStore>()(
                 updated.handCards = state.handCards;
               }
 
-              // find the card that is selected then update its
               return {
                 ...updated,
                 usedStickers: [

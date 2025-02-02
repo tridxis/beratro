@@ -106,7 +106,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
         booster: randomMeme,
         boosterType: "meme",
         id: uuidv4(),
-        index: 0,
+        index: state.boosters.length,
       });
       return 1;
     },
