@@ -102,12 +102,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
     kind: "animal",
     trigger: (state) => {
       const randomMeme = MEMES[Math.floor(Math.random() * MEMES.length)];
-      state.activateBooster({
-        booster: randomMeme,
-        boosterType: "meme",
-        id: uuidv4(),
-        index: state.boosters.length,
-      });
+      state.addBooster(randomMeme, "meme");
       return 1;
     },
     emoji: "🐸",
@@ -128,15 +123,10 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
       const [flowerKey, flower] = Object.entries(FLOWER_STATS).find(
         ([, flower]) => flower.hand === lastHandType
       ) as [string, FlowerStats];
+      console.log("flowerKey", flowerKey, flower);
       if (!flower) return 0;
-
-      state.activateBooster({
-        booster: flowerKey as Flower,
-        boosterType: "flower",
-        id: uuidv4(),
-        index: 0,
-      });
-
+     
+      state.addBooster(flowerKey as Flower, "flower");
       return flower.id;
     },
     emoji: "🦋",

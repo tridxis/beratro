@@ -13,7 +13,7 @@ export function shuffleCards(
     newCards[i].index = i;
     newCards[j].index = j;
   }
-  return newCards;
+  return newCards.sort((a, b) => a.index - b.index);
 }
 
 export function isFaceCard(card: CardPosition): boolean {

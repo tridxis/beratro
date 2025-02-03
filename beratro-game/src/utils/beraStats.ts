@@ -412,7 +412,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     cost: 6,
     rarity: BeraRarity.UNCOMMON,
     values: [2, 3, 4],
-    type: BeraType.MUL_MULT,
+    type: BeraType.ADD_MULT,
     action: GameAction.INDEP,
     trigger: (value: number, cards: CardPosition[], state: GameStore) => {
       return state.discards.length > 0

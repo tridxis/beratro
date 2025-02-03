@@ -138,8 +138,6 @@ export const Game = () => {
     sellBooster,
   } = state;
 
-  console.log(handCards);
-
   const { play } = useCalculator();
 
   const [lastPlayedIndex, setLastPlayedIndex] = useState<number | null>(null);
@@ -239,6 +237,7 @@ export const Game = () => {
     );
     cards.forEach((card) => {
       const sticker = STICKER_STATS[card.animalSticker as Sticker];
+      console.log("on end sticker", sticker);
       switch (sticker.type) {
         case Unit.GOLD:
           sticker.trigger(state);
@@ -253,7 +252,6 @@ export const Game = () => {
   const handleAction = (action: "play" | "discard") => {
     if (action === "play") {
       if (playedHands.length >= maxHands) {
-        alert(`Maximum of ${maxHands} played hands reached!`);
         return;
       }
       playSelectedCards();
@@ -301,7 +299,6 @@ export const Game = () => {
       setLastPlayedIndex(playedHands.length);
     } else {
       if (discards.length >= maxDiscards) {
-        alert(`Maximum of ${maxDiscards} discards reached!`);
         return;
       }
 
@@ -437,11 +434,9 @@ export const Game = () => {
     );
   };
 
-  console.log(handCards);
-
   const goldEarned = useMemo(() => {
     return (
-      Math.floor(gold / 5) +
+      Math.min(Math.floor(gold / 5), 5) +
       roundGold +
       maxHands -
       playedHands.length +
@@ -700,20 +695,24 @@ export const Game = () => {
                   below:
                 </h3>
                 <CardRow isLastPlayed={false}>
-                  {selectedPack.items.map((item) => (
-                    <CardWrapper
-                      totalCards={selectedPack.items.length}
-                      key={item.id}
-                      index={item.index}
-                      onClick={() => pickItemFromPack(item)}
-                    >
-                      {(item as BoosterPosition).booster ? (
-                        <Booster item={item as BoosterPosition} />
-                      ) : (
-                        <DisplayCard card={item as CardPosition} />
-                      )}
-                    </CardWrapper>
-                  ))}
+                  {selectedPack.items
+                    .filter(
+                      (item) => !selectedPack.pickedItems.includes(item.id)
+                    )
+                    .map((item) => (
+                      <CardWrapper
+                        totalCards={selectedPack.items.length}
+                        key={item.id}
+                        index={item.index}
+                        onClick={() => pickItemFromPack(item)}
+                      >
+                        {(item as BoosterPosition).booster ? (
+                          <Booster item={item as BoosterPosition} />
+                        ) : (
+                          <DisplayCard card={item as CardPosition} />
+                        )}
+                      </CardWrapper>
+                    ))}
                 </CardRow>
               </div>
             )}
@@ -858,7 +857,9 @@ export const Game = () => {
                     disabled={discards.length >= maxDiscards}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => handleAction("discard")}
+                    onClick={() => {
+                      handleAction("discard");
+                    }}
                   >
                     DISCARD
                   </ActionButton>

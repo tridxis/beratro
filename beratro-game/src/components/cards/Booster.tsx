@@ -59,8 +59,8 @@ export const Booster = ({
           cursor: "pointer",
         }}
       >
-        <div style={{ fontSize: "1.2em", color: BLACK_COLOR }}>{name}</div>
-        <div style={{ fontSize: "0.8em", color: WOOD_COLOR }}>
+        <div style={{ fontSize: "1.2vw", color: BLACK_COLOR }}>{name}</div>
+        <div style={{ fontSize: "0.8vw", color: WOOD_COLOR }}>
           {description}
         </div>
       </div>

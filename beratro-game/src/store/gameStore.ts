@@ -543,14 +543,20 @@ export const useGameStore = create<GameStore>()(
               ...state.boughtPacks,
               [boosterPack]: true,
             },
-            selectedPack: { boosterPack, items: packItems, picked: 0 },
+            selectedPack: { boosterPack, items: packItems, pickedItems: [] },
           }));
         },
         pickItemFromPack: (item: CardPosition | BoosterPosition) =>
           set((state) => {
             if (!state.selectedPack) return state;
 
-            const picked = state.selectedPack.picked + 1;
+            // Check if item was already picked
+            if (state.selectedPack.pickedItems?.includes(item.id)) return state;
+
+            const pickedItems = [
+              ...(state.selectedPack.pickedItems || []),
+              item.id,
+            ];
 
             const updated: GameStore = {};
 
@@ -566,14 +572,16 @@ export const useGameStore = create<GameStore>()(
               ]) as CardPosition[];
               updated.addedCards = [...state.addedCards, [newCard]];
             } else {
+              if (state.boosters.length >= state.maxBoosters) return state;
               updated.boosters = [...state.boosters, item];
             }
 
             return {
               ...updated,
               selectedPack:
-                picked < BOOSTER_PACK_INFO[state.selectedPack.boosterPack].pick
-                  ? { ...state.selectedPack, picked }
+                pickedItems.length <
+                BOOSTER_PACK_INFO[state.selectedPack.boosterPack].pick
+                  ? { ...state.selectedPack, pickedItems }
                   : null, // Clear selected pack after picking
             };
           }),

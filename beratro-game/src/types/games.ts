@@ -81,7 +81,7 @@ export interface GameStore {
   selectedPack: {
     boosterPack: BoosterPack;
     items: (CardPosition | BoosterPosition)[];
-    picked: number;
+    pickedItems: string[];
   } | null;
   buyPack: (boosterPack: BoosterPack) => void;
   pickItemFromPack: (item: CardPosition | BoosterPosition) => void;
