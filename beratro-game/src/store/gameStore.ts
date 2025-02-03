@@ -616,6 +616,13 @@ export const useGameStore = create<GameStore>()(
               selectedBooster: null, // Clear selection after selling
             };
           }),
+        skipPack: () =>
+          set((state) => {
+            if (!state.selectedPack) return state;
+            return {
+              selectedPack: null, // Clear selected pack
+            };
+          }),
       };
     },
     {

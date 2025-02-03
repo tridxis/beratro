@@ -30,8 +30,8 @@ export const CARD_STYLES = {
   },
   fruitSticker: {
     position: "absolute",
-    top: "0.2vw",
-    right: "0.2vw",
+    bottom: "2.2vw",
+    left: "0.2vw",
     fontSize: "1.2vw",
     lineHeight: "1.2vw",
     fontWeight: "bold",

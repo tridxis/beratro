@@ -78,6 +78,7 @@ import {
   BottomButtonContainer,
   SellButton,
   StickerItem,
+  SkipButton,
 } from "./Game.styles";
 import { BLUE_COLOR, GOLD_COLOR, RED_COLOR } from "@/utils/colors";
 import { BoosterPosition, CardPosition } from "@/types/cards";
@@ -136,6 +137,7 @@ export const Game = () => {
     boughtPacks,
     sellBera,
     sellBooster,
+    skipPack,
   } = state;
 
   const { play } = useCalculator();
@@ -714,6 +716,7 @@ export const Game = () => {
                       </CardWrapper>
                     ))}
                 </CardRow>
+                <SkipButton onClick={skipPack}>Skip Pack</SkipButton>
               </div>
             )}
           </ShopContainer>

@@ -91,6 +91,7 @@ export interface GameStore {
   boughtPacks: Record<BoosterPack, boolean>;
   sellBera: (bera: string) => void;
   sellBooster: (booster: string) => void;
+  skipPack: () => void;
 }
 
 export type CalculationOption = {

@@ -565,4 +565,13 @@ export const MultiplierDisplay = styled(AnimatedValueDisplay)`
   flex: 1;
 `;
 
+export const SkipButton = styled(Button)`
+  background-color: ${WOOD_COLOR};
+  color: ${WHITE_COLOR};
+  margin-top: 1vw;
+  width: 10vw;
+  margin: 1vw auto;
+  display: block;
+`;
+
 // ... continue with other styled components as needed
