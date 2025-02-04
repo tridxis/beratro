@@ -89,6 +89,32 @@ import { Booster } from "./cards/Booster";
 import { STICKER_STATS } from "@/utils/stickerStats";
 import { motion } from "framer-motion";
 
+// Update the vibration animation to include rotation
+const vibrateAnimation = {
+  initial: { x: 0, y: 0, rotate: 0 },
+  animate: {
+    x: ["-0.1vw", "0.1vw", "-0.1vw", "0.1vw", 0],
+    y: ["0.1vw", "-0.1vw", "0.1vw", "-0.1vw", 0],
+    rotate: [-1, 1, -1, 1, 0],
+    transition: {
+      duration: ANIMATION_MS / 1000,
+      ease: "easeInOut",
+    },
+  },
+};
+
+// Add this near the top with other animations
+const hoverScaleAnimation = {
+  initial: { scale: 1 },
+  hover: {
+    scale: 1.05,
+    transition: {
+      duration: 0.2,
+      ease: "easeOut",
+    },
+  },
+};
+
 export const Game = () => {
   const state = useGameStore();
 
@@ -416,12 +442,26 @@ export const Game = () => {
 
   const renderBreakdownCard = (card: CardPosition) => {
     if (!currentBreakdown) return <></>;
-    return renderBreakdownScore(
-      card.id.toString(),
-      "card",
-      currentBreakdown.cards.map((card) => card.toString()),
-      currentBreakdown.values,
-      currentBreakdown.units
+    const hasBreakdown = currentBreakdown.cards.includes(card.id.toString());
+
+    return (
+      <>
+        {hasBreakdown && (
+          <motion.div
+            style={{ position: "absolute", width: "100%", height: "100%" }}
+            variants={vibrateAnimation}
+            initial="initial"
+            animate="animate"
+          />
+        )}
+        {renderBreakdownScore(
+          card.id.toString(),
+          "card",
+          currentBreakdown.cards.map((card) => card.toString()),
+          currentBreakdown.values,
+          currentBreakdown.units
+        )}
+      </>
     );
   };
 
@@ -544,6 +584,9 @@ export const Game = () => {
                 <ShopItem
                   key={`playing-bera-${index}`}
                   className="bera-item"
+                  as={motion.div}
+                  whileHover="hover"
+                  variants={hoverScaleAnimation}
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedBera(selectedBera === bera.id ? null : bera.id);
@@ -607,23 +650,25 @@ export const Game = () => {
           <MemesSection>
             <DeckContainer>
               {boosters.map((booster, index) => (
-                <Booster
-                  key={`booster-${index}`}
-                  item={booster}
-                  isSelected={selectedBooster?.id === booster.id}
-                  onUse={() => {
-                    activateBooster(booster);
-                  }}
-                  onSell={() => {
-                    sellBooster(booster.id);
-                  }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedBooster(
-                      selectedBooster?.id === booster.id ? null : booster
-                    );
-                  }}
-                />
+                <motion.div whileHover="hover" variants={hoverScaleAnimation}>
+                  <Booster
+                    key={`booster-${index}`}
+                    item={booster}
+                    isSelected={selectedBooster?.id === booster.id}
+                    onUse={() => {
+                      activateBooster(booster);
+                    }}
+                    onSell={() => {
+                      sellBooster(booster.id);
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedBooster(
+                        selectedBooster?.id === booster.id ? null : booster
+                      );
+                    }}
+                  />
+                </motion.div>
               ))}
             </DeckContainer>
             <DeckDescription>{boosters.length}/2</DeckDescription>
@@ -780,7 +825,21 @@ export const Game = () => {
                   <CardRow isLastPlayed={handIndex === lastPlayedIndex}>
                     {hand.map((card, index) => (
                       <CardWrapper key={card.id} index={index}>
-                        <DisplayCard card={card} />
+                        <motion.div
+                          style={{ position: "relative" }}
+                          animate={
+                            currentBreakdown?.cards.includes(card.id.toString())
+                              ? "animate"
+                              : "initial"
+                          }
+                          whileHover="hover"
+                          variants={{
+                            ...vibrateAnimation,
+                            ...hoverScaleAnimation,
+                          }}
+                        >
+                          <DisplayCard card={card} />
+                        </motion.div>
                         {renderBreakdownCard(card)}
                       </CardWrapper>
                     ))}
@@ -806,17 +865,31 @@ export const Game = () => {
                         index={index}
                         totalCards={handCards.length}
                       >
-                        <DraggableCard
-                          className="hand-card"
-                          card={card}
-                          isSelected={selectedCards.includes(card.id)}
-                          onSelect={(id) => {
-                            if (!selectedCards.includes(id)) {
-                              if (selectedCards.length >= 5) return;
-                            }
-                            toggleSelectedCard(id);
+                        <motion.div
+                          style={{ position: "relative" }}
+                          animate={
+                            currentBreakdown?.cards.includes(card.id.toString())
+                              ? "animate"
+                              : "initial"
+                          }
+                          whileHover="hover"
+                          variants={{
+                            ...vibrateAnimation,
+                            ...hoverScaleAnimation,
                           }}
-                        />
+                        >
+                          <DraggableCard
+                            className="hand-card"
+                            card={card}
+                            isSelected={selectedCards.includes(card.id)}
+                            onSelect={(id) => {
+                              if (!selectedCards.includes(id)) {
+                                if (selectedCards.length >= 5) return;
+                              }
+                              toggleSelectedCard(id);
+                            }}
+                          />
+                        </motion.div>
                         {renderBreakdownCard(card)}
                       </CardSlot>
                     ))}
