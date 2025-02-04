@@ -91,29 +91,54 @@ import { motion } from "framer-motion";
 
 // Update the vibration animation to include rotation
 const vibrateAnimation = {
-  initial: { x: 0, y: 0, rotate: 0 },
+  initial: { x: 0, y: 0, rotate: 0, transformOrigin: "center center" },
   animate: {
-    x: ["-0.1vw", "0.1vw", "-0.1vw", "0.1vw", 0],
-    y: ["0.1vw", "-0.1vw", "0.1vw", "-0.1vw", 0],
-    rotate: [-1, 1, -1, 1, 0],
+    x: [
+      0,
+      "-0.4vw",
+      "0.4vw",
+      "-0.3vw",
+      "0.3vw",
+      "-0.2vw",
+      "0.2vw",
+      "-0.1vw",
+      "0.1vw",
+      0,
+    ],
+    y: [
+      0,
+      "0.4vw",
+      "-0.4vw",
+      "0.3vw",
+      "-0.3vw",
+      "0.2vw",
+      "-0.2vw",
+      "0.1vw",
+      "-0.1vw",
+      0,
+    ],
+    rotate: [0, -4, 4, -3, 3, -2, 2, -1, 1, 0],
+    transformOrigin: "center center",
     transition: {
-      duration: ANIMATION_MS / 1000,
-      ease: "easeInOut",
+      duration: ANIMATION_MS / 3000, // Even faster duration
+      times: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1],
+      ease: "easeOut", // Changed to easeOut for Balatro-like decay
+      repeat: 0, // Single shake that decays
     },
   },
 };
 
 // Update the hover scale animation to maintain z-index
 const hoverScaleAnimation = {
-  initial: { 
+  initial: {
     scale: 1,
     transformOrigin: "center center",
   },
-  hover: { 
+  hover: {
     scale: 1.05,
     transformOrigin: "center center",
     transition: {
-      duration: 0.2,
+      duration: ANIMATION_MS / 2000,
       ease: "easeOut",
     },
   },
@@ -590,7 +615,15 @@ export const Game = () => {
                   className="bera-item"
                   as={motion.div}
                   whileHover="hover"
-                  variants={hoverScaleAnimation}
+                  variants={{
+                    ...vibrateAnimation,
+                    ...hoverScaleAnimation,
+                  }}
+                  animate={
+                    currentBreakdown?.beras.includes(bera.id.toString())
+                      ? "animate"
+                      : "initial"
+                  }
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedBera(selectedBera === bera.id ? null : bera.id);
@@ -654,9 +687,12 @@ export const Game = () => {
           <MemesSection>
             <DeckContainer>
               {boosters.map((booster, index) => (
-                <motion.div whileHover="hover" variants={hoverScaleAnimation}>
+                <motion.div
+                  key={`booster-${index}`}
+                  whileHover="hover"
+                  variants={hoverScaleAnimation}
+                >
                   <Booster
-                    key={`booster-${index}`}
                     item={booster}
                     isSelected={selectedBooster?.id === booster.id}
                     onUse={() => {
@@ -828,9 +864,13 @@ export const Game = () => {
                 >
                   <CardRow isLastPlayed={handIndex === lastPlayedIndex}>
                     {hand.map((card, index) => (
-                      <CardWrapper key={card.id} index={index}>
+                      <CardWrapper
+                        key={card.id}
+                        index={index}
+                        totalCards={hand.length}
+                      >
                         <motion.div
-                          style={{ 
+                          style={{
                             position: "relative",
                             transformStyle: "preserve-3d",
                           }}
@@ -873,7 +913,7 @@ export const Game = () => {
                         totalCards={handCards.length}
                       >
                         <motion.div
-                          style={{ 
+                          style={{
                             position: "relative",
                             transformStyle: "preserve-3d",
                           }}
