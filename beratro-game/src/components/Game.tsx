@@ -864,10 +864,12 @@ export const Game = () => {
                 >
                   <CardRow isLastPlayed={handIndex === lastPlayedIndex}>
                     {hand.map((card, index) => (
-                      <CardWrapper
+                      <div
                         key={card.id}
-                        index={index}
-                        totalCards={hand.length}
+                        style={{
+                          position: "relative",
+                          marginRight: "1vw",
+                        }}
                       >
                         <motion.div
                           style={{
@@ -888,7 +890,7 @@ export const Game = () => {
                           <DisplayCard card={card} />
                         </motion.div>
                         {renderBreakdownCard(card)}
-                      </CardWrapper>
+                      </div>
                     ))}
                   </CardRow>
                 </PlayedHandContainer>
