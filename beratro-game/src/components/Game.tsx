@@ -103,11 +103,15 @@ const vibrateAnimation = {
   },
 };
 
-// Add this near the top with other animations
+// Update the hover scale animation to maintain z-index
 const hoverScaleAnimation = {
-  initial: { scale: 1 },
-  hover: {
+  initial: { 
+    scale: 1,
+    transformOrigin: "center center",
+  },
+  hover: { 
     scale: 1.05,
+    transformOrigin: "center center",
     transition: {
       duration: 0.2,
       ease: "easeOut",
@@ -826,7 +830,10 @@ export const Game = () => {
                     {hand.map((card, index) => (
                       <CardWrapper key={card.id} index={index}>
                         <motion.div
-                          style={{ position: "relative" }}
+                          style={{ 
+                            position: "relative",
+                            transformStyle: "preserve-3d",
+                          }}
                           animate={
                             currentBreakdown?.cards.includes(card.id.toString())
                               ? "animate"
@@ -866,7 +873,10 @@ export const Game = () => {
                         totalCards={handCards.length}
                       >
                         <motion.div
-                          style={{ position: "relative" }}
+                          style={{ 
+                            position: "relative",
+                            transformStyle: "preserve-3d",
+                          }}
                           animate={
                             currentBreakdown?.cards.includes(card.id.toString())
                               ? "animate"
