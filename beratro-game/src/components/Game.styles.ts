@@ -25,7 +25,7 @@ export const RoundEndContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: ${WHITE_COLOR};
+  background-color: rgba(0, 0, 0, 0.05);
   border-radius: 8px;
   color: white;
   flex: 2;
@@ -36,8 +36,7 @@ export const RoundEndContainer = styled.div`
 
 export const CashOutButton = styled(Button)`
   background-color: ${DARK_GOLD_COLOR};
-  border-radius: 0.5vw;
-  border: none;
+  border-radius: 1vw;
   color: white;
   height: 5vw;
   width: 20vw;
@@ -248,12 +247,13 @@ export const MemesSection = styled(DeckSection)`
 
 export const ShopContainer = styled.div`
   padding: 20px;
-  background-color: ${BLACK_COLOR};
+  background-color: rgba(0, 0, 0, 0.05);
   border-radius: 8px;
   flex: 2;
   & h3 {
     font-size: 1.5vw;
     text-align: center;
+    color: ${BORDER_COLOR};
   }
 `;
 
@@ -269,8 +269,7 @@ export const ShopButton = styled(Button)<{ variant?: "primary" | "secondary" }>`
   background-color: ${(props) =>
     props.variant === "primary" ? "#E74C3C" : "#2ECC71"};
   color: white;
-  border: none;
-  border-radius: 8px;
+  border-radius: 2vw;
   font-size: 1vw;
   cursor: pointer;
   transition: opacity 0.2s;
@@ -283,20 +282,25 @@ export const ShopButton = styled(Button)<{ variant?: "primary" | "secondary" }>`
 
 export const BuyButton = styled(Button)`
   position: absolute;
-  bottom: 10px;
-  left: 1vw;
-  right: 1vw;
-  font-size: 0.75vw;
-  height: 2vw;
-  width: calc(100% - 2vw);
-  padding: 0.4vw;
+  bottom: -1vw;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  width: fit-content;
+  padding: 0.5vw;
+  font-size: 1vw;
+
   &:hover:not(:disabled) {
-    padding-top: 0.25vw;
-    padding-bottom: 0.55vw;
+    padding-top: 0.4vw;
+    padding-bottom: 0.6vw;
   }
+
   &:active:not(:disabled) {
-    padding-top: 0.3vw;
-    padding-bottom: 0.5vw;
+    padding-top: 0.45vw;
+    padding-bottom: 0.55vw;
   }
 `;
 
@@ -420,11 +424,13 @@ export const CardRow = styled.div<{ isLastPlayed: boolean }>`
   display: flex;
   justify-content: center;
   transition: all 0.3s ease;
+  gap: 1vw;
   transform: ${(props) => (props.isLastPlayed ? "scale(1.05)" : "scale(1)")};
 `;
 
 export const CardWrapper = styled.div<{ index: number; totalCards: number }>`
-  width: ${({ totalCards }) => `${50 / totalCards}vw`};
+  width: ${({ totalCards }) =>
+    `calc(min(${CARD_STYLES.container.width}, ${50 / totalCards}vw))`};
   position: relative;
   z-index: ${(props) => props.index};
 `;
@@ -492,7 +498,8 @@ export const ReorderGroup = styled(Reorder.Group)`
 
 export const CardSlot = styled.div<{ index: number; totalCards: number }>`
   position: relative;
-  width: ${({ totalCards }) => `${50 / totalCards}vw`};
+  width: ${({ totalCards }) =>
+    `calc(min(${CARD_STYLES.container.width}, ${50 / totalCards}vw))`};
 `;
 
 export const ActionButtonsContainer = styled.div`

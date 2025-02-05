@@ -24,24 +24,26 @@ export const Booster = ({
   onClick,
   onUse,
   onSell,
-}: BoosterProps) => {
+  onMouseEnter,
+  onMouseLeave,
+}: BoosterProps & {
+  onMouseEnter?: (e: React.MouseEvent) => void;
+  onMouseLeave?: () => void;
+}) => {
   const { booster, boosterType } = item;
 
-  const { name, description } = (() => {
+  const { name } = (() => {
     switch (boosterType) {
       case "flower":
         return {
           name: FLOWER_STATS[booster as Flower].title,
-          description: `Upgrade ${
-            HAND_NAMES[FLOWER_STATS[booster as Flower].hand]
-          } by 1 level`,
         };
       case "meme":
         return MEME_STATS[booster as Meme];
       case "sticker":
         return STICKER_STATS[booster as Sticker];
       default:
-        return { name: "", description: "" };
+        return { name: "" };
     }
   })();
 
@@ -50,6 +52,8 @@ export const Booster = ({
       style={{ position: "relative" }}
       className="booster-card"
       onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       <div
         style={{
@@ -60,9 +64,6 @@ export const Booster = ({
         }}
       >
         <div style={{ fontSize: "1.2vw", color: BLACK_COLOR }}>{name}</div>
-        <div style={{ fontSize: "0.8vw", color: WOOD_COLOR }}>
-          {description}
-        </div>
       </div>
       <AnimatePresence>
         {isSelected && (

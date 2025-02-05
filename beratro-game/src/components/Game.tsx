@@ -8,8 +8,11 @@ import {
   ANIMATION_MS,
   BOOSTER_PACK_INFO,
   BOOSTER_PACKS,
+  Flower,
   GameAction,
+  HAND_NAMES,
   HAND_VALUES,
+  Meme,
   Sticker,
   Unit,
 } from "@/utils/constants";
@@ -88,6 +91,9 @@ import { BeraPosition } from "@/types/beras";
 import { Booster } from "./cards/Booster";
 import { STICKER_STATS } from "@/utils/stickerStats";
 import { motion } from "framer-motion";
+import { GlobalTooltip } from "./Tooltip";
+import { FLOWER_STATS } from "@/utils/flowerStats";
+import { MEME_STATS } from "@/utils/memeStats";
 
 // Update the vibration animation to include rotation
 const vibrateAnimation = {
@@ -209,6 +215,13 @@ export const Game = () => {
   const [currentBreakdown, setCurrentBreakdown] = useState<Breakdown | null>(
     null
   );
+
+  // Add these states for tooltip
+  const [tooltipContent, setTooltipContent] = useState<React.ReactNode | null>(
+    null
+  );
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+  const [isTooltipVisible, setIsTooltipVisible] = useState(false);
 
   const previewPokerHand = useMemo(() => {
     if (selectedCards.length === 0) return null;
@@ -518,6 +531,49 @@ export const Game = () => {
   const pokerHand =
     pokerHandRef.current?.handType || previewPokerHand?.handType;
 
+  // Add this handler for mouse events
+  const handleTooltip = (
+    show: boolean,
+    content?: React.ReactNode,
+    event?: React.MouseEvent
+  ) => {
+    if (show && content && event) {
+      const rect = event.currentTarget.getBoundingClientRect();
+      setTooltipPosition({
+        x: rect.right,
+        y: rect.top,
+      });
+      setTooltipContent(content);
+      setIsTooltipVisible(true);
+    } else {
+      setIsTooltipVisible(false);
+      setTooltipContent(null);
+    }
+  };
+
+  // Add this helper function
+  const getCardTooltipContent = (card: CardPosition) => {
+    const content = [];
+
+    if (card.animalSticker) {
+      content.push(
+        <TooltipDescription key="animal">
+          {STICKER_STATS[card.animalSticker].description}
+        </TooltipDescription>
+      );
+    }
+
+    if (card.fruitSticker) {
+      content.push(
+        <TooltipDescription key="fruit">
+          {STICKER_STATS[card.fruitSticker].description}
+        </TooltipDescription>
+      );
+    }
+
+    return content.length > 0 ? <>{content}</> : null;
+  };
+
   return (
     <GameContainer>
       <LeftArea>
@@ -619,6 +675,7 @@ export const Game = () => {
                     ...vibrateAnimation,
                     ...hoverScaleAnimation,
                   }}
+                  style={{ position: "relative" }}
                   animate={
                     currentBreakdown?.beras.includes(bera.id.toString())
                       ? "animate"
@@ -628,6 +685,33 @@ export const Game = () => {
                     e.stopPropagation();
                     setSelectedBera(selectedBera === bera.id ? null : bera.id);
                   }}
+                  onMouseEnter={(e) => {
+                    handleTooltip(
+                      true,
+                      <>
+                        {BERA_STATS[bera.bera].description.replace(
+                          "{{value}}",
+                          BERA_STATS[bera.bera].values[0].toString()
+                        )}
+                        {BERA_STATS[bera.bera].cumulative && (
+                          <>
+                            (Current:{" "}
+                            {BERA_STATS[bera.bera].type === BeraType.MUL_MULT
+                              ? "×"
+                              : "+"}
+                            {BERA_STATS[bera.bera].trigger(
+                              BERA_STATS[bera.bera].values[0],
+                              [],
+                              state
+                            )}
+                            )
+                          </>
+                        )}
+                      </>,
+                      e
+                    );
+                  }}
+                  onMouseLeave={() => handleTooltip(false)}
                 >
                   {!!bera.sticker && (
                     <StickerItem>
@@ -635,26 +719,6 @@ export const Game = () => {
                     </StickerItem>
                   )}
                   {BERA_STATS[bera.bera].name}
-                  <span>
-                    {BERA_STATS[bera.bera].description.replace(
-                      "{{value}}",
-                      BERA_STATS[bera.bera].values[0].toString()
-                    )}{" "}
-                    {BERA_STATS[bera.bera].cumulative && (
-                      <>
-                        (Current:{" "}
-                        {BERA_STATS[bera.bera].type === BeraType.MUL_MULT
-                          ? "×"
-                          : "+"}
-                        {BERA_STATS[bera.bera].trigger(
-                          BERA_STATS[bera.bera].values[0],
-                          [],
-                          state
-                        )}
-                        )
-                      </>
-                    )}
-                  </span>
                   {renderBreakdownBera(bera)}
                   <AnimatePresence>
                     {selectedBera === bera.id && (
@@ -691,6 +755,24 @@ export const Game = () => {
                   key={`booster-${index}`}
                   whileHover="hover"
                   variants={hoverScaleAnimation}
+                  style={{ position: "relative" }}
+                  onMouseEnter={(e) => {
+                    handleTooltip(
+                      true,
+                      `${
+                        booster.boosterType === "flower"
+                          ? `Upgrade ${HAND_NAMES[
+                              FLOWER_STATS[booster.booster as Flower].hand
+                            ].toLowerCase()} by 1 level`
+                          : booster.boosterType === "sticker"
+                          ? STICKER_STATS[booster.booster as Sticker]
+                              .description
+                          : MEME_STATS[booster.booster as Meme].description
+                      }`,
+                      e
+                    );
+                  }}
+                  onMouseLeave={() => handleTooltip(false)}
                 >
                   <Booster
                     item={booster}
@@ -735,15 +817,25 @@ export const Game = () => {
                     </ShopButtonGrid>
 
                     {shopBeras.map((bera, index) => (
-                      <ShopItem key={`pack-${index}`}>
+                      <ShopItem
+                        key={`pack-${index}`}
+                        style={{ position: "relative" }}
+                        onMouseEnter={(e) => {
+                          handleTooltip(
+                            true,
+                            <>
+                              {BERA_STATS[bera.bera].description.replace(
+                                "{{value}}",
+                                BERA_STATS[bera.bera].values[0].toString()
+                              )}
+                            </>,
+                            e
+                          );
+                        }}
+                        onMouseLeave={() => handleTooltip(false)}
+                      >
                         <PriceTag>${BERA_STATS[bera.bera].cost}</PriceTag>
                         {BERA_STATS[bera.bera].name}
-                        <span>
-                          {BERA_STATS[bera.bera].description.replace(
-                            "{{value}}",
-                            BERA_STATS[bera.bera].values[0].toString()
-                          )}
-                        </span>
                         <BuyButton onClick={() => buyBera(bera.id)}>
                           Buy
                         </BuyButton>
@@ -759,7 +851,24 @@ export const Game = () => {
                       boughtPacks[item.type] ? (
                         <div key={`pack-${index}`}></div>
                       ) : (
-                        <ShopItem key={`pack-${index}`}>
+                        <ShopItem
+                          key={`pack-${index}`}
+                          style={{ position: "relative" }}
+                          onMouseEnter={(e) => {
+                            handleTooltip(
+                              true,
+                              <>
+                                <div style={{ marginTop: "1vw" }}>
+                                  Contains {BOOSTER_PACK_INFO[item.type].items}
+                                  <br />
+                                  Pick {BOOSTER_PACK_INFO[item.type].pick} items
+                                </div>
+                              </>,
+                              e
+                            );
+                          }}
+                          onMouseLeave={() => handleTooltip(false)}
+                        >
                           <PriceTag>${item.price}</PriceTag>
                           {item.name}
                           <BuyButton
@@ -794,9 +903,44 @@ export const Game = () => {
                         onClick={() => pickItemFromPack(item)}
                       >
                         {(item as BoosterPosition).booster ? (
-                          <Booster item={item as BoosterPosition} />
+                          <motion.div
+                            style={{ position: "relative" }}
+                            onMouseEnter={(e) => {
+                              const booster = item as BoosterPosition;
+                              handleTooltip(
+                                true,
+                                booster.boosterType === "flower"
+                                  ? `Upgrade ${
+                                      HAND_NAMES[
+                                        FLOWER_STATS[booster.booster as Flower]
+                                          .hand
+                                      ]
+                                    } by 1 level`
+                                  : booster.boosterType === "sticker"
+                                  ? STICKER_STATS[booster.booster as Sticker]
+                                      .description
+                                  : MEME_STATS[booster.booster as Meme]
+                                      .description,
+                                e
+                              );
+                            }}
+                            onMouseLeave={() => handleTooltip(false)}
+                          >
+                            <Booster item={item as BoosterPosition} />
+                          </motion.div>
                         ) : (
-                          <DisplayCard card={item as CardPosition} />
+                          <motion.div
+                            style={{ position: "relative" }}
+                            onMouseEnter={(e) => {
+                              const content = getCardTooltipContent(
+                                item as CardPosition
+                              );
+                              if (content) handleTooltip(true, content, e);
+                            }}
+                            onMouseLeave={() => handleTooltip(false)}
+                          >
+                            <DisplayCard card={item as CardPosition} />
+                          </motion.div>
                         )}
                       </CardWrapper>
                     ))}
@@ -887,7 +1031,14 @@ export const Game = () => {
                             ...hoverScaleAnimation,
                           }}
                         >
-                          <DisplayCard card={card} />
+                          <DisplayCard
+                            card={card}
+                            onMouseEnter={(e) => {
+                              const content = getCardTooltipContent(card);
+                              if (content) handleTooltip(true, content, e);
+                            }}
+                            onMouseLeave={() => handleTooltip(false)}
+                          />
                         </motion.div>
                         {renderBreakdownCard(card)}
                       </div>
@@ -940,6 +1091,11 @@ export const Game = () => {
                               }
                               toggleSelectedCard(id);
                             }}
+                            onMouseEnter={(e) => {
+                              const content = getCardTooltipContent(card);
+                              if (content) handleTooltip(true, content, e);
+                            }}
+                            onMouseLeave={() => handleTooltip(false)}
                           />
                         </motion.div>
                         {renderBreakdownCard(card)}
@@ -997,6 +1153,12 @@ export const Game = () => {
           </>
         )}
       </MainGameArea>
+      <GlobalTooltip
+        content={tooltipContent}
+        x={tooltipPosition.x}
+        y={tooltipPosition.y}
+        isVisible={isTooltipVisible}
+      />
     </GameContainer>
   );
 };

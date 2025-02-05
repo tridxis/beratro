@@ -10,10 +10,15 @@ const DraggableCard = ({
   card: { id, suit, rank, animalSticker, fruitSticker },
   isSelected,
   onSelect,
+  onMouseEnter,
+  onMouseLeave,
+  className,
 }: {
   card: CardPosition;
   isSelected: boolean;
   onSelect: (id: string) => void;
+  onMouseEnter?: (e: React.MouseEvent) => void;
+  onMouseLeave?: () => void;
   className: string;
 }) => {
   const isDragging = useRef(false);
@@ -38,7 +43,7 @@ const DraggableCard = ({
       initial={{ x: 300, opacity: 0 }}
       animate={{
         x: 0,
-        y: isSelected ? -50 : 0,
+        y: isSelected ? -30 : 0,
         opacity: 1,
         transition: {
           type: "spring",
@@ -69,6 +74,8 @@ const DraggableCard = ({
       transition={{
         duration: 0.1,
       }}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       <div style={CARD_STYLES.topRank}>
         {rank}

@@ -6,9 +6,15 @@ import { STICKER_STATS } from "@/utils/stickerStats";
 
 interface DisplayCardProps {
   card: CardPosition;
+  onMouseEnter?: (e: React.MouseEvent) => void;
+  onMouseLeave?: () => void;
 }
 
-export const DisplayCard: React.FC<DisplayCardProps> = ({ card }) => {
+export const DisplayCard: React.FC<DisplayCardProps> = ({
+  card,
+  onMouseEnter,
+  onMouseLeave,
+}) => {
   const { rank, suit, fruitSticker, animalSticker } = card;
 
   return (
@@ -19,6 +25,8 @@ export const DisplayCard: React.FC<DisplayCardProps> = ({ card }) => {
           ? "red"
           : "black",
       }}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       <div style={CARD_STYLES.topRank}>
         {rank}
