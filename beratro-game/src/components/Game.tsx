@@ -540,7 +540,7 @@ export const Game = () => {
     if (show && content && event) {
       const rect = event.currentTarget.getBoundingClientRect();
       setTooltipPosition({
-        x: rect.right,
+        x: rect.left - rect.width * 1.1,
         y: rect.top,
       });
       setTooltipContent(content);
@@ -551,27 +551,53 @@ export const Game = () => {
     }
   };
 
-  // Add this helper function
+  // Update the getCardTooltipContent helper function
   const getCardTooltipContent = (card: CardPosition) => {
     const content = [];
 
+    // Show base chips (rank value + card.chips)
+    const rankValue = isNaN(Number(card.rank)) ? 10 : Number(card.rank);
+    const totalChips = rankValue + (card.chips || 0);
+
+    content.push(
+      <div
+        key="chips"
+        style={{ padding: "0.2vw", backgroundColor: BLUE_COLOR }}
+      >
+        +{totalChips} chips
+        {card.chips ? ` (${rankValue} + ${card.chips})` : ""}
+      </div>
+    );
+
+    // Add sticker descriptions if present
     if (card.animalSticker) {
       content.push(
-        <TooltipDescription key="animal">
+        <div key="animal" style={{ marginTop: "0.5vw" }}>
+          {STICKER_STATS[card.animalSticker].emoji}{" "}
           {STICKER_STATS[card.animalSticker].description}
-        </TooltipDescription>
+        </div>
       );
     }
 
     if (card.fruitSticker) {
       content.push(
-        <TooltipDescription key="fruit">
+        <div key="fruit" style={{ marginTop: "0.5vw" }}>
+          {STICKER_STATS[card.fruitSticker].emoji}{" "}
           {STICKER_STATS[card.fruitSticker].description}
-        </TooltipDescription>
+        </div>
       );
     }
 
-    return content.length > 0 ? <>{content}</> : null;
+    // If card has multiplier, show it
+    if (card.mult && card.mult > 1) {
+      content.push(
+        <div key="mult" style={{ marginTop: "0.5vw" }}>
+          ×{card.mult} multiplier
+        </div>
+      );
+    }
+
+    return <>{content}</>;
   };
 
   return (
