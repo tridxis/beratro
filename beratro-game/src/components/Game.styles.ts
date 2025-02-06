@@ -356,6 +356,7 @@ export const ShopItem = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  text-align: center;
   color: ${BLACK_COLOR};
   font-size: 1vw;
   & span {

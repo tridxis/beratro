@@ -12,6 +12,7 @@ import {
   GameAction,
   HAND_NAMES,
   HAND_VALUES,
+  HandType,
   Meme,
   Sticker,
   Unit,
@@ -150,6 +151,9 @@ const hoverScaleAnimation = {
   },
 };
 
+// Add this type to help with tooltip positioning
+type TooltipPosition = "top" | "bottom" | "right";
+
 export const Game = () => {
   const state = useGameStore();
 
@@ -222,6 +226,19 @@ export const Game = () => {
   );
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
+
+  // Add these states near the top of the Game component
+  const [upgradingHand, setUpgradingHand] = useState<HandType>(HandType.Pair);
+
+  // Add this effect to handle the notification timing
+  useEffect(() => {
+    if (upgradingHand) {
+      const timer = setTimeout(() => {
+        setUpgradingHand(undefined);
+      }, 2000); // Show for 2 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [upgradingHand]);
 
   const previewPokerHand = useMemo(() => {
     if (selectedCards.length === 0) return null;
@@ -531,18 +548,36 @@ export const Game = () => {
   const pokerHand =
     pokerHandRef.current?.handType || previewPokerHand?.handType;
 
-  // Add this handler for mouse events
+  // Update the handleTooltip function
   const handleTooltip = (
     show: boolean,
     content?: React.ReactNode,
-    event?: React.MouseEvent
+    event?: React.MouseEvent,
+    position: TooltipPosition = "right"
   ) => {
     if (show && content && event) {
       const rect = event.currentTarget.getBoundingClientRect();
-      setTooltipPosition({
-        x: rect.left - rect.width * 1.1,
-        y: rect.top,
-      });
+      const tooltipHeight = rect.height * 0.6; // Estimate tooltip height as 80% of card height
+      let x = 0;
+      let y = 0;
+
+      switch (position) {
+        case "top":
+          x = rect.left;
+          y = rect.top - tooltipHeight - 20; // Subtract tooltip height plus gap
+          break;
+        case "bottom":
+          x = rect.left;
+          y = rect.bottom + 20;
+          break;
+        case "right":
+        default:
+          x = rect.right + 20;
+          y = rect.top;
+          break;
+      }
+
+      setTooltipPosition({ x, y });
       setTooltipContent(content);
       setIsTooltipVisible(true);
     } else {
@@ -600,6 +635,15 @@ export const Game = () => {
     return <>{content}</>;
   };
 
+  // Update the activateBooster handler
+  const handleActivateBooster = (booster: BoosterPosition) => {
+    activateBooster(booster);
+    if (booster.boosterType === "flower") {
+      const handType = FLOWER_STATS[booster.booster as Flower].hand;
+      setUpgradingHand(handType);
+    }
+  };
+
   return (
     <GameContainer>
       <LeftArea>
@@ -638,27 +682,50 @@ export const Game = () => {
           </BentoBox>
 
           <HandScoreContainer>
-            {!!pokerHand && (
+            {(!!pokerHand || upgradingHand) && (
               <>
                 <HandTypeText>
-                  {pokerHand} Lvl {handLevels[pokerHand] || 1}
+                  {upgradingHand ? (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                    >
+                      {HAND_NAMES[upgradingHand]} Lvl{" "}
+                      {handLevels[upgradingHand] || 1}
+                    </motion.div>
+                  ) : (
+                    `${pokerHand} Lvl ${handLevels[pokerHand as HandType] || 1}`
+                  )}
                 </HandTypeText>
                 <ScoreDisplay>
                   <ChipsDisplay
                     value={
                       currentBreakdown?.chips ||
-                      (previewPokerHand?.chips || 0) +
-                        ((handLevels[pokerHand] || 1) - 1) *
-                          HAND_VALUES[pokerHand].chipsLvl
+                      (HAND_VALUES[upgradingHand]?.chips ||
+                        previewPokerHand?.chips ||
+                        0) +
+                        ((handLevels[
+                          upgradingHand || (pokerHand as HandType)
+                        ] || 1) -
+                          1) *
+                          HAND_VALUES[upgradingHand || (pokerHand as HandType)]
+                            .chipsLvl
                     }
                   />
                   <span style={{ fontSize: "2vw" }}>×</span>
                   <MultiplierDisplay
                     value={
                       currentBreakdown?.mult ||
-                      (previewPokerHand?.mult || 0) +
-                        ((handLevels[pokerHand] || 1) - 1) *
-                          HAND_VALUES[pokerHand].multLvl
+                      (HAND_VALUES[upgradingHand]?.mult ||
+                        previewPokerHand?.mult ||
+                        0) +
+                        ((handLevels[
+                          upgradingHand || (pokerHand as HandType)
+                        ] || 1) -
+                          1) *
+                          HAND_VALUES[upgradingHand || (pokerHand as HandType)]
+                            .multLvl
                     }
                   />
                 </ScoreDisplay>
@@ -734,7 +801,8 @@ export const Game = () => {
                           </>
                         )}
                       </>,
-                      e
+                      e,
+                      "bottom"
                     );
                   }}
                   onMouseLeave={() => handleTooltip(false)}
@@ -745,6 +813,8 @@ export const Game = () => {
                     </StickerItem>
                   )}
                   {BERA_STATS[bera.bera].name}
+                  <br />
+                  Bera
                   {renderBreakdownBera(bera)}
                   <AnimatePresence>
                     {selectedBera === bera.id && (
@@ -785,17 +855,17 @@ export const Game = () => {
                   onMouseEnter={(e) => {
                     handleTooltip(
                       true,
-                      `${
-                        booster.boosterType === "flower"
-                          ? `Upgrade ${HAND_NAMES[
+                      booster.boosterType === "flower"
+                        ? `Upgrade ${
+                            HAND_NAMES[
                               FLOWER_STATS[booster.booster as Flower].hand
-                            ].toLowerCase()} by 1 level`
-                          : booster.boosterType === "sticker"
-                          ? STICKER_STATS[booster.booster as Sticker]
-                              .description
-                          : MEME_STATS[booster.booster as Meme].description
-                      }`,
-                      e
+                            ]
+                          } by 1 level`
+                        : booster.boosterType === "sticker"
+                        ? STICKER_STATS[booster.booster as Sticker].description
+                        : MEME_STATS[booster.booster as Meme].description,
+                      e,
+                      "bottom"
                     );
                   }}
                   onMouseLeave={() => handleTooltip(false)}
@@ -804,7 +874,7 @@ export const Game = () => {
                     item={booster}
                     isSelected={selectedBooster?.id === booster.id}
                     onUse={() => {
-                      activateBooster(booster);
+                      handleActivateBooster(booster);
                     }}
                     onSell={() => {
                       sellBooster(booster.id);
@@ -855,13 +925,16 @@ export const Game = () => {
                                 BERA_STATS[bera.bera].values[0].toString()
                               )}
                             </>,
-                            e
+                            e,
+                            "top"
                           );
                         }}
                         onMouseLeave={() => handleTooltip(false)}
                       >
                         <PriceTag>${BERA_STATS[bera.bera].cost}</PriceTag>
                         {BERA_STATS[bera.bera].name}
+                        <br />
+                        Bera
                         <BuyButton onClick={() => buyBera(bera.id)}>
                           Buy
                         </BuyButton>
@@ -890,7 +963,8 @@ export const Game = () => {
                                   Pick {BOOSTER_PACK_INFO[item.type].pick} items
                                 </div>
                               </>,
-                              e
+                              e,
+                              "top"
                             );
                           }}
                           onMouseLeave={() => handleTooltip(false)}
@@ -947,7 +1021,8 @@ export const Game = () => {
                                       .description
                                   : MEME_STATS[booster.booster as Meme]
                                       .description,
-                                e
+                                e,
+                                "top"
                               );
                             }}
                             onMouseLeave={() => handleTooltip(false)}
@@ -961,7 +1036,8 @@ export const Game = () => {
                               const content = getCardTooltipContent(
                                 item as CardPosition
                               );
-                              if (content) handleTooltip(true, content, e);
+                              if (content)
+                                handleTooltip(true, content, e, "top");
                             }}
                             onMouseLeave={() => handleTooltip(false)}
                           >
@@ -1061,7 +1137,8 @@ export const Game = () => {
                             card={card}
                             onMouseEnter={(e) => {
                               const content = getCardTooltipContent(card);
-                              if (content) handleTooltip(true, content, e);
+                              if (content)
+                                handleTooltip(true, content, e, "top");
                             }}
                             onMouseLeave={() => handleTooltip(false)}
                           />
@@ -1119,7 +1196,8 @@ export const Game = () => {
                             }}
                             onMouseEnter={(e) => {
                               const content = getCardTooltipContent(card);
-                              if (content) handleTooltip(true, content, e);
+                              if (content)
+                                handleTooltip(true, content, e, "top");
                             }}
                             onMouseLeave={() => handleTooltip(false)}
                           />
