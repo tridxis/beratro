@@ -1,13 +1,9 @@
 import { AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState, useMemo } from "react";
 import { useGameStore } from "@/store/gameStore";
-import { DisplayCard } from "./cards/DisplayCard";
-import DraggableCard from "./cards/DraggableCard";
 import { Calculator } from "@/utils/calculator";
 import {
   ANIMATION_MS,
-  BOOSTER_PACK_INFO,
-  BOOSTER_PACKS,
   Flower,
   GameAction,
   HAND_NAMES,
@@ -21,12 +17,7 @@ import { Breakdown, PokerHand } from "@/types/hands";
 import { useMotionValue, useTransform, animate } from "framer-motion";
 import { GameState } from "@/types/games";
 import {
-  RoundEndContainer,
-  CashOutButton,
   FlexRow,
-  Separator,
-  RewardText,
-  ScoreText,
   GameContainer,
   LeftPanel,
   ResetButton,
@@ -39,50 +30,25 @@ import {
   StatValue,
   MainGameArea,
   DeckAreaContainer,
-  DeckSection,
-  MemesSection,
-  ShopContainer,
-  ShopButtonGrid,
-  ShopButton,
-  ShopItemsGrid,
   ShopItem,
-  PriceTag,
-  PlayedHandArea,
-  PlayedHandContainer,
-  CardRow,
-  CardWrapper,
   ScorePopup,
   ChipScore,
   MultScore,
-  HandCardsArea,
-  ReorderGroup,
-  CardSlot,
-  ActionButtonsContainer,
-  SortButton,
-  ActionButtonGroup,
-  ActionButton,
   HandScoreContainer,
   HandTypeText,
   ScoreDisplay,
   ChipsDisplay,
   MultiplierDisplay,
   LeftArea,
-  HandContainer,
   BentoBox,
   DeckContainer,
   DeckDescription,
-  ShopItemGrid,
-  ShopSection,
-  BuyButton,
-  EndInfoContainer,
-  EndInfoText,
-  ScoreAtLeastTag,
   RetriggerScore,
   GoldScore,
   BottomButtonContainer,
   SellButton,
   StickerItem,
-  SkipButton,
+  TopSection,
 } from "./Game.styles";
 import { BLUE_COLOR, GOLD_COLOR, RED_COLOR } from "@/utils/colors";
 import { BoosterPosition, CardPosition } from "@/types/cards";
@@ -95,6 +61,16 @@ import { motion } from "framer-motion";
 import { GlobalTooltip } from "./Tooltip";
 import { FLOWER_STATS } from "@/utils/flowerStats";
 import { MEME_STATS } from "@/utils/memeStats";
+import { PlayedHands } from "./states/Playing/PlayedHands";
+import { HandCards } from "./HandCards";
+import Actions from "./Actions";
+import { RoundEndedState } from "./states/RoundEndedState";
+import { ShoppingState } from "./states/ShoppingState";
+import { PlayingState } from "./states/PlayingState";
+import BeraArea from "./BeraArea";
+import BoosterArea from "./BoosterArea";
+import { Score } from "./Score";
+import Stats from "./Stats";
 
 // Update the vibration animation to include rotation
 const vibrateAnimation = {
@@ -423,25 +399,6 @@ export const Game = () => {
     dealCards();
   };
 
-  const useAnimatedCounter = (value: number) => {
-    const count = useMotionValue(0);
-    const rounded = useTransform(count, (latest) =>
-      Math.round(latest).toLocaleString()
-    );
-
-    useEffect(() => {
-      const controls = animate(count, value, {
-        type: "tween",
-        duration: 0.1,
-        ease: "easeOut",
-      });
-
-      return controls.stop;
-    }, [value]);
-
-    return rounded;
-  };
-
   const renderBreakdownScore = (
     id: string,
     type: "card" | "bera",
@@ -670,591 +627,94 @@ export const Game = () => {
             </RoundContent>
           </BentoBox>
 
-          <BentoBox style={{ padding: "1vw" }}>
-            <div>Round score</div>
-            <ScoreValue>
-              {useAnimatedCounter(
-                score ||
-                  currentBreakdown?.chips ||
-                  0 * (currentBreakdown?.mult || 0)
-              )}
-            </ScoreValue>
-          </BentoBox>
+          <Score
+            score={score}
+            pokerHand={pokerHand}
+            upgradingHand={upgradingHand}
+            handLevels={handLevels}
+            currentBreakdown={currentBreakdown}
+            previewPokerHand={previewPokerHand}
+          />
 
-          <HandScoreContainer>
-            {(!!pokerHand || upgradingHand) && (
-              <>
-                <HandTypeText>
-                  {upgradingHand ? (
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                    >
-                      {HAND_NAMES[upgradingHand]} Lvl{" "}
-                      {handLevels[upgradingHand] || 1}
-                    </motion.div>
-                  ) : (
-                    `${pokerHand} Lvl ${handLevels[pokerHand as HandType] || 1}`
-                  )}
-                </HandTypeText>
-                <ScoreDisplay>
-                  <ChipsDisplay
-                    value={
-                      currentBreakdown?.chips ||
-                      (HAND_VALUES[upgradingHand]?.chips ||
-                        previewPokerHand?.chips ||
-                        0) +
-                        ((handLevels[
-                          upgradingHand || (pokerHand as HandType)
-                        ] || 1) -
-                          1) *
-                          HAND_VALUES[upgradingHand || (pokerHand as HandType)]
-                            .chipsLvl
-                    }
-                  />
-                  <span style={{ fontSize: "2vw" }}>×</span>
-                  <MultiplierDisplay
-                    value={
-                      currentBreakdown?.mult ||
-                      (HAND_VALUES[upgradingHand]?.mult ||
-                        previewPokerHand?.mult ||
-                        0) +
-                        ((handLevels[
-                          upgradingHand || (pokerHand as HandType)
-                        ] || 1) -
-                          1) *
-                          HAND_VALUES[upgradingHand || (pokerHand as HandType)]
-                            .multLvl
-                    }
-                  />
-                </ScoreDisplay>
-              </>
-            )}
-          </HandScoreContainer>
-
-          <StatsGrid>
-            <StatBox>
-              <div>Hands</div>
-              <StatValue color={BLUE_COLOR}>
-                {maxHands - playedHands.length}
-              </StatValue>
-            </StatBox>
-            <StatBox>
-              <div>Discards</div>
-              <StatValue color={RED_COLOR}>
-                {maxDiscards - discards.length}
-              </StatValue>
-            </StatBox>
-            <StatBox>
-              <div>Golds</div>
-              <StatValue color={GOLD_COLOR}>{gold}</StatValue>
-            </StatBox>
-          </StatsGrid>
+          <Stats
+            maxHands={maxHands}
+            playedHands={playedHands}
+            maxDiscards={maxDiscards}
+            discards={discards}
+            gold={gold}
+          />
         </LeftPanel>
       </LeftArea>
 
       <MainGameArea>
         <DeckAreaContainer>
-          <DeckSection>
-            <DeckContainer>
-              {playingBeras.map((bera, index) => (
-                <ShopItem
-                  key={`playing-bera-${index}`}
-                  className="bera-item"
-                  as={motion.div}
-                  whileHover="hover"
-                  variants={{
-                    ...vibrateAnimation,
-                    ...hoverScaleAnimation,
-                  }}
-                  style={{ position: "relative" }}
-                  animate={
-                    currentBreakdown?.beras.includes(bera.id.toString())
-                      ? "animate"
-                      : "initial"
-                  }
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedBera(selectedBera === bera.id ? null : bera.id);
-                  }}
-                  onMouseEnter={(e) => {
-                    handleTooltip(
-                      true,
-                      <>
-                        {BERA_STATS[bera.bera].description.replace(
-                          "{{value}}",
-                          BERA_STATS[bera.bera].values[0].toString()
-                        )}
-                        {BERA_STATS[bera.bera].cumulative && (
-                          <>
-                            (Current:{" "}
-                            {BERA_STATS[bera.bera].type === BeraType.MUL_MULT
-                              ? "×"
-                              : "+"}
-                            {BERA_STATS[bera.bera].trigger(
-                              BERA_STATS[bera.bera].values[0],
-                              [],
-                              state
-                            )}
-                            )
-                          </>
-                        )}
-                      </>,
-                      e,
-                      "bottom"
-                    );
-                  }}
-                  onMouseLeave={() => handleTooltip(false)}
-                >
-                  {!!bera.sticker && (
-                    <StickerItem>
-                      {STICKER_STATS[bera.sticker].emoji}
-                    </StickerItem>
-                  )}
-                  {BERA_STATS[bera.bera].name}
-                  <br />
-                  Bera
-                  {renderBreakdownBera(bera)}
-                  <AnimatePresence>
-                    {selectedBera === bera.id && (
-                      <BottomButtonContainer
-                        as={motion.div}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        transition={{ duration: 0.2 }}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <SellButton
-                          as={motion.button}
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => {
-                            sellBera(bera.id);
-                          }}
-                        >
-                          Sell
-                        </SellButton>
-                      </BottomButtonContainer>
-                    )}
-                  </AnimatePresence>
-                </ShopItem>
-              ))}
-            </DeckContainer>
-            <DeckDescription>{playingBeras.length}/5</DeckDescription>
-          </DeckSection>
-          <MemesSection>
-            <DeckContainer>
-              {boosters.map((booster, index) => (
-                <motion.div
-                  key={`booster-${index}`}
-                  whileHover="hover"
-                  variants={hoverScaleAnimation}
-                  style={{ position: "relative" }}
-                  onMouseEnter={(e) => {
-                    handleTooltip(
-                      true,
-                      booster.boosterType === "flower"
-                        ? `Upgrade ${
-                            HAND_NAMES[
-                              FLOWER_STATS[booster.booster as Flower].hand
-                            ]
-                          } by 1 level`
-                        : booster.boosterType === "sticker"
-                        ? STICKER_STATS[booster.booster as Sticker].description
-                        : MEME_STATS[booster.booster as Meme].description,
-                      e,
-                      "bottom"
-                    );
-                  }}
-                  onMouseLeave={() => handleTooltip(false)}
-                >
-                  <Booster
-                    item={booster}
-                    isSelected={selectedBooster?.id === booster.id}
-                    onUse={() => {
-                      handleActivateBooster(booster);
-                    }}
-                    onSell={() => {
-                      sellBooster(booster.id);
-                    }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedBooster(
-                        selectedBooster?.id === booster.id ? null : booster
-                      );
-                    }}
-                  />
-                </motion.div>
-              ))}
-            </DeckContainer>
-            <DeckDescription>{boosters.length}/2</DeckDescription>
-          </MemesSection>
+          <BeraArea
+            state={state}
+            handleTooltip={handleTooltip}
+            currentBreakdown={currentBreakdown}
+            renderBreakdownBera={renderBreakdownBera}
+            sellBera={sellBera}
+          />
+          <BoosterArea
+            boosters={boosters}
+            selectedBooster={selectedBooster}
+            setSelectedBooster={setSelectedBooster}
+            handleActivateBooster={handleActivateBooster}
+            sellBooster={sellBooster}
+            handleTooltip={handleTooltip}
+          />
         </DeckAreaContainer>
 
         {currentState === GameState.SHOPPING && (
-          <ShopContainer>
-            {!selectedPack ? (
-              <ShopItemsGrid>
-                <ShopSection>
-                  <ShopItemGrid>
-                    <ShopButtonGrid>
-                      <ShopButton
-                        variant="primary"
-                        onClick={() => {
-                          nextRound();
-                          dealCards();
-                        }}
-                      >
-                        Next Round
-                      </ShopButton>
-                      <ShopButton variant="secondary">Reroll $5</ShopButton>
-                    </ShopButtonGrid>
-
-                    {shopBeras.map((bera, index) => (
-                      <ShopItem
-                        key={`pack-${index}`}
-                        style={{ position: "relative" }}
-                        onMouseEnter={(e) => {
-                          handleTooltip(
-                            true,
-                            <>
-                              {BERA_STATS[bera.bera].description.replace(
-                                "{{value}}",
-                                BERA_STATS[bera.bera].values[0].toString()
-                              )}
-                            </>,
-                            e,
-                            "top"
-                          );
-                        }}
-                        onMouseLeave={() => handleTooltip(false)}
-                      >
-                        <PriceTag>${BERA_STATS[bera.bera].cost}</PriceTag>
-                        {BERA_STATS[bera.bera].name}
-                        <br />
-                        Bera
-                        <BuyButton onClick={() => buyBera(bera.id)}>
-                          Buy
-                        </BuyButton>
-                      </ShopItem>
-                    ))}
-                  </ShopItemGrid>
-                </ShopSection>
-
-                <ShopSection>
-                  <ShopItemGrid>
-                    <div></div>
-                    {BOOSTER_PACKS.map((item, index) =>
-                      boughtPacks[item.type] ? (
-                        <div key={`pack-${index}`}></div>
-                      ) : (
-                        <ShopItem
-                          key={`pack-${index}`}
-                          style={{ position: "relative" }}
-                          onMouseEnter={(e) => {
-                            handleTooltip(
-                              true,
-                              <>
-                                <div style={{ marginTop: "1vw" }}>
-                                  Contains {BOOSTER_PACK_INFO[item.type].items}
-                                  <br />
-                                  Pick {BOOSTER_PACK_INFO[item.type].pick} items
-                                </div>
-                              </>,
-                              e,
-                              "top"
-                            );
-                          }}
-                          onMouseLeave={() => handleTooltip(false)}
-                        >
-                          <PriceTag>${item.price}</PriceTag>
-                          {item.name}
-                          <BuyButton
-                            onClick={() => buyPack(item.type)}
-                            disabled={gold < item.price}
-                          >
-                            Buy
-                          </BuyButton>
-                        </ShopItem>
-                      )
-                    )}
-                  </ShopItemGrid>
-                </ShopSection>
-              </ShopItemsGrid>
-            ) : (
-              <div>
-                <h3>
-                  Please select{" "}
-                  {BOOSTER_PACK_INFO[selectedPack.boosterPack].pick} items
-                  below:
-                </h3>
-                <CardRow isLastPlayed={false}>
-                  {selectedPack.items
-                    .filter(
-                      (item) => !selectedPack.pickedItems.includes(item.id)
-                    )
-                    .map((item) => (
-                      <CardWrapper
-                        totalCards={selectedPack.items.length}
-                        key={item.id}
-                        index={item.index}
-                        onClick={() => pickItemFromPack(item)}
-                      >
-                        {(item as BoosterPosition).booster ? (
-                          <motion.div
-                            style={{ position: "relative" }}
-                            onMouseEnter={(e) => {
-                              const booster = item as BoosterPosition;
-                              handleTooltip(
-                                true,
-                                booster.boosterType === "flower"
-                                  ? `Upgrade ${
-                                      HAND_NAMES[
-                                        FLOWER_STATS[booster.booster as Flower]
-                                          .hand
-                                      ]
-                                    } by 1 level`
-                                  : booster.boosterType === "sticker"
-                                  ? STICKER_STATS[booster.booster as Sticker]
-                                      .description
-                                  : MEME_STATS[booster.booster as Meme]
-                                      .description,
-                                e,
-                                "top"
-                              );
-                            }}
-                            onMouseLeave={() => handleTooltip(false)}
-                          >
-                            <Booster item={item as BoosterPosition} />
-                          </motion.div>
-                        ) : (
-                          <motion.div
-                            style={{ position: "relative" }}
-                            onMouseEnter={(e) => {
-                              const content = getCardTooltipContent(
-                                item as CardPosition
-                              );
-                              if (content)
-                                handleTooltip(true, content, e, "top");
-                            }}
-                            onMouseLeave={() => handleTooltip(false)}
-                          >
-                            <DisplayCard card={item as CardPosition} />
-                          </motion.div>
-                        )}
-                      </CardWrapper>
-                    ))}
-                </CardRow>
-                <SkipButton onClick={skipPack}>Skip Pack</SkipButton>
-              </div>
-            )}
-          </ShopContainer>
+          <ShoppingState
+            selectedPack={selectedPack}
+            shopBeras={shopBeras}
+            gold={gold}
+            boughtPacks={boughtPacks}
+            handleTooltip={handleTooltip}
+            getCardTooltipContent={getCardTooltipContent}
+            buyBera={buyBera}
+            buyPack={buyPack}
+            pickItemFromPack={pickItemFromPack}
+            nextRound={nextRound}
+            dealCards={dealCards}
+            skipPack={skipPack}
+          />
         )}
 
         {currentState === GameState.ROUND_ENDED && (
-          <RoundEndContainer>
-            <CashOutButton
-              onClick={() => {
-                endRound(goldEarned);
-                setBonusGolds([]);
-              }}
-            >
-              Cash Out: ${goldEarned}
-            </CashOutButton>
-            <EndInfoContainer>
-              <FlexRow>
-                <ScoreAtLeastTag>Score as least</ScoreAtLeastTag>
-                <ScoreText>{reqScore.toLocaleString()}</ScoreText>
-                <RewardText>{"$".repeat(roundGold)}</RewardText>
-              </FlexRow>
-
-              <Separator />
-
-              <FlexRow>
-                <EndInfoText>Remaining Hands ($1 each)</EndInfoText>
-                <RewardText>
-                  {maxHands - playedHands.length > 0
-                    ? "$".repeat(maxHands - playedHands.length)
-                    : "-"}
-                </RewardText>
-              </FlexRow>
-
-              <FlexRow>
-                <EndInfoText>1 Interest per $5 (5 max)</EndInfoText>
-                <RewardText>
-                  {Math.floor(gold / 5) > 0
-                    ? "$".repeat(Math.floor(gold / 5))
-                    : "-"}
-                </RewardText>
-              </FlexRow>
-
-              {bonusGolds.map((gold, index) => (
-                <FlexRow key={`bonus-gold-${index}`}>
-                  <EndInfoText>{gold.title}</EndInfoText>
-                  <RewardText>{"$".repeat(gold.value)}</RewardText>
-                </FlexRow>
-              ))}
-            </EndInfoContainer>
-          </RoundEndContainer>
+          <RoundEndedState
+            reqScore={reqScore}
+            roundGold={roundGold}
+            maxHands={maxHands}
+            playedHands={playedHands}
+            gold={gold}
+            bonusGolds={bonusGolds}
+            goldEarned={goldEarned}
+            endRound={endRound}
+            setBonusGolds={setBonusGolds}
+          />
         )}
 
         {currentState === GameState.PLAYING && (
-          <>
-            <PlayedHandArea>
-              {playedHands.map((hand, handIndex) => (
-                <PlayedHandContainer
-                  key={handIndex}
-                  isLastPlayed={handIndex === lastPlayedIndex}
-                >
-                  <CardRow isLastPlayed={handIndex === lastPlayedIndex}>
-                    {hand.map((card, index) => (
-                      <div
-                        key={card.id}
-                        style={{
-                          position: "relative",
-                          marginRight: "1vw",
-                        }}
-                      >
-                        <motion.div
-                          style={{
-                            position: "relative",
-                            transformStyle: "preserve-3d",
-                          }}
-                          animate={
-                            currentBreakdown?.cards.includes(card.id.toString())
-                              ? "animate"
-                              : "initial"
-                          }
-                          whileHover="hover"
-                          variants={{
-                            ...vibrateAnimation,
-                            ...hoverScaleAnimation,
-                          }}
-                        >
-                          <DisplayCard
-                            card={card}
-                            onMouseEnter={(e) => {
-                              const content = getCardTooltipContent(card);
-                              if (content)
-                                handleTooltip(true, content, e, "top");
-                            }}
-                            onMouseLeave={() => handleTooltip(false)}
-                          />
-                        </motion.div>
-                        {renderBreakdownCard(card)}
-                      </div>
-                    ))}
-                  </CardRow>
-                </PlayedHandContainer>
-              ))}
-            </PlayedHandArea>
-
-            <HandCardsArea>
-              <HandContainer>
-                <ReorderGroup
-                  axis="x"
-                  values={handCards.map((card) => card.id)}
-                  onReorder={(newOrder) => {
-                    console.log("newOrder", newOrder);
-                    reorderCards(newOrder as string[]);
-                  }}
-                >
-                  <AnimatePresence mode="popLayout" initial={true}>
-                    {handCards.map((card, index) => (
-                      <CardSlot
-                        key={card.id}
-                        index={index}
-                        totalCards={handCards.length}
-                      >
-                        <motion.div
-                          style={{
-                            position: "relative",
-                            transformStyle: "preserve-3d",
-                          }}
-                          animate={
-                            currentBreakdown?.cards.includes(card.id.toString())
-                              ? "animate"
-                              : "initial"
-                          }
-                          whileHover="hover"
-                          variants={{
-                            ...vibrateAnimation,
-                            ...hoverScaleAnimation,
-                          }}
-                        >
-                          <DraggableCard
-                            className="hand-card"
-                            card={card}
-                            isSelected={selectedCards.includes(card.id)}
-                            onSelect={(id) => {
-                              if (!selectedCards.includes(id)) {
-                                if (selectedCards.length >= 5) return;
-                              }
-                              toggleSelectedCard(id);
-                            }}
-                            onMouseEnter={(e) => {
-                              const content = getCardTooltipContent(card);
-                              if (content)
-                                handleTooltip(true, content, e, "top");
-                            }}
-                            onMouseLeave={() => handleTooltip(false)}
-                          />
-                        </motion.div>
-                        {renderBreakdownCard(card)}
-                      </CardSlot>
-                    ))}
-                  </AnimatePresence>
-                </ReorderGroup>
-              </HandContainer>
-            </HandCardsArea>
-
-            <ActionButtonsContainer>
-              {selectedCards.length > 0 && (
-                <ActionButtonGroup
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                >
-                  <ActionButton
-                    action="play"
-                    disabled={playedHands.length >= maxHands}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => handleAction("play")}
-                  >
-                    PLAY
-                  </ActionButton>
-                </ActionButtonGroup>
-              )}
-              <SortButton variant="value" onClick={sortByValue}>
-                Sort Rank
-              </SortButton>
-              <SortButton variant="suit" onClick={sortBySuit}>
-                Sort Suit
-              </SortButton>
-              {selectedCards.length > 0 && (
-                <ActionButtonGroup
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 20 }}
-                >
-                  <ActionButton
-                    action="discard"
-                    disabled={discards.length >= maxDiscards}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => {
-                      handleAction("discard");
-                    }}
-                  >
-                    DISCARD
-                  </ActionButton>
-                </ActionButtonGroup>
-              )}
-            </ActionButtonsContainer>
-          </>
+          <PlayingState
+            handCards={handCards}
+            selectedCards={selectedCards}
+            playedHands={playedHands}
+            lastPlayedIndex={lastPlayedIndex}
+            currentBreakdown={currentBreakdown}
+            maxHands={maxHands}
+            maxDiscards={maxDiscards}
+            discards={discards}
+            handleTooltip={handleTooltip}
+            getCardTooltipContent={getCardTooltipContent}
+            renderBreakdownCard={renderBreakdownCard}
+            toggleSelectedCard={toggleSelectedCard}
+            reorderCards={reorderCards}
+            handleAction={handleAction}
+            sortByValue={sortByValue}
+            sortBySuit={sortBySuit}
+          />
         )}
       </MainGameArea>
       <GlobalTooltip

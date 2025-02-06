@@ -213,8 +213,8 @@ export const DeckAreaContainer = styled.div`
   flex: 1;
 `;
 
-export const DeckSection = styled.div`
-  flex: 2;
+export const TopSection = styled.div<{ flex: number }>`
+  flex: ${(props) => props.flex};
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -239,10 +239,6 @@ export const DeckDescription = styled.div`
   text-align: right;
   padding: 0.2vw;
   font-size: 0.8vw;
-`;
-
-export const MemesSection = styled(DeckSection)`
-  flex: 1;
 `;
 
 export const ShopContainer = styled.div`
