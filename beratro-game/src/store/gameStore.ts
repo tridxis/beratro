@@ -24,6 +24,7 @@ import { STICKER_STATS, StickerRarity } from "@/utils/stickerStats";
 import { FLOWER_STATS } from "@/utils/flowerStats";
 import { MEME_STATS } from "@/utils/memeStats";
 import { v4 as uuidv4 } from "uuid";
+import { BeraPosition } from "@/types/beras";
 
 const getRoundReqScore = (round: number) => {
   if (round <= 10) {
@@ -82,7 +83,7 @@ export const useGameStore = create<GameStore>()(
         selectedPack: null,
         selectedBooster: null,
         handLevels: {},
-        selectedBera: null,
+        selectedBeras: [],
         boughtPacks: {
           [BoosterPack.BASIC]: false,
           [BoosterPack.PREMIUM]: false,
@@ -161,7 +162,7 @@ export const useGameStore = create<GameStore>()(
             selectedPack: null,
             selectedBooster: null,
             handLevels: {},
-            selectedBera: null,
+            selectedBeras: [],
             boughtPacks: {
               [BoosterPack.BASIC]: false,
               [BoosterPack.PREMIUM]: false,
@@ -241,7 +242,7 @@ export const useGameStore = create<GameStore>()(
           })),
 
         reorderCards: (newOrder: string[]) =>
-          set((state: GameStore) => ({
+          set((state) => ({
             handCards: state.handCards
               .map((card) => ({
                 ...card,
@@ -368,7 +369,7 @@ export const useGameStore = create<GameStore>()(
               const updated = { ...state };
               if (sticker.kind === "bera") {
                 const bera = state.playingBeras.find(
-                  (b) => b.id === state.selectedBera
+                  (b) => b.id === state.selectedBeras[0]
                 );
                 if (bera == null) return state;
                 bera.sticker = booster.booster as Sticker;
@@ -405,7 +406,7 @@ export const useGameStore = create<GameStore>()(
               };
             }
             state.selectedCards = [];
-            state.selectedBera = null;
+            state.selectedBeras = [];
             return state;
           }),
         modifyGold: (value: number) =>
@@ -587,7 +588,8 @@ export const useGameStore = create<GameStore>()(
           }),
         setSelectedBooster: (booster: BoosterPosition | null) =>
           set({ selectedBooster: booster }),
-        setSelectedBera: (bera: string | null) => set({ selectedBera: bera }),
+        setSelectedBeras: (beraIds: string[]) =>
+          set({ selectedBeras: beraIds }),
         sellBera: (id: string) =>
           set((state) => {
             const bera = state.playingBeras.find((b) => b.id === id);
@@ -599,7 +601,7 @@ export const useGameStore = create<GameStore>()(
             return {
               playingBeras: state.playingBeras.filter((b) => b.id !== id),
               gold: state.gold + refund,
-              selectedBera: null, // Clear selection after selling
+              selectedBeras: state.selectedBeras.filter((b) => b !== id),
             };
           }),
         sellBooster: (id: string) =>
@@ -621,6 +623,38 @@ export const useGameStore = create<GameStore>()(
             if (!state.selectedPack) return state;
             return {
               selectedPack: null, // Clear selected pack
+            };
+          }),
+        reorderBeras: (newOrder: BeraPosition[]) =>
+          set((state) => ({
+            playingBeras: newOrder.map((bera, index) => ({
+              ...bera,
+              index,
+            })),
+          })),
+
+        mergeBeras: (sourceId, targetId) =>
+          set((state) => {
+            const source = state.playingBeras.find((b) => b.id === sourceId);
+            const target = state.playingBeras.find((b) => b.id === targetId);
+
+            if (
+              !source ||
+              !target ||
+              source.bera !== target.bera ||
+              source.level !== target.level
+            ) {
+              return state;
+            }
+
+            const newLevel = source.level + 1;
+            if (newLevel > 3) return state;
+
+            return {
+              playingBeras: state.playingBeras
+                .filter((b) => b.id !== sourceId)
+                .map((b) => (b.id === targetId ? { ...b, level: newLevel } : b))
+                .map((bera, index) => ({ ...bera, index })),
             };
           }),
       };

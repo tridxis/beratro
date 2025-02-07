@@ -335,6 +335,11 @@ export const SellButton = styled(Button)`
   color: ${WHITE_COLOR};
 `;
 
+export const MergeButton = styled(Button)`
+  background-color: ${BLUE_COLOR};
+  color: ${WHITE_COLOR};
+`;
+
 export const ShopItemsGrid = styled.div`
   display: block;
   gap: 1vw;
@@ -491,12 +496,15 @@ export const ReorderGroup = styled(Reorder.Group)`
   list-style: none;
   margin: 0 auto;
   width: fit-content;
+  padding: 0;
 `;
 
 export const CardSlot = styled.div<{ index: number; totalCards: number }>`
   position: relative;
-  width: ${({ totalCards }) =>
-    `calc(min(${CARD_STYLES.container.width}, ${50 / totalCards}vw))`};
+  width: ${({ totalCards }) => `${50 / totalCards}vw`};
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const ActionButtonsContainer = styled.div`

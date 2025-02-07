@@ -45,7 +45,7 @@ export interface GameStore {
   currentState: GameState;
   lastHandType: HandType | null;
   handLevels: { [key: string]: number };
-  selectedBera: string | null;
+  selectedBeras: string[];
   setCurrentState: (state: GameState) => void;
   reset: () => void;
   setHandCards: (cards: CardPosition[]) => void;
@@ -87,11 +87,13 @@ export interface GameStore {
   pickItemFromPack: (item: CardPosition | BoosterPosition) => void;
   selectedBooster: BoosterPosition | null;
   setSelectedBooster: (booster: BoosterPosition | null) => void;
-  setSelectedBera: (bera: string | null) => void;
+  setSelectedBeras: (beraIds: string[]) => void;
   boughtPacks: Record<BoosterPack, boolean>;
   sellBera: (bera: string) => void;
   sellBooster: (booster: string) => void;
   skipPack: () => void;
+  mergeBeras: (bera1: string, bera2: string) => void;
+  reorderBeras: (newOrder: BeraPosition[]) => void;
 }
 
 export type CalculationOption = {

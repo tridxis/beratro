@@ -92,7 +92,7 @@ export const Game = () => {
     setSelectedBooster,
     activateBooster,
     handLevels,
-    setSelectedBera,
+    setSelectedBeras,
     modifyGold,
     boughtPacks,
     sellBera,
@@ -176,7 +176,7 @@ export const Game = () => {
       if (!target.closest(".booster-card")) {
         setSelectedBooster(null);
       } else if (!target.closest(".bera-item")) {
-        setSelectedBera(null);
+        setSelectedBeras([]);
       }
     };
 
