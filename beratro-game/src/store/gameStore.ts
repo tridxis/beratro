@@ -184,7 +184,7 @@ export const useGameStore = create<GameStore>()(
                 (acc, bera) =>
                   acc +
                   BERA_STATS[bera.bera].trigger(
-                    BERA_STATS[bera.bera].values[0],
+                    BERA_STATS[bera.bera].values[bera.level - 1],
                     [],
                     state
                   ),

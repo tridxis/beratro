@@ -99,7 +99,9 @@ export const ShoppingState = ({
                       <>
                         {BERA_STATS[bera.bera].description.replace(
                           "{{value}}",
-                          BERA_STATS[bera.bera].values[0].toString()
+                          BERA_STATS[bera.bera].values[
+                            bera.level - 1
+                          ].toString()
                         )}
                       </>,
                       e,

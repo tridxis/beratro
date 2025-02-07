@@ -189,7 +189,7 @@ export const Game = () => {
       .filter((bera) => BERA_STATS[bera.bera].action === GameAction.ON_ENDED)
       .forEach((bera) => {
         const value = BERA_STATS[bera.bera].trigger(
-          BERA_STATS[bera.bera].values[0],
+          BERA_STATS[bera.bera].values[bera.level - 1],
           [],
           state
         );
@@ -200,7 +200,7 @@ export const Game = () => {
               {
                 title: BERA_STATS[bera.bera].description.replace(
                   "{{value}}",
-                  BERA_STATS[bera.bera].values[0].toString()
+                  BERA_STATS[bera.bera].values[bera.level - 1].toString()
                 ),
                 value,
               },
@@ -294,7 +294,7 @@ export const Game = () => {
           )
           .forEach((bera) => {
             const value = BERA_STATS[bera.bera].trigger(
-              BERA_STATS[bera.bera].values[0],
+              BERA_STATS[bera.bera].values[bera.level - 1],
               [],
               state
             );

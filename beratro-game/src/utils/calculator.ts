@@ -53,7 +53,7 @@ export class Calculator {
       .filter((bera) => BERA_STATS[bera.bera].action === GameAction.ON_PLAYED)
       .forEach((bera) => {
         const { type, trigger, values } = BERA_STATS[bera.bera];
-        const value = trigger(values[0], playedCards, state);
+        const value = trigger(values[bera.level - 1], playedCards, state);
         if (value) {
           switch (type) {
             case BeraType.ADD_CHIPS:
@@ -181,7 +181,7 @@ export class Calculator {
       }
     | undefined {
     const { values, trigger, type, action } = BERA_STATS[bera.bera];
-    const value = trigger(values[0], cards, state);
+    const value = trigger(values[bera.level - 1], cards, state);
 
     if (!value) return;
     let unit: Unit | null = null;

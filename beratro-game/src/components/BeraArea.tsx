@@ -122,7 +122,9 @@ const BeraArea = ({
                       <>
                         {BERA_STATS[bera.bera].description.replace(
                           "{{value}}",
-                          BERA_STATS[bera.bera].values[0].toString()
+                          BERA_STATS[bera.bera].values[
+                            bera.level - 1
+                          ].toString()
                         )}
                         {BERA_STATS[bera.bera].cumulative && (
                           <>
@@ -131,7 +133,7 @@ const BeraArea = ({
                               ? "×"
                               : "+"}
                             {BERA_STATS[bera.bera].trigger(
-                              BERA_STATS[bera.bera].values[0],
+                              BERA_STATS[bera.bera].values[bera.level - 1],
                               [],
                               state
                             )}
