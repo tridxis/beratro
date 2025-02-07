@@ -255,14 +255,14 @@ export const BOOSTER_PACK_INFO: Record<BoosterPack, BoosterPackInfo> = {
     type: BoosterPack.PREMIUM,
     name: "Premium Pack",
     price: 8,
-    items: 10,
+    items: 8,
     pick: 1,
   },
   [BoosterPack.ULTRA]: {
     type: BoosterPack.ULTRA,
     name: "Ultra Pack",
     price: 12,
-    items: 15,
+    items: 10,
     pick: 2,
   },
 };

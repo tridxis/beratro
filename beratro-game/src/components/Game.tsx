@@ -1,4 +1,3 @@
-import { AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState, useMemo } from "react";
 import { useGameStore } from "@/store/gameStore";
 import { Calculator } from "@/utils/calculator";
@@ -6,15 +5,11 @@ import {
   ANIMATION_MS,
   Flower,
   GameAction,
-  HAND_NAMES,
-  HAND_VALUES,
   HandType,
-  Meme,
   Sticker,
   Unit,
 } from "@/utils/constants";
 import { Breakdown, PokerHand } from "@/types/hands";
-import { useMotionValue, useTransform, animate } from "framer-motion";
 import { GameState } from "@/types/games";
 import {
   FlexRow,
@@ -24,46 +19,25 @@ import {
   RoundHeader,
   RoundContent,
   ScoreTarget,
-  ScoreValue,
-  StatsGrid,
-  StatBox,
-  StatValue,
   MainGameArea,
   DeckAreaContainer,
-  ShopItem,
   ScorePopup,
   ChipScore,
   MultScore,
-  HandScoreContainer,
-  HandTypeText,
-  ScoreDisplay,
-  ChipsDisplay,
-  MultiplierDisplay,
   LeftArea,
   BentoBox,
-  DeckContainer,
-  DeckDescription,
   RetriggerScore,
   GoldScore,
-  BottomButtonContainer,
-  SellButton,
-  StickerItem,
-  TopSection,
 } from "./Game.styles";
-import { BLUE_COLOR, GOLD_COLOR, RED_COLOR } from "@/utils/colors";
+import { BLUE_COLOR } from "@/utils/colors";
 import { BoosterPosition, CardPosition } from "@/types/cards";
 import { BERA_STATS, BeraType } from "@/utils/beraStats";
 import useCalculator from "@/hooks/useCalculator";
 import { BeraPosition } from "@/types/beras";
-import { Booster } from "./cards/Booster";
 import { STICKER_STATS } from "@/utils/stickerStats";
 import { motion } from "framer-motion";
 import { GlobalTooltip } from "./Tooltip";
 import { FLOWER_STATS } from "@/utils/flowerStats";
-import { MEME_STATS } from "@/utils/memeStats";
-import { PlayedHands } from "./states/Playing/PlayedHands";
-import { HandCards } from "./HandCards";
-import Actions from "./Actions";
 import { RoundEndedState } from "./states/RoundEndedState";
 import { ShoppingState } from "./states/ShoppingState";
 import { PlayingState } from "./states/PlayingState";
@@ -71,61 +45,9 @@ import BeraArea from "./BeraArea";
 import BoosterArea from "./BoosterArea";
 import { Score } from "./Score";
 import Stats from "./Stats";
-
-// Update the vibration animation to include rotation
-const vibrateAnimation = {
-  initial: { x: 0, y: 0, rotate: 0, transformOrigin: "center center" },
-  animate: {
-    x: [
-      0,
-      "-0.4vw",
-      "0.4vw",
-      "-0.3vw",
-      "0.3vw",
-      "-0.2vw",
-      "0.2vw",
-      "-0.1vw",
-      "0.1vw",
-      0,
-    ],
-    y: [
-      0,
-      "0.4vw",
-      "-0.4vw",
-      "0.3vw",
-      "-0.3vw",
-      "0.2vw",
-      "-0.2vw",
-      "0.1vw",
-      "-0.1vw",
-      0,
-    ],
-    rotate: [0, -4, 4, -3, 3, -2, 2, -1, 1, 0],
-    transformOrigin: "center center",
-    transition: {
-      duration: ANIMATION_MS / 3000, // Even faster duration
-      times: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1],
-      ease: "easeOut", // Changed to easeOut for Balatro-like decay
-      repeat: 0, // Single shake that decays
-    },
-  },
-};
+import { vibrateAnimation } from "@/utils/animations";
 
 // Update the hover scale animation to maintain z-index
-const hoverScaleAnimation = {
-  initial: {
-    scale: 1,
-    transformOrigin: "center center",
-  },
-  hover: {
-    scale: 1.05,
-    transformOrigin: "center center",
-    transition: {
-      duration: ANIMATION_MS / 2000,
-      ease: "easeOut",
-    },
-  },
-};
 
 // Add this type to help with tooltip positioning
 type TooltipPosition = "top" | "bottom" | "right";
@@ -148,7 +70,6 @@ export const Game = () => {
     score,
     addScore,
     discards,
-    deckCards,
     maxHands,
     maxDiscards,
     currentState,
@@ -171,10 +92,8 @@ export const Game = () => {
     setSelectedBooster,
     activateBooster,
     handLevels,
-    selectedBera,
     setSelectedBera,
     modifyGold,
-    setHandCards,
     boughtPacks,
     sellBera,
     sellBooster,
@@ -204,7 +123,7 @@ export const Game = () => {
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
 
   // Add these states near the top of the Game component
-  const [upgradingHand, setUpgradingHand] = useState<HandType>(HandType.Pair);
+  const [upgradingHand, setUpgradingHand] = useState<HandType>();
 
   // Add this effect to handle the notification timing
   useEffect(() => {

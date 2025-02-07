@@ -1,15 +1,7 @@
 import { CardPosition } from "@/types/cards";
 import { Breakdown } from "@/types/hands";
-import { HandScore } from "../Score";
 import { PlayedHands } from "./Playing/PlayedHands";
 import { HandCards } from "./Playing/HandCards";
-import { HandType } from "@/utils/constants";
-import {
-  ActionButtonsContainer,
-  ActionButtonGroup,
-  ActionButton,
-  SortButton,
-} from "../Game.styles";
 import Actions from "./Playing/Actions";
 
 interface PlayingStateProps {

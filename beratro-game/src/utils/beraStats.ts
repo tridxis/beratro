@@ -121,7 +121,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     type: BeraType.ADD_CHIPS,
     action: GameAction.INDEP,
     trigger: (value: number, cards: CardPosition[]) => {
-      return countRanks(cards).includes(2) ? value : 0;
+      return countRanks(cards).some((count) => count >= 2) ? value : 0;
     },
   },
   [Bera.TRIPLETS]: {
@@ -133,7 +133,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     type: BeraType.ADD_CHIPS,
     action: GameAction.INDEP,
     trigger: (value: number, cards: CardPosition[]) => {
-      return countRanks(cards).includes(3) ? value : 0;
+      return countRanks(cards).some((count) => count >= 3) ? value : 0;
     },
   },
   [Bera.CLIMB]: {
@@ -169,7 +169,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     type: BeraType.ADD_MULT,
     action: GameAction.INDEP,
     trigger: (value: number, cards: CardPosition[]) => {
-      return countRanks(cards).includes(2) ? value : 0;
+      return countRanks(cards).some((count) => count >= 2) ? value : 0;
     },
   },
   [Bera.FAMILY]: {
@@ -181,7 +181,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
     type: BeraType.ADD_MULT,
     action: GameAction.INDEP,
     trigger: (value: number, cards: CardPosition[]) => {
-      return countRanks(cards).includes(3) ? value : 0;
+      return countRanks(cards).some((count) => count >= 3) ? value : 0;
     },
   },
   [Bera.BUILDER]: {

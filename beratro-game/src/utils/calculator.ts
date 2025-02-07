@@ -180,30 +180,74 @@ export class Calculator {
         breakdowns: Breakdown[];
       }
     | undefined {
-    const { values, trigger, type } = BERA_STATS[bera.bera];
+    const { values, trigger, type, action } = BERA_STATS[bera.bera];
     const value = trigger(values[0], cards, state);
 
     if (!value) return;
     let unit: Unit | null = null;
     const breakdowns: Breakdown[] = [];
 
+    const isCardBreakdown = [GameAction.ON_SCORED, GameAction.ON_HELD].includes(
+      action
+    );
+
     switch (type) {
       case BeraType.ADD_CHIPS:
         unit = Unit.CHIPS;
         totalChips += value;
+        if (options?.breakdown) {
+          breakdowns.push({
+            cards: isCardBreakdown ? cards.map((card) => card.id) : [],
+            beras: isCardBreakdown ? [] : [bera.id],
+            values: [value],
+            units: [Unit.CHIPS],
+            chips: totalChips,
+            mult: totalMult,
+          });
+        }
         break;
       case BeraType.ADD_MULT:
         unit = Unit.MULT;
         totalMult += value;
+        if (options?.breakdown) {
+          breakdowns.push({
+            cards: isCardBreakdown ? cards.map((card) => card.id) : [],
+            beras: isCardBreakdown ? [] : [bera.id],
+            values: [value],
+            units: [Unit.MULT],
+            chips: totalChips,
+            mult: totalMult,
+          });
+        }
         break;
       case BeraType.ADD_GOLD:
         unit = Unit.GOLD;
         console.log("add gold trigger bera", value);
         state.modifyGold(value);
+        if (options?.breakdown) {
+          breakdowns.push({
+            cards: [],
+            beras: [bera.id],
+            values: [value],
+            units: [Unit.GOLD],
+            chips: totalChips,
+            mult: totalMult,
+          });
+        }
         break;
       case BeraType.MUL_MULT:
         unit = Unit.X_MULT;
         totalMult *= value;
+        if (options?.breakdown) {
+          breakdowns.push({
+            cards: isCardBreakdown ? cards.map((card) => card.id) : [],
+            beras: isCardBreakdown ? [] : [bera.id],
+            values: [value],
+            units: [Unit.X_MULT],
+            chips: totalChips,
+            mult: totalMult,
+          });
+        }
         break;
       case BeraType.GEN_FLOWER:
         state.addBooster(FLOWERS[value], "flower");
