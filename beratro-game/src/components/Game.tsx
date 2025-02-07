@@ -58,6 +58,7 @@ export const Game = () => {
   const {
     handCards,
     selectedCards,
+    selectedBeras,
     playedHands,
     sortByValue,
     sortBySuit,
@@ -581,6 +582,8 @@ export const Game = () => {
             handleActivateBooster={handleActivateBooster}
             sellBooster={sellBooster}
             handleTooltip={handleTooltip}
+            selectedBeras={selectedBeras}
+            selectedCards={selectedCards}
           />
         </DeckAreaContainer>
 

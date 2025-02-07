@@ -9,6 +9,7 @@ import { Flower, HAND_NAMES, Sticker } from "@/utils/constants";
 import { Meme } from "@/utils/constants";
 import { BLACK_COLOR, WOOD_COLOR } from "@/utils/colors";
 import { BottomButtonContainer, SellButton, UseButton } from "../Game.styles";
+import { BeraPosition } from "@/types/beras";
 
 interface BoosterProps {
   item: BoosterPosition;
@@ -16,6 +17,8 @@ interface BoosterProps {
   onClick?: (e: React.MouseEvent) => void;
   onUse?: () => void;
   onSell?: () => void;
+  selectedBeras?: string[];
+  selectedCards?: string[];
 }
 
 export const Booster = ({
@@ -26,22 +29,31 @@ export const Booster = ({
   onSell,
   onMouseEnter,
   onMouseLeave,
+  selectedBeras,
+  selectedCards,
 }: BoosterProps & {
   onMouseEnter?: (e: React.MouseEvent) => void;
   onMouseLeave?: () => void;
 }) => {
   const { booster, boosterType } = item;
 
-  const { name } = (() => {
+  const { name, usable } = (() => {
     switch (boosterType) {
       case "flower":
         return {
           name: FLOWER_STATS[booster as Flower].title,
+          usable: true,
         };
       case "meme":
-        return MEME_STATS[booster as Meme];
-      case "sticker":
-        return STICKER_STATS[booster as Sticker];
+        return { ...MEME_STATS[booster as Meme], usable: true };
+      case "sticker": {
+        const stats = STICKER_STATS[booster as Sticker];
+        const usable =
+          stats.kind === "bera"
+            ? selectedBeras?.length === 1
+            : selectedCards?.length === 1;
+        return { ...stats, usable };
+      }
       default:
         return { name: "" };
     }
@@ -75,17 +87,19 @@ export const Booster = ({
             transition={{ duration: 0.2 }}
             onClick={(e) => e.stopPropagation()}
           >
-            <UseButton
-              as={motion.button}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={(e) => {
-                e.stopPropagation();
-                onUse?.();
-              }}
-            >
-              Use
-            </UseButton>
+            {usable && (
+              <UseButton
+                as={motion.button}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onUse?.();
+                }}
+              >
+                Use
+              </UseButton>
+            )}
             <SellButton
               as={motion.button}
               whileHover={{ scale: 1.05 }}

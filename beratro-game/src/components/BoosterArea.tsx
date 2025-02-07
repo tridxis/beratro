@@ -8,10 +8,13 @@ import React from "react";
 import { Booster } from "./cards/Booster";
 import { TopSection, DeckContainer, DeckDescription } from "./Game.styles";
 import { BoosterPosition } from "@/types/cards";
+import { BeraPosition } from "@/types/beras";
 
 interface BoosterAreaProps {
   boosters: BoosterPosition[];
   selectedBooster: BoosterPosition | null;
+  selectedBeras: string[];
+  selectedCards: string[];
   setSelectedBooster: (booster: BoosterPosition | null) => void;
   handleTooltip: (
     show: boolean,
@@ -29,6 +32,8 @@ const BoosterArea = ({
   handleActivateBooster,
   sellBooster,
   handleTooltip,
+  selectedBeras,
+  selectedCards,
 }: BoosterAreaProps) => {
   return (
     <TopSection flex={1}>
@@ -58,6 +63,8 @@ const BoosterArea = ({
             <Booster
               item={booster}
               isSelected={selectedBooster?.id === booster.id}
+              selectedBeras={selectedBeras}
+              selectedCards={selectedCards}
               onUse={() => {
                 handleActivateBooster(booster);
               }}
