@@ -1,6 +1,14 @@
 import { CARD_STYLES } from "@/utils/cardStyles";
 import styled from "@emotion/styled";
 import Button from "./Button";
+import {
+  BG_COLOR,
+  BLACK_COLOR,
+  BLUE_COLOR,
+  BORDER_COLOR,
+  WHITE_COLOR,
+  WOOD_COLOR,
+} from "@/utils/colors";
 
 export const BerasContainer = styled.div`
   display: flex;
@@ -30,14 +38,19 @@ export const CardRow = styled.div`
   justify-content: center;
 `;
 
-export const Card = styled.div`
+export const Card = styled.div<{ isHovered: boolean }>`
   ${CARD_STYLES.container}
+  background-color: ${({ isHovered }) =>
+    isHovered ? BORDER_COLOR : CARD_STYLES.container.backgroundColor};
+  font-size: ${({ isHovered }) => (isHovered ? "0.8vw" : "1vw")};
+  color: ${({ isHovered }) => (isHovered ? WHITE_COLOR : BLACK_COLOR)};
+  padding: 1vw;
+  transition: background-color 0.2s ease-in-out;
 `;
 
 export const CardText = styled.p`
-  font-size: 1vw;
   font-weight: 500;
-  color: #000;
+  text-align: center;
 `;
 
 export const ContinueButton = styled(Button)`

@@ -52,7 +52,7 @@ export enum BeraRarity {
 export const BERA_STATS: Record<Bera, BeraStats> = {
   [Bera.BABY]: {
     name: "Baby",
-    description: "+4 Mult",
+    description: "+{{value}} Mult",
     cost: 2,
     rarity: BeraRarity.COMMON,
     values: [4, 8, 16],
