@@ -1,7 +1,8 @@
 import { BORDER_COLOR, WHITE_COLOR, WOOD_COLOR } from "@/utils/colors";
 import styled from "@emotion/styled";
+import { motion } from "framer-motion";
 
-const Button = styled.button`
+const Button = styled(motion.button)`
   border: 0.15vw solid ${BORDER_COLOR};
   border-radius: 1vw;
   padding: 0.75vw;

@@ -79,7 +79,6 @@ export const Booster = ({
       <AnimatePresence>
         {isSelected && (
           <BottomButtonContainer
-            as={motion.div}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
@@ -88,7 +87,6 @@ export const Booster = ({
           >
             {usable && (
               <UseButton
-                as={motion.button}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={(e) => {
@@ -100,7 +98,6 @@ export const Booster = ({
               </UseButton>
             )}
             <SellButton
-              as={motion.button}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={(e) => {

@@ -100,7 +100,6 @@ const BeraArea = ({
               >
                 <ShopItem
                   className="bera-item"
-                  as={motion.div}
                   whileHover="hover"
                   variants={{
                     ...vibrateAnimation,
@@ -168,7 +167,6 @@ const BeraArea = ({
                   <AnimatePresence>
                     {state.selectedBeras.includes(bera.id) && (
                       <BottomButtonContainer
-                        as={motion.div}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 10 }}
@@ -177,7 +175,6 @@ const BeraArea = ({
                       >
                         {state.selectedBeras.length === 2 && (
                           <MergeButton
-                            as={motion.button}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => {
@@ -195,7 +192,6 @@ const BeraArea = ({
                         )}
                         {state.selectedBeras.length === 1 && (
                           <SellButton
-                            as={motion.button}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => {

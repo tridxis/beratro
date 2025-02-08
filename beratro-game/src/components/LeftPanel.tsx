@@ -1,4 +1,3 @@
-import useAnimatedCounter from "@/hooks/useAnimatedCounter";
 import {
   LeftArea,
   LeftPanel as StyledLeftPanel,
@@ -8,16 +7,15 @@ import {
   RoundContent,
   FlexRow,
   ScoreTarget,
-  ScoreValue,
   StatsGrid,
   StatBox,
   StatValue,
 } from "./Game.styles";
 import { BLUE_COLOR, GOLD_COLOR, RED_COLOR } from "@/utils/colors";
-import { HandScore } from "./Score";
 import { HandType } from "@/utils/constants";
 import { Breakdown } from "@/types/hands";
 import { CardPosition } from "@/types/cards";
+import { Score } from "./Score";
 
 interface LeftPanelProps {
   round: number;
@@ -79,18 +77,8 @@ export const LeftPanel = ({
           </RoundContent>
         </BentoBox>
 
-        <BentoBox style={{ padding: "1vw" }}>
-          <div>Round score</div>
-          <ScoreValue>
-            {useAnimatedCounter(
-              score ||
-                currentBreakdown?.chips ||
-                0 * (currentBreakdown?.mult || 0)
-            )}
-          </ScoreValue>
-        </BentoBox>
-
-        <HandScore
+        <Score
+          score={score}
           pokerHand={pokerHand}
           upgradingHand={upgradingHand}
           handLevels={handLevels}

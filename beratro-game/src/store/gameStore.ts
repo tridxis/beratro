@@ -569,7 +569,7 @@ export const useGameStore = create<GameStore>()(
               item.id,
             ];
 
-            const updated: GameStore = {};
+            const updated: Partial<GameStore> = {};
 
             if (!("booster" in item)) {
               const newCard: CardPosition = {
@@ -636,7 +636,7 @@ export const useGameStore = create<GameStore>()(
             };
           }),
         reorderBeras: (newOrder: BeraPosition[]) =>
-          set((state) => ({
+          set(() => ({
             playingBeras: newOrder.map((bera, index) => ({
               ...bera,
               index,

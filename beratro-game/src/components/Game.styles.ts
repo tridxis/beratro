@@ -300,7 +300,7 @@ export const BuyButton = styled(Button)`
   }
 `;
 
-export const BottomButtonContainer = styled.div`
+export const BottomButtonContainer = styled(motion.div)`
   position: absolute;
   bottom: -1vw;
   left: 0;
@@ -345,7 +345,7 @@ export const ShopItemsGrid = styled.div`
   gap: 1vw;
 `;
 
-export const ShopItem = styled.div`
+export const ShopItem = styled(motion.div)`
   cursor: pointer;
   background-color: ${CARD_STYLES.container.backgroundColor};
   border: ${CARD_STYLES.container.border};
