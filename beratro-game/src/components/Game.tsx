@@ -103,6 +103,7 @@ export const Game = () => {
     skipPack,
     rerollCost,
     rerollShopBeras,
+    deckCards,
   } = state;
 
   const { play } = useCalculator();
@@ -646,6 +647,7 @@ export const Game = () => {
         {currentState === GameState.PLAYING && (
           <PlayingState
             handCards={handCards}
+            deckCards={deckCards}
             selectedCards={selectedCards}
             playedHands={playedHands}
             lastPlayedIndex={lastPlayedIndex}

@@ -25,7 +25,6 @@ const Dialog = styled(motion.div)`
   background: ${WHITE_COLOR};
   padding: 2vw;
   border-radius: 1vw;
-  border: 0.2vw solid ${BORDER_COLOR};
   text-align: center;
   color: ${BLACK_COLOR};
 `;
