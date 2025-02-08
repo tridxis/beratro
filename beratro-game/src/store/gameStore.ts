@@ -16,6 +16,8 @@ import {
   HandType,
   BoosterPack,
   BOOSTER_PACK_INFO,
+  DEFAULT_REROLL_COST,
+  Bera,
 } from "@/utils/constants";
 import { initCards, initBeras } from "@/utils/seeds";
 import { BERA_STATS, BeraType } from "@/utils/beraStats";
@@ -48,13 +50,22 @@ const getRoundReqScore = (round: number) => {
   return Math.round(score / 1000) * 1000;
 };
 
+const generateRandomBeras = (count: number): BeraPosition[] => {
+  const beras = Object.values(Bera);
+  return Array.from({ length: count }, () => ({
+    id: uuidv4(),
+    bera: beras[Math.floor(Math.random() * beras.length)],
+    index: 0,
+    level: 1,
+  })).map((bera, index) => ({ ...bera, index }));
+};
+
 export const useGameStore = create<GameStore>()(
   persist(
     (set, get) => {
-      const { gameBeras, deckBeras } = initBeras();
+      const { gameBeras } = initBeras();
       return {
         gameBeras,
-        deckBeras,
         playingBeras: [],
         shopBeras: [],
         handCards: [],
@@ -69,6 +80,7 @@ export const useGameStore = create<GameStore>()(
         maxDiscards: DEFAULT_MAX_DISCARDS,
         maxBoosters: DEFAULT_MAX_BOOSTERS,
         maxBeras: DEFAULT_MAX_BERAS,
+        rerollCost: DEFAULT_REROLL_COST,
         usedFlowers: [],
         usedStickers: [],
         usedMemes: [],
@@ -92,9 +104,6 @@ export const useGameStore = create<GameStore>()(
 
         endRound: (goldEarned: number) =>
           set((state) => {
-            const shopBeras = state.deckBeras.slice(0, 3);
-            const remainingDeckBeras = state.deckBeras.slice(3);
-
             return {
               gold: state.gold + goldEarned,
               handCards: [],
@@ -108,8 +117,8 @@ export const useGameStore = create<GameStore>()(
               playedHands: [],
               discards: [],
               currentState: GameState.SHOPPING,
-              shopBeras,
-              deckBeras: remainingDeckBeras,
+              shopBeras: generateRandomBeras(3),
+              rerollCost: DEFAULT_REROLL_COST,
             };
           }),
 
@@ -131,10 +140,9 @@ export const useGameStore = create<GameStore>()(
 
         setCurrentState: (state: GameState) => set({ currentState: state }),
         reset: () => {
-          const { gameBeras, deckBeras } = initBeras();
+          const { gameBeras } = initBeras();
           set(() => ({
             gameBeras,
-            deckBeras,
             playingBeras: [],
             shopBeras: [],
             handCards: [],
@@ -149,6 +157,7 @@ export const useGameStore = create<GameStore>()(
             maxDiscards: DEFAULT_MAX_DISCARDS,
             maxBoosters: DEFAULT_MAX_BOOSTERS,
             maxBeras: DEFAULT_MAX_BERAS,
+            rerollCost: DEFAULT_REROLL_COST,
             usedFlowers: [],
             usedStickers: [],
             usedMemes: [],
@@ -449,6 +458,7 @@ export const useGameStore = create<GameStore>()(
             handCards: [],
             playedHands: [],
             discards: [],
+            rerollCost: DEFAULT_REROLL_COST,
             boughtPacks: {
               [BoosterPack.BASIC]: false,
               [BoosterPack.PREMIUM]: false,
@@ -655,6 +665,16 @@ export const useGameStore = create<GameStore>()(
                 .filter((b) => b.id !== sourceId)
                 .map((b) => (b.id === targetId ? { ...b, level: newLevel } : b))
                 .map((bera, index) => ({ ...bera, index })),
+            };
+          }),
+        rerollShopBeras: () =>
+          set((state) => {
+            if (state.gold < state.rerollCost) return state;
+
+            return {
+              shopBeras: generateRandomBeras(3),
+              gold: state.gold - state.rerollCost,
+              rerollCost: state.rerollCost + 1,
             };
           }),
       };

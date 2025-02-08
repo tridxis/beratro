@@ -586,4 +586,13 @@ export const SkipButton = styled(Button)`
   display: block;
 `;
 
+export const EmptyItem = styled.div`
+  width: ${CARD_STYLES.container.width};
+  height: ${CARD_STYLES.container.height};
+  border: 0.1vw solid rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  text-align: center;
+`;
+
 // ... continue with other styled components as needed

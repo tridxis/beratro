@@ -125,7 +125,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
       ) as [string, FlowerStats];
       console.log("flowerKey", flowerKey, flower);
       if (!flower) return 0;
-     
+
       state.addBooster(flowerKey as Flower, "flower");
       return flower.id;
     },
@@ -145,7 +145,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
   [Sticker.EARTH]: {
     id: uuidv4(),
     name: "Earth",
-    description: "+10 Mult when this card is scored",
+    description: "+10 Mult",
     type: Unit.MULT,
     action: GameAction.ON_SCORED,
     rarity: StickerRarity.COMMON,
@@ -156,7 +156,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
   [Sticker.WATER]: {
     id: uuidv4(),
     name: "Water",
-    description: "+50 Chips when this card is scored",
+    description: "+50 Chips",
     type: Unit.CHIPS,
     action: GameAction.ON_SCORED,
     rarity: StickerRarity.COMMON,
@@ -167,7 +167,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
   [Sticker.FIRE]: {
     id: uuidv4(),
     name: "Fire",
-    description: "x1.5 Mult when this card is scored",
+    description: "x1.5 Mult",
     type: Unit.X_MULT,
     action: GameAction.ON_SCORED,
     rarity: StickerRarity.UNCOMMON,

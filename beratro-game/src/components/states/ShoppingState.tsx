@@ -24,6 +24,7 @@ import {
   CardWrapper,
   SkipButton,
   ShopItemsGrid,
+  EmptyItem,
 } from "../Game.styles";
 import { DisplayCard } from "../cards/DisplayCard";
 import { Booster } from "../cards/Booster";
@@ -53,6 +54,8 @@ interface ShoppingStateProps {
   nextRound: () => void;
   dealCards: () => void;
   skipPack: () => void;
+  rerollCost: number;
+  rerollShopBeras: () => void;
 }
 
 export const ShoppingState = ({
@@ -68,6 +71,8 @@ export const ShoppingState = ({
   nextRound,
   dealCards,
   skipPack,
+  rerollCost,
+  rerollShopBeras,
 }: ShoppingStateProps) => {
   console.log("bera", shopBeras);
   return (
@@ -86,7 +91,13 @@ export const ShoppingState = ({
                 >
                   Next Round
                 </ShopButton>
-                <ShopButton variant="secondary">Reroll $5</ShopButton>
+                <ShopButton
+                  variant="secondary"
+                  onClick={rerollShopBeras}
+                  disabled={gold < rerollCost}
+                >
+                  Reroll ${rerollCost}
+                </ShopButton>
               </ShopButtonGrid>
 
               {shopBeras.map((bera, index) => (
@@ -125,7 +136,7 @@ export const ShoppingState = ({
               <div></div>
               {BOOSTER_PACKS.map((item, index) =>
                 boughtPacks[item.type] ? (
-                  <div key={`pack-${index}`}></div>
+                  <EmptyItem key={`pack-${index}`}></EmptyItem>
                 ) : (
                   <ShopItem
                     key={`pack-${index}`}

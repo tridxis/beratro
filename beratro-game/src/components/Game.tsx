@@ -46,6 +46,8 @@ import BoosterArea from "./BoosterArea";
 import { Score } from "./Score";
 import Stats from "./Stats";
 import { vibrateAnimation } from "@/utils/animations";
+import { GameOverDialog } from "./GameOverDialog";
+import { AnimatePresence } from "framer-motion";
 
 // Update the hover scale animation to maintain z-index
 
@@ -99,6 +101,8 @@ export const Game = () => {
     sellBera,
     sellBooster,
     skipPack,
+    rerollCost,
+    rerollShopBeras,
   } = state;
 
   const { play } = useCalculator();
@@ -521,6 +525,25 @@ export const Game = () => {
     }
   };
 
+  const [showGameOver, setShowGameOver] = useState(false);
+
+  // Add this effect to check for game over condition
+  useEffect(() => {
+    if (
+      playedHands.length === maxHands &&
+      currentState === GameState.PLAYING &&
+      score < reqScore // Only show game over if score is not enough
+    ) {
+      setShowGameOver(true);
+    }
+  }, [playedHands.length, currentState, score, reqScore, maxHands]);
+
+  const handleRestart = () => {
+    setShowGameOver(false);
+    reset();
+    dealCards();
+  };
+
   return (
     <GameContainer>
       <LeftArea>
@@ -601,6 +624,8 @@ export const Game = () => {
             nextRound={nextRound}
             dealCards={dealCards}
             skipPack={skipPack}
+            rerollCost={rerollCost}
+            rerollShopBeras={rerollShopBeras}
           />
         )}
 
@@ -645,6 +670,11 @@ export const Game = () => {
         y={tooltipPosition.y}
         isVisible={isTooltipVisible}
       />
+      <AnimatePresence>
+        {showGameOver && (
+          <GameOverDialog round={round} onRestart={handleRestart} />
+        )}
+      </AnimatePresence>
     </GameContainer>
   );
 };

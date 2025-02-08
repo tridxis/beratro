@@ -128,6 +128,7 @@ const BeraArea = ({
                         )}
                         {BERA_STATS[bera.bera].cumulative && (
                           <>
+                            <br />
                             (Current:{" "}
                             {BERA_STATS[bera.bera].type === BeraType.MUL_MULT
                               ? "×"
@@ -138,6 +139,13 @@ const BeraArea = ({
                               state
                             )}
                             )
+                          </>
+                        )}
+                        {bera.sticker && (
+                          <>
+                            <br />
+                            {STICKER_STATS[bera.sticker].emoji}{" "}
+                            {STICKER_STATS[bera.sticker].description}
                           </>
                         )}
                       </>,

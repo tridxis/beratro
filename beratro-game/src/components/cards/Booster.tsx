@@ -5,11 +5,10 @@ import { BoosterPosition } from "@/types/cards";
 import { MEME_STATS } from "@/utils/memeStats";
 import { FLOWER_STATS } from "@/utils/flowerStats";
 import { STICKER_STATS } from "@/utils/stickerStats";
-import { Flower, HAND_NAMES, Sticker } from "@/utils/constants";
+import { Flower, Sticker } from "@/utils/constants";
 import { Meme } from "@/utils/constants";
-import { BLACK_COLOR, WOOD_COLOR } from "@/utils/colors";
+import { BLACK_COLOR } from "@/utils/colors";
 import { BottomButtonContainer, SellButton, UseButton } from "../Game.styles";
-import { BeraPosition } from "@/types/beras";
 
 interface BoosterProps {
   item: BoosterPosition;

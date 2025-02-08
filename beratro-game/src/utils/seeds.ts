@@ -37,7 +37,6 @@ export const initCards = (): CardPosition[] => {
 
   return cards.sort((a, b) => a.index - b.index);
 };
-
 export const initBeras = () => {
   const gameBeras = Object.values(Bera);
   const deckBeras = gameBeras.map((bera, index) => ({

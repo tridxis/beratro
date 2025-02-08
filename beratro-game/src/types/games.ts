@@ -20,7 +20,6 @@ export enum GameState {
 export interface GameStore {
   gameBeras: Bera[];
   playingBeras: BeraPosition[];
-  deckBeras: BeraPosition[];
   handCards: CardPosition[];
   deckCards: CardPosition[];
   selectedCards: string[];
@@ -94,6 +93,8 @@ export interface GameStore {
   skipPack: () => void;
   mergeBeras: (bera1: string, bera2: string) => void;
   reorderBeras: (newOrder: BeraPosition[]) => void;
+  rerollCost: number;
+  rerollShopBeras: () => void;
 }
 
 export type CalculationOption = {

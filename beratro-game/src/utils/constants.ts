@@ -273,3 +273,4 @@ export const DEFAULT_MAX_HANDS = 4;
 export const DEFAULT_MAX_DISCARDS = 3;
 export const DEFAULT_MAX_BOOSTERS = 3;
 export const DEFAULT_MAX_BERAS = 5;
+export const DEFAULT_REROLL_COST = 5;
