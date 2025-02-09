@@ -333,7 +333,6 @@ export class Calculator {
     mult: number;
     breakdowns: Breakdown[];
   } {
-    console.log("again", options, chips);
     const breakdowns: Breakdown[] = [];
     for (let i = 0; i < cards.length; i++) {
       const card = cards[i];
@@ -425,6 +424,21 @@ export class Calculator {
               chips,
               mult,
             });
+          }
+        }
+      } else if (
+        card.animalSticker === Sticker.PANDA &&
+        !options?.cardRetrigger
+      ) {
+        const result = this.triggerInHandCards([card], state, chips, mult, {
+          ...options,
+          cardRetrigger: true,
+        });
+        if (result) {
+          chips = result.chips;
+          mult = result.mult;
+          if (options?.breakdown) {
+            breakdowns.push(...result.breakdowns);
           }
         }
       }

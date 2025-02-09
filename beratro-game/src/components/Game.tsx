@@ -346,6 +346,8 @@ const Game = () => {
       return <></>;
     }
 
+    const displayedValue = Math.round(value * 10) / 10;
+
     return (
       <ScorePopup
         type={type}
@@ -363,15 +365,15 @@ const Game = () => {
         }}
         transition={{ duration: ANIMATION_MS / 3000 }}
       >
-        {unit === Unit.CHIPS && <ChipScore>+{value.toFixed(1)}</ChipScore>}
+        {unit === Unit.CHIPS && <ChipScore>+{displayedValue}</ChipScore>}
         {(unit === Unit.MULT || unit === Unit.X_MULT) && (
           <MultScore>
             {unit === Unit.X_MULT ? "×" : "+"}
-            {value.toFixed(1)}
+            {displayedValue}
           </MultScore>
         )}
         {unit === Unit.RETRIGGER && <RetriggerScore>Retrigger</RetriggerScore>}
-        {unit === Unit.GOLD && <GoldScore>${value.toFixed(1)}</GoldScore>}
+        {unit === Unit.GOLD && <GoldScore>${displayedValue}</GoldScore>}
       </ScorePopup>
     );
   };

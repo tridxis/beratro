@@ -218,6 +218,7 @@ export const MEME_STATS: Record<Meme, MemeStats> = {
     maxTargets: 0,
     trigger: (state) => {
       const lastMeme = state.usedMemes[state.usedMemes.length - 1];
+      console.log("lastMeme", lastMeme);
       if (!lastMeme) return false;
       state.addBooster(lastMeme, "meme");
       return true;
