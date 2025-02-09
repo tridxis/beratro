@@ -1,5 +1,7 @@
 # The 365-Day GitHub Streak Challenge with Beratro
 
+Official Demo: https://beratro.com/
+
 New Year, New Me! 🎉
 
 This year, I’m challenge myself again. The mission is simple: ship code every single day. No excuses, no breaks. Just pure builder vibes.
@@ -376,6 +378,17 @@ Today I changed all id from number to uuid to avoid duplicate
 
 Seey 🍀
 
+### Day 39
+
+Heyyy there it's been a long timeeee 👀
+
+I’m surfacing to announce that the gameplay is basically done. I’ve overcome my daily laziness to get here. A round of applause for myself! 👏
+
+You can experience the game at the following link: https://beratro.com/. (Please note that there are still many bugs I haven’t been able to control yet, so if you find a lot (or a whole lot), don’t hesitate to report issues in the repo. I’ll try to overcome my laziness and fix them to the ends of the Earth!)
+
+There’s still a lot to do before we even touch blockchain (like the art, for example), but I’ll just keep chilling ❄️ The main goal is to make the game truly engaging, and there’s no better way than playing a lot. So, please help me out too!
+
+Seey 🍀
 
 
 
