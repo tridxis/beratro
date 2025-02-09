@@ -430,7 +430,7 @@ export class Calculator {
         card.animalSticker === Sticker.PANDA &&
         !options?.cardRetrigger
       ) {
-        const result = this.triggerInHandCards([card], state, chips, mult, {
+        const result = this.triggerScoredCards([card], state, chips, mult, {
           ...options,
           cardRetrigger: true,
         });
