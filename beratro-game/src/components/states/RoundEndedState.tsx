@@ -65,7 +65,9 @@ export const RoundEndedState = ({
         <FlexRow>
           <EndInfoText>1 Interest per $5 (5 max)</EndInfoText>
           <RewardText>
-            {Math.floor(gold / 5) > 0 ? "$".repeat(Math.floor(gold / 5)) : "-"}
+            {Math.floor(gold / 5) > 0
+              ? "$".repeat(Math.min(5, Math.floor(gold / 5)))
+              : "-"}
           </RewardText>
         </FlexRow>
 
