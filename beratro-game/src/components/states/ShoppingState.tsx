@@ -125,7 +125,12 @@ export const ShoppingState = ({
                   {BERA_STATS[bera.bera]?.name}
                   <br />
                   Bera
-                  <BuyButton onClick={() => buyBera(bera.id)}>Buy</BuyButton>
+                  <BuyButton
+                    onClick={() => buyBera(bera.id)}
+                    disabled={gold < BERA_STATS[bera.bera]?.cost}
+                  >
+                    Buy
+                  </BuyButton>
                 </ShopItem>
               ))}
             </ShopItemGrid>

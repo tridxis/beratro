@@ -1,4 +1,10 @@
-import { BORDER_COLOR, WHITE_COLOR, WOOD_COLOR } from "@/utils/colors";
+import {
+  BLACK_COLOR,
+  BORDER_COLOR,
+  GRAY_COLOR,
+  WHITE_COLOR,
+  WOOD_COLOR,
+} from "@/utils/colors";
 import styled from "@emotion/styled";
 import { motion } from "framer-motion";
 
@@ -27,6 +33,12 @@ const Button = styled(motion.button)`
     padding-top: 0.65vw;
     padding-bottom: 0.85vw;
     box-shadow: inset 0 -0.2vw 0 rgba(0, 0, 0, 0.3);
+  }
+
+  &:disabled {
+    background-color: ${GRAY_COLOR};
+    border: none;
+    cursor: not-allowed;
   }
 `;
 

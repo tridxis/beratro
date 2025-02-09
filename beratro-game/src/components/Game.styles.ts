@@ -270,10 +270,6 @@ export const ShopButton = styled(Button)<{ variant?: "primary" | "secondary" }>`
   cursor: pointer;
   transition: opacity 0.2s;
   height: 4vw;
-
-  &:hover {
-    opacity: 0.9;
-  }
 `;
 
 export const BuyButton = styled(Button)`
@@ -400,11 +396,12 @@ export const PriceTag = styled.div`
   position: absolute;
   top: -0.75vw;
   right: -0.75vw;
-  background-color: #f1c40f;
+  background-color: ${GOLD_COLOR};
   padding: 0.25vw 0.5vw;
-  border-radius: 2vw;
+  border-radius: 4vw;
   font-size: 0.75vw;
   font-weight: bold;
+  border: 0.1vw solid ${DARK_GOLD_COLOR};
 `;
 
 export const PlayedHandArea = styled.div`
