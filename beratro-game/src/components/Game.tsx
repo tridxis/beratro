@@ -54,7 +54,7 @@ import { AnimatePresence } from "framer-motion";
 // Add this type to help with tooltip positioning
 type TooltipPosition = "top" | "bottom" | "right";
 
-export const Game = () => {
+const Game = () => {
   const state = useGameStore();
 
   const {
@@ -680,3 +680,5 @@ export const Game = () => {
     </GameContainer>
   );
 };
+
+export default Game;

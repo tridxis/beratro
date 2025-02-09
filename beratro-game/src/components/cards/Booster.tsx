@@ -1,5 +1,5 @@
 import React from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { CARD_STYLES } from "@/utils/cardStyles";
 import { BoosterPosition } from "@/types/cards";
 import { MEME_STATS } from "@/utils/memeStats";
@@ -8,7 +8,12 @@ import { STICKER_STATS } from "@/utils/stickerStats";
 import { Flower, Sticker } from "@/utils/constants";
 import { Meme } from "@/utils/constants";
 import { BLACK_COLOR } from "@/utils/colors";
-import { BottomButtonContainer, SellButton, UseButton } from "../Game.styles";
+import {
+  BottomButtonContainer,
+  SellButton,
+  UseButton,
+  BoosterLabel,
+} from "../Game.styles";
 
 interface BoosterProps {
   item: BoosterPosition;
@@ -74,6 +79,7 @@ export const Booster = ({
           cursor: "pointer",
         }}
       >
+        <BoosterLabel>{boosterType}</BoosterLabel>
         <div style={{ fontSize: "1.2vw", color: BLACK_COLOR }}>{name}</div>
       </div>
       <AnimatePresence>

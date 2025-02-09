@@ -1,14 +1,7 @@
 import { CARD_STYLES } from "@/utils/cardStyles";
 import styled from "@emotion/styled";
 import Button from "./Button";
-import {
-  BG_COLOR,
-  BLACK_COLOR,
-  BLUE_COLOR,
-  BORDER_COLOR,
-  WHITE_COLOR,
-  WOOD_COLOR,
-} from "@/utils/colors";
+import { BLACK_COLOR, BORDER_COLOR, WHITE_COLOR } from "@/utils/colors";
 
 export const BerasContainer = styled.div`
   display: flex;

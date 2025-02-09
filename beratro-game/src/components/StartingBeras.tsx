@@ -8,12 +8,12 @@ import {
   Card,
   CardText,
   ContinueButton,
-} from "./Beras.styles";
+} from "./StartingBeras.styles";
 import { BERA_STATS } from "@/utils/beraStats";
 import { useState } from "react";
 import { Bera } from "@/utils/constants";
 
-const Beras = () => {
+const StartingBeras = () => {
   const { setCurrentState, gameBeras } = useGameStore();
   const [hoveredBera, setHoveredBera] = useState<string | null>(null);
 
@@ -82,4 +82,4 @@ const Beras = () => {
   );
 };
 
-export default Beras;
+export default StartingBeras;

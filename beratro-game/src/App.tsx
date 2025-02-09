@@ -1,12 +1,16 @@
 import "./App.css";
-import Beras from "./components/Beras";
-import { Game } from "./components/Game";
+import StartingBeras from "./components/StartingBeras";
+import Game from "./components/Game";
 import { useGameStore } from "./store/gameStore";
 import { GameState } from "./types/games";
 
 function App() {
   const { currentState } = useGameStore();
-  return currentState === GameState.BERAS_PICKING ? <Beras /> : <Game />;
+  return currentState === GameState.BERAS_PICKING ? (
+    <StartingBeras />
+  ) : (
+    <Game />
+  );
 }
 
 export default App;

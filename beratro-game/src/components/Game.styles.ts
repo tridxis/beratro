@@ -595,4 +595,26 @@ export const EmptyItem = styled.div`
   text-align: center;
 `;
 
-// ... continue with other styled components as needed
+export const BoosterLabel = styled.div<{ children: string }>`
+  position: absolute;
+  top: 0.5vw;
+  left: 0.5vw;
+  right: 0.5vw;
+  background: ${({ children }) => {
+    switch (children) {
+      case "flower":
+        return RED_COLOR; // Green
+      case "sticker":
+        return BLUE_COLOR; // Red
+      case "meme":
+        return GREEN_COLOR; // Blue
+      default:
+        return BORDER_COLOR;
+    }
+  }};
+  color: ${WHITE_COLOR};
+  padding: 0.2vw 0.4vw;
+  border-radius: 0.3vw;
+  font-size: 0.8vw;
+  text-transform: capitalize;
+`;
