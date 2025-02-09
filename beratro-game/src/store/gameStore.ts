@@ -207,11 +207,24 @@ export const useGameStore = create<GameStore>()(
         setSelectedCards: (selectedCards: string[]) => set({ selectedCards }),
 
         toggleSelectedCard: (id: string) =>
-          set((state: GameStore) => ({
-            selectedCards: state.selectedCards.includes(id)
+          set((state) => {
+            const newSelectedCards = state.selectedCards.includes(id)
               ? state.selectedCards.filter((cardId) => cardId !== id)
-              : [...state.selectedCards, id],
-          })),
+              : [...state.selectedCards, id];
+
+            // Sort selected cards by their index in handCards
+            const sortedSelectedCards = newSelectedCards
+              .map((cardId) => ({
+                id: cardId,
+                index:
+                  state.handCards.find((card) => card.id === cardId)?.index ??
+                  0,
+              }))
+              .sort((a, b) => a.index - b.index)
+              .map((card) => card.id);
+
+            return { selectedCards: sortedSelectedCards };
+          }),
         convertCards: (ids: string[], card: Partial<CardPosition>) =>
           set((state: GameStore) => ({
             handCards: state.handCards.map((c) =>

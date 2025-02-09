@@ -132,11 +132,13 @@ const BeraArea = ({
                             {BERA_STATS[bera.bera].type === BeraType.MUL_MULT
                               ? "×"
                               : "+"}
-                            {BERA_STATS[bera.bera].trigger(
-                              BERA_STATS[bera.bera].values[bera.level - 1],
-                              [],
-                              state
-                            )}
+                            {BERA_STATS[bera.bera]
+                              .trigger(
+                                BERA_STATS[bera.bera].values[bera.level - 1],
+                                [],
+                                state
+                              )
+                              .toFixed(1)}
                             )
                           </>
                         )}
