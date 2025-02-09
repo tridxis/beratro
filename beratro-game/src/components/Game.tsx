@@ -363,15 +363,15 @@ const Game = () => {
         }}
         transition={{ duration: ANIMATION_MS / 3000 }}
       >
-        {unit === Unit.CHIPS && <ChipScore>+{value}</ChipScore>}
+        {unit === Unit.CHIPS && <ChipScore>+{value.toFixed(1)}</ChipScore>}
         {(unit === Unit.MULT || unit === Unit.X_MULT) && (
           <MultScore>
             {unit === Unit.X_MULT ? "×" : "+"}
-            {value}
+            {value.toFixed(1)}
           </MultScore>
         )}
         {unit === Unit.RETRIGGER && <RetriggerScore>Retrigger</RetriggerScore>}
-        {unit === Unit.GOLD && <GoldScore>${value}</GoldScore>}
+        {unit === Unit.GOLD && <GoldScore>${value.toFixed(1)}</GoldScore>}
       </ScorePopup>
     );
   };
