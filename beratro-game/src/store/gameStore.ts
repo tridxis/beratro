@@ -572,7 +572,12 @@ export const useGameStore = create<GameStore>()(
         },
         pickItemFromPack: (item: CardPosition | BoosterPosition) =>
           set((state) => {
-            if (!state.selectedPack) return state;
+            if (
+              !state.selectedPack ||
+              state.selectedPack.pickedItems.length >=
+                BOOSTER_PACK_INFO[state.selectedPack.boosterPack].pick
+            )
+              return state;
 
             // Check if item was already picked
             if (state.selectedPack.pickedItems?.includes(item.id)) return state;
@@ -585,6 +590,7 @@ export const useGameStore = create<GameStore>()(
             const updated: Partial<GameStore> = {};
 
             if (!("booster" in item)) {
+              if (state.boosters.length >= state.maxBoosters) return state;
               const newCard: CardPosition = {
                 ...item,
                 index: state.deckCards.length,
