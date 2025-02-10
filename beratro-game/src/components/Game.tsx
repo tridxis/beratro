@@ -536,6 +536,7 @@ const Game = () => {
     if (
       playedHands.length === maxHands &&
       currentState === GameState.PLAYING &&
+      currentBreakdown == null &&
       score < reqScore // Only show game over if score is not enough
     ) {
       setShowGameOver(true);
