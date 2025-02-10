@@ -124,12 +124,24 @@ export const useGameStore = create<GameStore>()(
 
         buyBera: (id: string) =>
           set((state) => {
-            if (state.playingBeras.length >= state.maxBeras) return state;
             const bera = state.shopBeras.find((b) => b.id === id);
             if (!bera) return state;
 
             const cost = BERA_STATS[bera.bera].cost;
             if (state.gold < cost) return state;
+
+            // Check if we have any bera with Air sticker
+            const hasAirSticker = state.playingBeras.some(
+              (b) => b.sticker === Sticker.AIR
+            );
+            const effectiveBeraCount = hasAirSticker
+              ? state.playingBeras.filter(
+                  (b) => !b.sticker || b.sticker !== Sticker.AIR
+                ).length
+              : state.playingBeras.length;
+
+            // Check if we have space for new bera
+            if (effectiveBeraCount >= state.maxBeras) return state;
 
             return {
               shopBeras: state.shopBeras.filter((b) => b.id !== id),

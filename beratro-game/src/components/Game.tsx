@@ -104,6 +104,7 @@ const Game = () => {
     rerollCost,
     rerollShopBeras,
     deckCards,
+    maxBoosters,
   } = state;
 
   const { play } = useCalculator();
@@ -610,6 +611,7 @@ const Game = () => {
             handleTooltip={handleTooltip}
             selectedBeras={selectedBeras}
             selectedCards={selectedCards}
+            maxBoosters={maxBoosters}
           />
         </DeckAreaContainer>
 

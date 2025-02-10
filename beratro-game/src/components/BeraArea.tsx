@@ -19,6 +19,7 @@ import { BeraPosition } from "@/types/beras";
 import { Breakdown } from "@/types/hands";
 import { GameStore } from "@/types/games";
 import { Stars } from "./Stars";
+import { Sticker } from "@/utils/constants";
 
 interface BeraAreaProps {
   state: GameStore;
@@ -217,7 +218,14 @@ const BeraArea = ({
           ))}
         </ReorderGroup>
       </DeckContainer>
-      <DeckDescription>{state.playingBeras.length}/5</DeckDescription>
+      <DeckDescription>
+        {
+          state.playingBeras.filter(
+            (b) => !b.sticker || b.sticker !== Sticker.AIR
+          ).length
+        }
+        /{state.maxBeras}
+      </DeckDescription>
     </TopSection>
   );
 };

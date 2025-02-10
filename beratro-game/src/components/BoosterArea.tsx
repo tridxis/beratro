@@ -15,6 +15,7 @@ interface BoosterAreaProps {
   selectedBooster: BoosterPosition | null;
   selectedBeras: string[];
   selectedCards: string[];
+  maxBoosters: number;
   setSelectedBooster: (booster: BoosterPosition | null) => void;
   handleTooltip: (
     show: boolean,
@@ -34,6 +35,7 @@ const BoosterArea = ({
   handleTooltip,
   selectedBeras,
   selectedCards,
+  maxBoosters,
 }: BoosterAreaProps) => {
   return (
     <TopSection flex={1}>
@@ -81,7 +83,9 @@ const BoosterArea = ({
           </motion.div>
         ))}
       </DeckContainer>
-      <DeckDescription>{boosters.length}/2</DeckDescription>
+      <DeckDescription>
+        {boosters.length}/{maxBoosters}
+      </DeckDescription>
     </TopSection>
   );
 };
