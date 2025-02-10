@@ -186,7 +186,7 @@ export const BERA_STATS: Record<Bera, BeraStats> = {
   },
   [Bera.BUILDER]: {
     name: "Builder",
-    description: "+{{value}} Mult if played hand contains a Four of a Straight",
+    description: "+{{value}} Mult if played hand contains a Straight",
     cost: 4,
     rarity: BeraRarity.COMMON,
     values: [12, 16, 20],

@@ -145,7 +145,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
   [Sticker.EARTH]: {
     id: uuidv4(),
     name: "Earth",
-    description: "+10 Mult",
+    description: "Bera+10 Mult",
     type: Unit.MULT,
     action: GameAction.ON_SCORED,
     rarity: StickerRarity.COMMON,
@@ -156,7 +156,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
   [Sticker.WATER]: {
     id: uuidv4(),
     name: "Water",
-    description: "+50 Chips",
+    description: "Bera+50 Chips",
     type: Unit.CHIPS,
     action: GameAction.ON_SCORED,
     rarity: StickerRarity.COMMON,
@@ -167,7 +167,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
   [Sticker.FIRE]: {
     id: uuidv4(),
     name: "Fire",
-    description: "x1.5 Mult",
+    description: "Bera x1.5 Mult",
     type: Unit.X_MULT,
     action: GameAction.ON_SCORED,
     rarity: StickerRarity.UNCOMMON,
@@ -178,7 +178,7 @@ export const STICKER_STATS: Record<Sticker, StickerStats> = {
   [Sticker.AIR]: {
     id: uuidv4(),
     name: "Air",
-    description: "Cost 0 slot",
+    description: "Bera costs 0 slot",
     action: GameAction.INDEP,
     type: Unit.ZERO_SLOT,
     rarity: StickerRarity.RARE,
