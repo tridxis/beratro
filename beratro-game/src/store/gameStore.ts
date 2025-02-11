@@ -20,7 +20,7 @@ import {
   Bera,
 } from "@/utils/constants";
 import { initCards, initBeras } from "@/utils/seeds";
-import { BERA_STATS, BeraType } from "@/utils/beraStats";
+import { BERA_STATS, BeraRarity, BeraType } from "@/utils/beraStats";
 import { shuffleCards } from "@/utils/cards";
 import { STICKER_STATS, StickerRarity } from "@/utils/stickerStats";
 import { FLOWER_STATS } from "@/utils/flowerStats";
@@ -51,10 +51,24 @@ const getRoundReqScore = (round: number) => {
 };
 
 const generateRandomBeras = (count: number): BeraPosition[] => {
-  const beras = Object.values(Bera);
+  // Create weighted pool based on rarity
+  const beraPool = Object.values(Bera).flatMap((bera) => {
+    switch (BERA_STATS[bera].rarity) {
+      case BeraRarity.COMMON:
+        return Array(4).fill(bera);
+      case BeraRarity.UNCOMMON:
+        return Array(2).fill(bera);
+      case BeraRarity.RARE:
+        return Array(1).fill(bera);
+      default:
+        return Array(4).fill(bera);
+    }
+  });
+
+  // Randomly select from pool
   return Array.from({ length: count }, () => ({
     id: uuidv4(),
-    bera: beras[Math.floor(Math.random() * beras.length)],
+    bera: beraPool[Math.floor(Math.random() * beraPool.length)],
     index: 0,
     level: 1,
   })).map((bera, index) => ({ ...bera, index }));
