@@ -447,7 +447,32 @@ export const useGameStore = create<GameStore>()(
             }
             if (booster.boosterType === "meme") {
               const meme = MEME_STATS[booster.booster as Meme];
-              meme.trigger(state);
+              const success = meme.trigger(state);
+              if (!success) return state;
+
+              // Special handling for Pepe meme
+              if (booster.booster === Meme.PEPE) {
+                const lastMeme = state.usedMemes[state.usedMemes.length - 1];
+                if (lastMeme) {
+                  return {
+                    usedMemes: [...state.usedMemes, booster.booster as Meme],
+                    boosters: [
+                      ...state.boosters.filter((b) => b.id !== booster.id),
+                      {
+                        id: uuidv4(),
+                        index:
+                          state.boosters.length > 0
+                            ? state.boosters[state.boosters.length - 1].index +
+                              1
+                            : 0,
+                        booster: lastMeme,
+                        boosterType: "meme",
+                      } as BoosterPosition,
+                    ],
+                  };
+                }
+              }
+
               return {
                 usedMemes: [...state.usedMemes, booster.booster as Meme],
                 boosters: state.boosters.filter((b) => b.id !== booster.id),
@@ -466,14 +491,16 @@ export const useGameStore = create<GameStore>()(
           boosterType: "flower" | "sticker" | "meme"
         ) =>
           set((state) => {
-            const nextIndex = state.boosters.length;
-            if (nextIndex >= state.maxBoosters) return state;
+            if (state.boosters.length >= state.maxBoosters) return state;
             return {
               boosters: [
                 ...state.boosters,
                 {
                   id: uuidv4(),
-                  index: nextIndex,
+                  index:
+                    state.boosters.length > 0
+                      ? state.boosters[state.boosters.length - 1].index + 1
+                      : 0,
                   booster,
                   boosterType,
                 } as BoosterPosition,

@@ -74,7 +74,6 @@ export const ShoppingState = ({
   rerollCost,
   rerollShopBeras,
 }: ShoppingStateProps) => {
-  console.log("bera", shopBeras);
   return (
     <ShopContainer>
       {!selectedPack ? (
