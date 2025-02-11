@@ -280,6 +280,8 @@ const Game = () => {
               handleOnEndedBeras();
               handleOnEndedCards();
               setCurrentState(GameState.ROUND_ENDED);
+            } else {
+              dealCards();
             }
           }, ANIMATION_MS * 3);
         }
@@ -321,8 +323,8 @@ const Game = () => {
         }
       });
       discardSelectedCards();
+      dealCards();
     }
-    dealCards();
   };
 
   const renderBreakdownScore = (
