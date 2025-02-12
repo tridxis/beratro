@@ -101,6 +101,7 @@ export type CalculationOption = {
   breakdown?: boolean;
   isInHand?: boolean;
   isScored?: boolean;
-  beraRetrigger?: boolean;
+  beraRetriggered?: number;
+  beraRetriggerId?: string;
   cardRetrigger?: boolean;
 };

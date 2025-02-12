@@ -381,7 +381,7 @@ const Game = () => {
       </ScorePopup>
     );
   };
-  console.log("usedMeme", usedMemes);
+
   // console.log("playingBeras", playingBeras);
   // console.log("handCards", handCards);
   // console.log("handLevels", handLevels);

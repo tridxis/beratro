@@ -260,39 +260,41 @@ export class Calculator {
         break;
       case BeraType.RETRIGGER: {
         let result;
-        if (options?.isScored) {
-          result = this.triggerScoredCards(
-            cards,
-            state,
-            totalChips,
-            totalMult,
-            { ...options, beraRetrigger: true }
-          );
-        } else if (options?.isInHand) {
-          result = this.triggerInHandCards(
-            cards,
-            state,
-            totalChips,
-            totalMult,
-            { ...options, beraRetrigger: true }
-          );
+        const beraRetriggered = options?.beraRetriggered || 0;
+        if (value > beraRetriggered) {
+          if (options?.isScored) {
+            result = this.triggerScoredCards(
+              cards,
+              state,
+              totalChips,
+              totalMult,
+              {
+                ...options,
+                beraRetriggerId: bera.id,
+                beraRetriggered: beraRetriggered + 1,
+              }
+            );
+          } else if (options?.isInHand) {
+            result = this.triggerInHandCards(
+              cards,
+              state,
+              totalChips,
+              totalMult,
+              {
+                ...options,
+                beraRetriggerId: bera.id,
+                beraRetriggered: beraRetriggered + 1,
+              }
+            );
+          }
         }
+
         if (result) {
           totalChips = result.chips;
           totalMult = result.mult;
-          breakdowns.push(
-            ...[
-              {
-                cards: [],
-                beras: [bera.id],
-                values: [1],
-                units: [Unit.RETRIGGER],
-                chips: 0,
-                mult: 0,
-              },
-              ...result.breakdowns,
-            ]
-          );
+          if (options?.breakdown) {
+            breakdowns.push(...result.breakdowns);
+          }
         }
         break;
       }
@@ -416,6 +418,16 @@ export class Calculator {
           }
 
           if (options?.breakdown && unit != null) {
+            if (options.beraRetriggerId) {
+              breakdowns.push({
+                cards: [],
+                beras: [options.beraRetriggerId],
+                values: [1],
+                units: [Unit.RETRIGGER],
+                chips,
+                mult,
+              });
+            }
             breakdowns.push({
               cards: [card.id],
               beras: [],
@@ -438,19 +450,23 @@ export class Calculator {
           chips = result.chips;
           mult = result.mult;
           if (options?.breakdown) {
+            if (options.beraRetriggerId) {
+              breakdowns.push({
+                cards: [],
+                beras: [options.beraRetriggerId],
+                values: [1],
+                units: [Unit.RETRIGGER],
+                chips,
+                mult,
+              });
+            }
             breakdowns.push(...result.breakdowns);
           }
         }
       }
 
       state.playingBeras
-        .filter(
-          (bera) =>
-            BERA_STATS[bera.bera].action === GameAction.ON_SCORED &&
-            (options?.beraRetrigger
-              ? BERA_STATS[bera.bera].type !== BeraType.RETRIGGER
-              : true)
-        )
+        .filter((bera) => BERA_STATS[bera.bera].action === GameAction.ON_SCORED)
         .forEach((bera) => {
           const result = this.triggerBera({
             bera,
@@ -491,13 +507,7 @@ export class Calculator {
     for (let i = 0; i < cards.length; i++) {
       const card = cards[i];
       state.playingBeras
-        .filter(
-          (bera) =>
-            BERA_STATS[bera.bera].action === GameAction.ON_HELD &&
-            (options?.beraRetrigger
-              ? BERA_STATS[bera.bera].type !== BeraType.RETRIGGER
-              : true)
-        )
+        .filter((bera) => BERA_STATS[bera.bera].action === GameAction.ON_HELD)
         .forEach((bera) => {
           const result = this.triggerBera({
             bera,
@@ -518,6 +528,16 @@ export class Calculator {
       if (card.fruitSticker === Sticker.TOMATO) {
         mult *= 1.5;
         if (options?.breakdown) {
+          if (options.beraRetriggerId) {
+            breakdowns.push({
+              cards: [],
+              beras: [options.beraRetriggerId],
+              values: [1],
+              units: [Unit.RETRIGGER],
+              chips,
+              mult,
+            });
+          }
           breakdowns.push({
             cards: [card.id],
             beras: [],
@@ -539,6 +559,16 @@ export class Calculator {
           chips = result.chips;
           mult = result.mult;
           if (options?.breakdown) {
+            if (options.beraRetriggerId) {
+              breakdowns.push({
+                cards: [],
+                beras: [options.beraRetriggerId],
+                values: [1],
+                units: [Unit.RETRIGGER],
+                chips,
+                mult,
+              });
+            }
             breakdowns.push(...result.breakdowns);
           }
         }
