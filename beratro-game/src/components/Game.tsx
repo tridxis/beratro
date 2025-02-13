@@ -48,6 +48,7 @@ import Stats from "./Stats";
 import { vibrateAnimation } from "@/utils/animations";
 import { GameOverDialog } from "./GameOverDialog";
 import { AnimatePresence } from "framer-motion";
+import { LeftSection } from "./LeftPanel";
 
 // Update the hover scale animation to maintain z-index
 
@@ -554,48 +555,23 @@ const Game = () => {
 
   return (
     <GameContainer>
-      <LeftArea>
-        <LeftPanel>
-          <ResetButton
-            onClick={() => {
-              reset();
-              dealCards();
-            }}
-          >
-            Reset
-          </ResetButton>
-
-          <BentoBox>
-            <RoundHeader>ROUND {round}</RoundHeader>
-            <RoundContent>
-              <FlexRow style={{ justifyContent: "space-between" }}>
-                <div>
-                  <div>Score at least</div>
-                  <ScoreTarget>{reqScore.toLocaleString()}</ScoreTarget>
-                </div>
-                <div>to earn $$$$</div>
-              </FlexRow>
-            </RoundContent>
-          </BentoBox>
-
-          <Score
-            score={score}
-            pokerHand={pokerHand}
-            upgradingHand={upgradingHand}
-            handLevels={handLevels}
-            currentBreakdown={currentBreakdown}
-            previewPokerHand={previewPokerHand}
-          />
-
-          <Stats
-            maxHands={maxHands}
-            playedHands={playedHands}
-            maxDiscards={maxDiscards}
-            discards={discards}
-            gold={gold}
-          />
-        </LeftPanel>
-      </LeftArea>
+      <LeftSection
+        round={round}
+        reqScore={reqScore}
+        score={score}
+        currentBreakdown={currentBreakdown}
+        pokerHand={pokerHand}
+        upgradingHand={upgradingHand}
+        handLevels={handLevels}
+        previewPokerHand={previewPokerHand}
+        maxHands={maxHands}
+        playedHands={playedHands}
+        maxDiscards={maxDiscards}
+        discards={discards}
+        gold={gold}
+        reset={reset}
+        dealCards={dealCards}
+      />
 
       <MainGameArea>
         <DeckAreaContainer>

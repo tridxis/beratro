@@ -10,12 +10,18 @@ import {
   StatsGrid,
   StatBox,
   StatValue,
+  LeftPanel,
 } from "./Game.styles";
 import { BLUE_COLOR, GOLD_COLOR, RED_COLOR } from "@/utils/colors";
 import { HandType } from "@/utils/constants";
 import { Breakdown } from "@/types/hands";
 import { CardPosition } from "@/types/cards";
 import { Score } from "./Score";
+import { useState } from "react";
+import { HandInfoDialog } from "./HandInfoDialog";
+import { AnimatePresence } from "framer-motion";
+import Button from "./Button";
+import Stats from "./Stats";
 
 interface LeftPanelProps {
   round: number;
@@ -35,7 +41,7 @@ interface LeftPanelProps {
   dealCards: () => void;
 }
 
-export const LeftPanel = ({
+export const LeftSection = ({
   round,
   reqScore,
   score,
@@ -52,9 +58,11 @@ export const LeftPanel = ({
   reset,
   dealCards,
 }: LeftPanelProps) => {
+  const [showHandInfo, setShowHandInfo] = useState(false);
+
   return (
     <LeftArea>
-      <StyledLeftPanel>
+      <LeftPanel>
         <ResetButton
           onClick={() => {
             reset();
@@ -86,25 +94,32 @@ export const LeftPanel = ({
           previewPokerHand={previewPokerHand}
         />
 
-        <StatsGrid>
-          <StatBox>
-            <div>Hands</div>
-            <StatValue color={BLUE_COLOR}>
-              {maxHands - playedHands.length}
-            </StatValue>
-          </StatBox>
-          <StatBox>
-            <div>Discards</div>
-            <StatValue color={RED_COLOR}>
-              {maxDiscards - discards.length}
-            </StatValue>
-          </StatBox>
-          <StatBox>
-            <div>Golds</div>
-            <StatValue color={GOLD_COLOR}>{gold}</StatValue>
-          </StatBox>
-        </StatsGrid>
-      </StyledLeftPanel>
+        <Stats
+          maxHands={maxHands}
+          playedHands={playedHands}
+          maxDiscards={maxDiscards}
+          discards={discards}
+          gold={gold}
+        />
+        <Button
+          onClick={() => setShowHandInfo(true)}
+          style={{
+            marginTop: "1vw",
+            width: "100%",
+            backgroundColor: BLUE_COLOR,
+          }}
+        >
+          Hand Info
+        </Button>
+        <AnimatePresence>
+          {showHandInfo && (
+            <HandInfoDialog
+              handLevels={handLevels}
+              onClose={() => setShowHandInfo(false)}
+            />
+          )}
+        </AnimatePresence>
+      </LeftPanel>
     </LeftArea>
   );
 };
