@@ -134,17 +134,17 @@ const HAND_EXAMPLES: Record<
 > = {
   [HandType.FlushFive]: [
     { rank: CardRank.ACE, suit: CardSuit.SPADES },
-    { rank: CardRank.KING, suit: CardSuit.SPADES },
-    { rank: CardRank.QUEEN, suit: CardSuit.SPADES },
-    { rank: CardRank.JACK, suit: CardSuit.SPADES },
-    { rank: CardRank.TEN, suit: CardSuit.SPADES },
+    { rank: CardRank.ACE, suit: CardSuit.SPADES },
+    { rank: CardRank.ACE, suit: CardSuit.SPADES },
+    { rank: CardRank.ACE, suit: CardSuit.SPADES },
+    { rank: CardRank.ACE, suit: CardSuit.SPADES },
   ],
   [HandType.FlushHouse]: [
-    { rank: CardRank.KING, suit: CardSuit.SPADES },
-    { rank: CardRank.KING, suit: CardSuit.HEARTS },
     { rank: CardRank.KING, suit: CardSuit.DIAMONDS },
-    { rank: CardRank.QUEEN, suit: CardSuit.SPADES },
-    { rank: CardRank.QUEEN, suit: CardSuit.HEARTS },
+    { rank: CardRank.KING, suit: CardSuit.DIAMONDS },
+    { rank: CardRank.KING, suit: CardSuit.DIAMONDS },
+    { rank: CardRank.QUEEN, suit: CardSuit.DIAMONDS },
+    { rank: CardRank.QUEEN, suit: CardSuit.DIAMONDS },
   ],
   [HandType.FiveOfAKind]: [
     { rank: CardRank.KING, suit: CardSuit.SPADES },
