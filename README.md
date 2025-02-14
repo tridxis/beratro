@@ -390,7 +390,23 @@ There’s still a lot to do before we even touch blockchain (like the art, for e
 
 Seey 🍀
 
+### Day 42
 
+Today I make final decision, that I will keep Beratro as the version of https://beratro.com/
+
+There are 3 reasons:
+
+- My initial plan was to develop an onchain game on Berachain, but since Berachain had an unfair airdrop for early users, I’ve decided not to contribute to the ecosystem anymore.
+
+- My inspiration came from enjoying Balatro and wanting to try making a game myself, and now I’ve almost achieved that. Through this process, I’ve realized just how difficult game development is (especially as a one-man studio). There’s still a long way to go for Beratro to reach the quality of Balatro (optimizing performance, art, effects, game balance, etc...), but as a fan of this genre, the current state of the game is already satisfying for me.
+
+- Recently, I’ve been experimenting with AI Agents and found them quite interesting. I want to dive deeper. I’ll try applying them to my business and see how it goes. Of course, I won’t be building in public anymore, but I’ll still continue my personal challenge of pushing code to GitHub for 365 days.
+
+Last but not least, if you've checked out this project before, thank you for your support! Just enjoy the game, and if you run into any issues, I’d be happy to hear about them and fix them. And feel free to folk it and do anything you want!
+
+Seey 🍀
+
+  
 
 
 
