@@ -407,6 +407,15 @@ Last but not least, if you've checked out this project before, thank you for you
 Seey 🍀
 
   
+<img width="1512" alt="image" src="https://github.com/user-attachments/assets/dafd6713-cfb8-4a41-a3e6-318e59c1d34f" />
+
+<img width="1512" alt="image" src="https://github.com/user-attachments/assets/4bd98393-a1e9-4264-8011-bddfca23ac57" />
+
+<img width="1512" alt="image" src="https://github.com/user-attachments/assets/83d44396-128b-4390-8288-516d8735b9b4" />
+
+<img width="1512" alt="image" src="https://github.com/user-attachments/assets/97c5ab60-dd00-4acd-a976-36cd5ea0fe26" />
+
+<img width="1512" alt="image" src="https://github.com/user-attachments/assets/74bdd33d-e99a-494e-b73e-5703bd6d71d2" />
 
 
 
